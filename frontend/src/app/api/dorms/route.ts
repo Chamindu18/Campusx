@@ -67,49 +67,12 @@ export async function POST(
     }
 
     /**
-     * Parsed values.
-     */
-    const {
-      title,
-      description,
-      university,
-      city,
-      gender,
-      roomType,
-      price,
-      facilities,
-      imageUrls,
-      contactNumber,
-      distanceFromUniversity,
-    } = parsed.data;
-
-    /**
      * Create dorm.
      */
     const dorm =
       await prisma.dorm.create({
         data: {
-          title,
-
-          description,
-
-          university,
-
-          city,
-
-          gender,
-
-          roomType,
-
-          price,
-
-          facilities,
-
-          imageUrls,
-
-          contactNumber,
-
-          distanceFromUniversity,
+          ...parsed.data,
 
           userId:
             currentUser.id,
@@ -151,6 +114,11 @@ export async function GET(
     /**
      * Filters.
      */
+    const search =
+      searchParams.get(
+        "search"
+      );
+
     const university =
       searchParams.get(
         "university"
@@ -166,6 +134,21 @@ export async function GET(
         "gender"
       );
 
+    const roomType =
+      searchParams.get(
+        "roomType"
+      );
+
+    const maxPrice =
+      searchParams.get(
+        "maxPrice"
+      );
+
+    const sort =
+      searchParams.get(
+        "sort"
+      );
+
     /**
      * Query dorms.
      */
@@ -173,16 +156,61 @@ export async function GET(
       await prisma.dorm.findMany(
         {
           where: {
-            ...(university && {
-              university,
+            ...(search && {
+              OR: [
+                {
+                  title: {
+                    contains:
+                      search,
+
+                    mode:
+                      "insensitive",
+                  },
+                },
+
+                {
+                  description:
+                    {
+                      contains:
+                        search,
+
+                      mode:
+                        "insensitive",
+                    },
+                },
+              ],
             }),
 
+            ...(university &&
+              university !==
+                "All" && {
+                university,
+              }),
+
             ...(city && {
-              city,
+              city: {
+                contains:
+                  city,
+
+                mode:
+                  "insensitive",
+              },
             }),
 
             ...(gender && {
               gender,
+            }),
+
+            ...(roomType && {
+              roomType,
+            }),
+
+            ...(maxPrice && {
+              price: {
+                lte: Number(
+                  maxPrice
+                ),
+              },
             }),
           },
 
@@ -198,10 +226,23 @@ export async function GET(
             },
           },
 
-          orderBy: {
-            createdAt:
-              "desc",
-          },
+          orderBy:
+            sort ===
+            "price-low"
+              ? {
+                  price:
+                    "asc",
+                }
+              : sort ===
+                "price-high"
+              ? {
+                  price:
+                    "desc",
+                }
+              : {
+                  createdAt:
+                    "desc",
+                },
         }
       );
 

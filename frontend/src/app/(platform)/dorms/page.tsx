@@ -6,6 +6,11 @@ import {
 } from "react";
 
 import {
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
+
+import {
   DormCard,
 } from "@/components/ui/DormCard";
 
@@ -21,6 +26,15 @@ const universities = [
   "University of Colombo",
   "University of Kelaniya",
   "University of Peradeniya",
+];
+
+/**
+ * Room types.
+ */
+const roomTypes = [
+  "",
+  "Private",
+  "Shared",
 ];
 
 export default function DormsPage() {
@@ -46,13 +60,38 @@ export default function DormsPage() {
    * Filters.
    */
   const [
+    search,
+    setSearch,
+  ] = useState("");
+
+  const [
     university,
     setUniversity,
   ] = useState("All");
 
   const [
+    city,
+    setCity,
+  ] = useState("");
+
+  const [
     gender,
     setGender,
+  ] = useState("");
+
+  const [
+    roomType,
+    setRoomType,
+  ] = useState("");
+
+  const [
+    maxPrice,
+    setMaxPrice,
+  ] = useState("");
+
+  const [
+    sort,
+    setSort,
   ] = useState("");
 
   /**
@@ -61,11 +100,22 @@ export default function DormsPage() {
   useEffect(() => {
     async function fetchDorms() {
       try {
+        setLoading(true);
+
         /**
          * Query params.
          */
         const params =
           new URLSearchParams();
+
+        if (
+          search
+        ) {
+          params.append(
+            "search",
+            search
+          );
+        }
 
         if (
           university !==
@@ -78,11 +128,47 @@ export default function DormsPage() {
         }
 
         if (
+          city
+        ) {
+          params.append(
+            "city",
+            city
+          );
+        }
+
+        if (
           gender
         ) {
           params.append(
             "gender",
             gender
+          );
+        }
+
+        if (
+          roomType
+        ) {
+          params.append(
+            "roomType",
+            roomType
+          );
+        }
+
+        if (
+          maxPrice
+        ) {
+          params.append(
+            "maxPrice",
+            maxPrice
+          );
+        }
+
+        if (
+          sort
+        ) {
+          params.append(
+            "sort",
+            sort
           );
         }
 
@@ -116,8 +202,13 @@ export default function DormsPage() {
 
     fetchDorms();
   }, [
+    search,
     university,
+    city,
     gender,
+    roomType,
+    maxPrice,
+    sort,
   ]);
 
   return (
@@ -129,24 +220,81 @@ export default function DormsPage() {
             Student Dorms
           </h1>
 
-          <p className="mt-4 text-lg text-slate-600">
-            Find safe boarding places near your university.
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            Find safe and affordable boarding places near your university.
           </p>
         </div>
+      </div>
 
-        {/* FILTERS */}
-        <div className="flex flex-wrap gap-4">
+      {/* SEARCH BAR */}
+      <div
+        className="
+          mt-10
+          flex
+          items-center
+          gap-4
+          rounded-3xl
+          border
+          border-white/40
+          bg-white/70
+          px-6
+          py-5
+          shadow-lg
+          shadow-slate-200/20
+          backdrop-blur-xl
+        "
+      >
+        <Search className="h-5 w-5 text-slate-400" />
+
+        <input
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
+          placeholder="Search dorms, universities, boarding..."
+          className="
+            w-full
+            bg-transparent
+            text-sm
+            outline-none
+            placeholder:text-slate-400
+          "
+        />
+      </div>
+
+      {/* FILTERS */}
+      <div
+        className="
+          mt-8
+          rounded-3xl
+          border
+          border-white/40
+          bg-white/70
+          p-6
+          shadow-lg
+          shadow-slate-200/20
+          backdrop-blur-xl
+        "
+      >
+        <div className="mb-6 flex items-center gap-3">
+          <SlidersHorizontal className="h-5 w-5 text-slate-600" />
+
+          <h2 className="text-lg font-bold text-slate-900">
+            Filters
+          </h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
           {/* University */}
           <select
             value={
               university
             }
-            onChange={(
-              event
-            ) =>
+            onChange={(e) =>
               setUniversity(
-                event.target
-                  .value
+                e.target.value
               )
             }
             className="
@@ -178,17 +326,35 @@ export default function DormsPage() {
             )}
           </select>
 
+          {/* City */}
+          <input
+            value={city}
+            onChange={(e) =>
+              setCity(
+                e.target.value
+              )
+            }
+            placeholder="City"
+            className="
+              h-12
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white/80
+              px-4
+              text-sm
+              outline-none
+            "
+          />
+
           {/* Gender */}
           <select
             value={
               gender
             }
-            onChange={(
-              event
-            ) =>
+            onChange={(e) =>
               setGender(
-                event.target
-                  .value
+                e.target.value
               )
             }
             className="
@@ -203,7 +369,7 @@ export default function DormsPage() {
             "
           >
             <option value="">
-              All
+              All Genders
             </option>
 
             <option value="Boys">
@@ -218,7 +384,116 @@ export default function DormsPage() {
               Mixed
             </option>
           </select>
+
+          {/* Room Type */}
+          <select
+            value={
+              roomType
+            }
+            onChange={(e) =>
+              setRoomType(
+                e.target.value
+              )
+            }
+            className="
+              h-12
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white/80
+              px-4
+              text-sm
+              outline-none
+            "
+          >
+            <option value="">
+              Room Type
+            </option>
+
+            {roomTypes.map(
+              (
+                type
+              ) =>
+                type ? (
+                  <option
+                    key={
+                      type
+                    }
+                    value={
+                      type
+                    }
+                  >
+                    {type}
+                  </option>
+                ) : null
+            )}
+          </select>
+
+          {/* Price */}
+          <input
+            type="number"
+            value={
+              maxPrice
+            }
+            onChange={(e) =>
+              setMaxPrice(
+                e.target.value
+              )
+            }
+            placeholder="Max Price"
+            className="
+              h-12
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white/80
+              px-4
+              text-sm
+              outline-none
+            "
+          />
+
+          {/* Sort */}
+          <select
+            value={
+              sort
+            }
+            onChange={(e) =>
+              setSort(
+                e.target.value
+              )
+            }
+            className="
+              h-12
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white/80
+              px-4
+              text-sm
+              outline-none
+            "
+          >
+            <option value="">
+              Newest
+            </option>
+
+            <option value="price-low">
+              Lowest Price
+            </option>
+
+            <option value="price-high">
+              Highest Price
+            </option>
+          </select>
         </div>
+      </div>
+
+      {/* RESULTS */}
+      <div className="mt-10 flex items-center justify-between">
+        <p className="text-sm text-slate-500">
+          {dorms.length} dorms found
+        </p>
       </div>
 
       {/* LOADING */}
@@ -230,13 +505,28 @@ export default function DormsPage() {
         </div>
       ) : dorms.length ===
         0 ? (
-        <div className="mt-20 text-center">
-          <p className="text-lg text-slate-500">
-            No dorms found.
+        <div
+          className="
+            mt-20
+            rounded-3xl
+            border
+            border-dashed
+            border-slate-300
+            bg-white/50
+            p-16
+            text-center
+          "
+        >
+          <h2 className="text-2xl font-bold text-slate-900">
+            No dorms found
+          </h2>
+
+          <p className="mt-4 text-slate-500">
+            Try changing your filters or search terms.
           </p>
         </div>
       ) : (
-        <div className="mt-12 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-10 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
           {dorms.map(
             (dorm) => (
               <DormCard
