@@ -121,6 +121,11 @@ export default function CreateDormPage() {
     },
   } =
     useForm<DormFormValues>({
+      defaultValues: {
+        facilities: [],
+        imageUrls: [],
+      },
+
       resolver:
         zodResolver(
           dormSchema
@@ -172,6 +177,20 @@ export default function CreateDormPage() {
       }
 
       /**
+       * Require facilities.
+       */
+      if (
+        facilities.length ===
+        0
+      ) {
+        toast.error(
+          "Select at least one facility"
+        );
+
+        return;
+      }
+
+      /**
        * Create request.
        */
       const response =
@@ -190,9 +209,9 @@ export default function CreateDormPage() {
               {
                 ...data,
 
-                imageUrls,
-
                 facilities,
+
+                imageUrls,
               }
             ),
           }

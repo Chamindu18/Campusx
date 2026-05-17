@@ -33,9 +33,19 @@ export const dormSchema =
         "City is required"
       ),
 
-    gender: z.string(),
+    gender: z
+      .string()
+      .min(
+        1,
+        "Gender is required"
+      ),
 
-    roomType: z.string(),
+    roomType: z
+      .string()
+      .min(
+        1,
+        "Room type is required"
+      ),
 
     price: z.coerce
       .number()
@@ -43,19 +53,20 @@ export const dormSchema =
         "Price must be positive"
       ),
 
-    facilities: z
-      .array(z.string())
-      .min(
-        1,
-        "Add at least one facility"
-      ),
+    /**
+     * IMPORTANT:
+     * facilities + imageUrls
+     * are managed outside RHF.
+     */
+    facilities:
+      z.array(
+        z.string()
+      ).optional(),
 
-    imageUrls: z
-      .array(z.string())
-      .min(
-        1,
-        "Upload at least one image"
-      ),
+    imageUrls:
+      z.array(
+        z.string()
+      ).optional(),
 
     contactNumber: z
       .string()
