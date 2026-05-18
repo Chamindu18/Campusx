@@ -116,8 +116,11 @@ export default function DormDetailPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="grid gap-10 xl:grid-cols-2">
+        {/* ================================= */}
         {/* IMAGES */}
+        {/* ================================= */}
+
         <div>
           <div className="grid gap-4">
             {dorm.imageUrls.map(
@@ -128,9 +131,11 @@ export default function DormDetailPage() {
                   key={image}
                   className="
                     relative
-                    h-[350px]
+                    h-[250px]
                     overflow-hidden
                     rounded-3xl
+                    sm:h-[320px]
+                    lg:h-[420px]
                   "
                 >
                   <Image
@@ -147,16 +152,47 @@ export default function DormDetailPage() {
           </div>
         </div>
 
+        {/* ================================= */}
         {/* CONTENT */}
+        {/* ================================= */}
+
         <div>
           {/* Header */}
-          <div className="flex items-start justify-between gap-4">
+          <div
+            className="
+              flex
+              flex-col
+              gap-5
+              sm:flex-row
+              sm:items-start
+              sm:justify-between
+            "
+          >
             <div>
-              <h1 className="text-5xl font-black tracking-tight text-slate-900">
+              <h1
+                className="
+                  text-3xl
+                  font-black
+                  tracking-tight
+                  text-slate-900
+                  sm:text-4xl
+                  lg:text-5xl
+                "
+              >
                 {dorm.title}
               </h1>
 
-              <div className="mt-5 flex items-center gap-2 text-slate-500">
+              <div
+                className="
+                  mt-4
+                  flex
+                  items-center
+                  gap-2
+                  text-sm
+                  text-slate-500
+                  sm:text-base
+                "
+              >
                 <MapPin className="h-5 w-5" />
 
                 <span>
@@ -167,6 +203,7 @@ export default function DormDetailPage() {
 
             <div
               className="
+                w-fit
                 rounded-full
                 bg-blue-100
                 px-5
@@ -182,7 +219,14 @@ export default function DormDetailPage() {
 
           {/* Price */}
           <div className="mt-8">
-            <p className="text-5xl font-black text-slate-900">
+            <p
+              className="
+                text-4xl
+                font-black
+                text-slate-900
+                sm:text-5xl
+              "
+            >
               LKR{" "}
               {dorm.price.toLocaleString()}
             </p>
@@ -194,18 +238,32 @@ export default function DormDetailPage() {
 
           {/* Meta */}
           <div className="mt-10 space-y-5">
-            <div className="flex items-center gap-3 text-slate-700">
-              <GraduationCap className="h-5 w-5" />
+            <div
+              className="
+                flex
+                items-start
+                gap-3
+                text-slate-700
+              "
+            >
+              <GraduationCap className="mt-0.5 h-5 w-5 shrink-0" />
 
-              <span>
+              <span className="break-words">
                 {
                   dorm.university
                 }
               </span>
             </div>
 
-            <div className="flex items-center gap-3 text-slate-700">
-              <BedDouble className="h-5 w-5" />
+            <div
+              className="
+                flex
+                items-start
+                gap-3
+                text-slate-700
+              "
+            >
+              <BedDouble className="mt-0.5 h-5 w-5 shrink-0" />
 
               <span>
                 {
@@ -214,10 +272,17 @@ export default function DormDetailPage() {
               </span>
             </div>
 
-            <div className="flex items-center gap-3 text-slate-700">
-              <MapPin className="h-5 w-5" />
+            <div
+              className="
+                flex
+                items-start
+                gap-3
+                text-slate-700
+              "
+            >
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
 
-              <span>
+              <span className="break-words">
                 {
                   dorm.distanceFromUniversity
                 }
@@ -227,11 +292,24 @@ export default function DormDetailPage() {
 
           {/* Description */}
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2
+              className="
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+            >
               Description
             </h2>
 
-            <p className="mt-5 leading-8 text-slate-600">
+            <p
+              className="
+                mt-5
+                break-words
+                leading-8
+                text-slate-600
+              "
+            >
               {
                 dorm.description
               }
@@ -240,7 +318,13 @@ export default function DormDetailPage() {
 
           {/* Facilities */}
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2
+              className="
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+            >
               Facilities
             </h2>
 
@@ -272,7 +356,7 @@ export default function DormDetailPage() {
             </div>
           </div>
 
-          {/* Owner */}
+          {/* OWNER CARD */}
           <div
             className="
               mt-12
@@ -280,11 +364,18 @@ export default function DormDetailPage() {
               border
               border-white/40
               bg-white/70
-              p-8
+              p-6
               backdrop-blur-xl
+              sm:p-8
             "
           >
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2
+              className="
+                text-2xl
+                font-bold
+                text-slate-900
+              "
+            >
               Owner Information
             </h2>
 
@@ -298,14 +389,24 @@ export default function DormDetailPage() {
               </span>
             </p>
 
-            {/* Actions */}
-            <div className="mt-8 flex flex-wrap gap-4">
-              {/* Call */}
+            {/* ACTIONS */}
+            <div
+              className="
+                mt-8
+                flex
+                flex-col
+                gap-4
+                sm:flex-row
+                sm:flex-wrap
+              "
+            >
+              {/* CALL */}
               <a
                 href={`tel:${dorm.contactNumber}`}
                 className="
                   inline-flex
                   items-center
+                  justify-center
                   gap-3
                   rounded-2xl
                   bg-green-600
@@ -321,7 +422,7 @@ export default function DormDetailPage() {
                 Call Owner
               </a>
 
-              {/* WhatsApp */}
+              {/* WHATSAPP */}
               <a
                 href={`https://wa.me/94${dorm.contactNumber.replace(
                   /^0/,
@@ -331,6 +432,7 @@ export default function DormDetailPage() {
                 className="
                   inline-flex
                   items-center
+                  justify-center
                   gap-3
                   rounded-2xl
                   bg-emerald-500
@@ -346,17 +448,19 @@ export default function DormDetailPage() {
                 WhatsApp
               </a>
 
-              {/* Internal Chat */}
+              {/* INTERNAL CHAT */}
               <Link
                 href={`/messages?userId=${dorm.user.id}`}
                 className="
                   inline-flex
                   items-center
+                  justify-center
                   gap-3
                   rounded-2xl
                   bg-blue-600
                   px-6
                   py-4
+                  text-center
                   text-sm
                   font-semibold
                   text-white
