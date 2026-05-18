@@ -259,7 +259,7 @@ export default function ListingPage({
   }
 
   /**
-   * Loading UI.
+   * Loading state.
    */
   if (loading) {
     return (
@@ -272,7 +272,7 @@ export default function ListingPage({
   }
 
   /**
-   * Missing listing.
+   * Not found.
    */
   if (!listing) {
     return (
@@ -287,139 +287,238 @@ export default function ListingPage({
   return (
     <>
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-14 lg:grid-cols-2">
-          {/* Images */}
+        <div className="grid gap-10 xl:grid-cols-2">
+          {/* ================================= */}
+          {/* IMAGES */}
+          {/* ================================= */}
+
           <div>
-            <div className="relative h-[520px] overflow-hidden rounded-[32px] border border-white/40 bg-white/70 shadow-xl backdrop-blur-xl">
-              {activeImage ? (
-                <Image
-                  src={activeImage}
-                  alt={listing.title}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <p className="text-slate-400">
-                    No image
-                  </p>
-                </div>
-              )}
+            {/* Main image */}
+            <div
+              className="
+                relative
+                h-[260px]
+                overflow-hidden
+                rounded-3xl
+                bg-slate-100
+                sm:h-[380px]
+                lg:h-[500px]
+              "
+            >
+              <Image
+                src={
+                  activeImage
+                }
+                alt={
+                  listing.title
+                }
+                fill
+                className="object-cover"
+              />
             </div>
 
             {/* Thumbnails */}
-            {listing.imageUrls
-              .length > 1 && (
-              <div className="mt-5 flex gap-4 overflow-x-auto">
-                {listing.imageUrls.map(
-                  (
-                    image
-                  ) => (
-                    <button
-                      key={image}
-                      onClick={() =>
-                        setActiveImage(
-                          image
-                        )
-                      }
-                      className={`relative h-24 w-24 overflow-hidden rounded-2xl border-2 ${
+            <div className="mt-4 grid grid-cols-4 gap-3">
+              {listing.imageUrls.map(
+                (image) => (
+                  <button
+                    key={image}
+                    onClick={() =>
+                      setActiveImage(
+                        image
+                      )
+                    }
+                    className={`
+                      relative
+                      h-20
+                      overflow-hidden
+                      rounded-2xl
+                      border-2
+                      transition
+
+                      ${
                         activeImage ===
                         image
                           ? "border-blue-600"
                           : "border-transparent"
-                      }`}
-                    >
-                      <Image
-                        src={image}
-                        alt="Preview"
-                        fill
-                        className="object-cover"
-                      />
-                    </button>
-                  )
-                )}
-              </div>
-            )}
+                      }
+                    `}
+                  >
+                    <Image
+                      src={image}
+                      alt={
+                        listing.title
+                      }
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                )
+              )}
+            </div>
           </div>
 
-          {/* Details */}
+          {/* ================================= */}
+          {/* CONTENT */}
+          {/* ================================= */}
+
           <div>
-            <div className="inline-flex rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
-              {listing.category}
+            {/* Category */}
+            <div
+              className="
+                inline-flex
+                rounded-full
+                bg-blue-100
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-blue-700
+              "
+            >
+              {
+                listing.category
+              }
             </div>
 
-            <h1 className="mt-6 text-5xl font-black tracking-tight text-slate-900">
+            {/* Title */}
+            <h1
+              className="
+                mt-6
+                text-3xl
+                font-black
+                tracking-tight
+                text-slate-900
+                sm:text-4xl
+                lg:text-5xl
+              "
+            >
               {listing.title}
             </h1>
 
-            <div className="mt-8 flex items-center gap-3 text-slate-500">
+            {/* Location */}
+            <div
+              className="
+                mt-5
+                flex
+                items-center
+                gap-2
+                text-slate-500
+              "
+            >
               <MapPin className="h-5 w-5" />
 
               <span>
-                {listing.location}
+                {
+                  listing.location
+                }
               </span>
             </div>
 
-            <div className="mt-10">
-              <p className="text-6xl font-black text-slate-900">
-                $
-                {listing.price.toFixed(
-                  2
-                )}
+            {/* Price */}
+            <div className="mt-8">
+              <p
+                className="
+                  text-4xl
+                  font-black
+                  text-slate-900
+                  sm:text-5xl
+                "
+              >
+                LKR{" "}
+                {listing.price.toLocaleString()}
               </p>
+            </div>
 
-              <p className="mt-3 text-lg text-slate-500">
+            {/* Condition */}
+            <div className="mt-8">
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  bg-emerald-100
+                  px-4
+                  py-2
+                  text-sm
+                  font-semibold
+                  text-emerald-700
+                "
+              >
+                <ShieldCheck className="h-4 w-4" />
+
                 {
                   listing.condition
+                }
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-slate-900">
+                Description
+              </h2>
+
+              <p
+                className="
+                  mt-5
+                  break-words
+                  leading-8
+                  text-slate-600
+                "
+              >
+                {
+                  listing.description
                 }
               </p>
             </div>
 
-            <div className="mt-12 leading-8 text-slate-600">
-              {
-                listing.description
-              }
-            </div>
-
             {/* Seller */}
-            <div className="mt-12 rounded-3xl border border-white/40 bg-white/70 p-6 backdrop-blur-xl">
-              <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-xl font-bold text-white">
-                  {listing.user.name
-                    .charAt(0)
-                    .toUpperCase()}
-                </div>
+            <div
+              className="
+                mt-12
+                rounded-3xl
+                border
+                border-white/40
+                bg-white/70
+                p-6
+                backdrop-blur-xl
+                sm:p-8
+              "
+            >
+              <h2 className="text-2xl font-bold text-slate-900">
+                Seller Information
+              </h2>
 
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">
-                    {
-                      listing.user
-                        .name
-                    }
-                  </h3>
+              <div className="mt-5">
+                <p className="font-semibold text-slate-900">
+                  {
+                    listing.user
+                      .name
+                  }
+                </p>
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    Trusted CampusX seller
-                  </p>
-                </div>
+                <p className="mt-1 text-sm text-slate-500">
+                  {
+                    listing.user
+                      .email
+                  }
+                </p>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-4">
-                <Button
-                  onClick={
-                    handleSave
-                  }
-                  disabled={saving}
-                  variant="secondary"
-                  className="flex items-center gap-3"
-                >
-                  <Heart className="h-5 w-5" />
-
-                  {saving
-                    ? "Saving..."
-                    : "Save Listing"}
-                </Button>
-
+              {/* ACTIONS */}
+              <div
+                className="
+                  mt-8
+                  flex
+                  flex-col
+                  gap-4
+                  sm:flex-row
+                  sm:flex-wrap
+                "
+              >
+                {/* Message */}
                 <Button
                   onClick={
                     handleMessageSeller
@@ -427,46 +526,68 @@ export default function ListingPage({
                   disabled={
                     messaging
                   }
-                  className="flex items-center gap-3"
+                  className="
+                    h-14
+                    flex-1
+                    rounded-2xl
+                    sm:flex-none
+                  "
                 >
-                  <MessageCircle className="h-5 w-5" />
+                  <MessageCircle className="mr-2 h-5 w-5" />
 
                   {messaging
                     ? "Opening..."
                     : "Message Seller"}
                 </Button>
 
+                {/* Save */}
                 <Button
+                  variant="secondary"
+                  onClick={
+                    handleSave
+                  }
+                  disabled={
+                    saving
+                  }
+                  className="
+                    h-14
+                    rounded-2xl
+                  "
+                >
+                  <Heart className="mr-2 h-5 w-5" />
+
+                  Save
+                </Button>
+
+                {/* Report */}
+                <Button
+                  variant="destructive"
                   onClick={() =>
                     setReportOpen(
                       true
                     )
                   }
-                  variant="destructive"
-                  className="flex items-center gap-3"
+                  className="
+                    h-14
+                    rounded-2xl
+                  "
                 >
-                  <Flag className="h-5 w-5" />
+                  <Flag className="mr-2 h-5 w-5" />
 
                   Report
                 </Button>
               </div>
             </div>
 
-            {/* Protection */}
-            <div className="mt-10 flex items-center gap-4 rounded-2xl bg-green-50 px-6 py-5 text-green-700">
-              <ShieldCheck className="h-6 w-6" />
-
-              <p className="font-medium">
-                Protected by CampusX
-                marketplace safety
-              </p>
-            </div>
-
             {/* Back */}
-            <div className="mt-10">
+            <div className="mt-8">
               <Link
                 href="/marketplace"
-                className="text-sm font-semibold text-blue-600"
+                className="
+                  text-sm
+                  font-semibold
+                  text-blue-600
+                "
               >
                 ← Back to marketplace
               </Link>
@@ -475,11 +596,13 @@ export default function ListingPage({
         </div>
       </div>
 
-      {/* Report modal */}
+      {/* REPORT MODAL */}
       <ReportModal
         open={reportOpen}
         onClose={() =>
-          setReportOpen(false)
+          setReportOpen(
+            false
+          )
         }
         listingId={listing.id}
       />
