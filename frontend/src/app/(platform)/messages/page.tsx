@@ -15,7 +15,10 @@ import {
 
 import useSWR from "swr";
 
-import { Send } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+} from "lucide-react";
 
 import toast from "react-hot-toast";
 
@@ -55,6 +58,14 @@ export default function MessagesPage() {
     );
 
   /**
+   * Mobile chat mode.
+   */
+  const [
+    mobileChatOpen,
+    setMobileChatOpen,
+  ] = useState(false);
+
+  /**
    * Active conversation.
    */
   const [
@@ -89,9 +100,6 @@ export default function MessagesPage() {
    * Auto-select conversation.
    */
   useEffect(() => {
-    /**
-     * Open specific DM.
-     */
     if (
       conversationParam
     ) {
@@ -99,12 +107,13 @@ export default function MessagesPage() {
         conversationParam
       );
 
+      setMobileChatOpen(
+        true
+      );
+
       return;
     }
 
-    /**
-     * Default first conversation.
-     */
     if (
       conversations.length > 0 &&
       !activeConversation
@@ -224,12 +233,39 @@ export default function MessagesPage() {
     );
 
   return (
-    <div className="flex h-[calc(100vh-140px)] overflow-hidden rounded-[32px] border border-white/40 bg-white/70 backdrop-blur-xl">
+    <div
+      className="
+        flex
+        h-[calc(100vh-140px)]
+        overflow-hidden
+        rounded-[32px]
+        border
+        border-white/40
+        bg-white/70
+        backdrop-blur-xl
+      "
+    >
       {/* ================================= */}
       {/* SIDEBAR */}
       {/* ================================= */}
 
-      <div className="w-[340px] border-r border-slate-200 bg-white/50">
+      <div
+        className={`
+          ${
+            mobileChatOpen
+              ? "hidden lg:flex"
+              : "flex"
+          }
+
+          w-full
+          flex-col
+          border-r
+          border-slate-200
+          bg-white/50
+
+          lg:w-[340px]
+        `}
+      >
         {/* Header */}
         <div className="border-b border-slate-200 px-6 py-6">
           <h1 className="text-3xl font-black text-slate-900">
@@ -242,7 +278,7 @@ export default function MessagesPage() {
         </div>
 
         {/* Conversations */}
-        <div className="space-y-2 p-4">
+        <div className="flex-1 space-y-2 overflow-y-auto p-4">
           {conversations.length ===
             0 && (
             <div className="px-4 py-16 text-center">
@@ -260,11 +296,15 @@ export default function MessagesPage() {
                 key={
                   conversation.id
                 }
-                onClick={() =>
+                onClick={() => {
                   setActiveConversation(
                     conversation.id
-                  )
-                }
+                  );
+
+                  setMobileChatOpen(
+                    true
+                  );
+                }}
                 className={`
                   w-full
                   rounded-2xl
@@ -272,6 +312,7 @@ export default function MessagesPage() {
                   py-4
                   text-left
                   transition
+
                   ${
                     activeConversation ===
                     conversation.id
@@ -280,34 +321,31 @@ export default function MessagesPage() {
                   }
                 `}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h3 className="font-semibold">
-                      {getConversationName(
-                        conversation
-                      )}
-                    </h3>
+                <h3 className="font-semibold">
+                  {getConversationName(
+                    conversation
+                  )}
+                </h3>
 
-                    <p
-                      className={`
-                        mt-1
-                        line-clamp-1
-                        text-sm
-                        ${
-                          activeConversation ===
-                          conversation.id
-                            ? "text-blue-100"
-                            : "text-slate-500"
-                        }
-                      `}
-                    >
-                      {conversation
-                        ?.messages?.[0]
-                        ?.content ||
-                        "Start chatting"}
-                    </p>
-                  </div>
-                </div>
+                <p
+                  className={`
+                    mt-1
+                    line-clamp-1
+                    text-sm
+
+                    ${
+                      activeConversation ===
+                      conversation.id
+                        ? "text-blue-100"
+                        : "text-slate-500"
+                    }
+                  `}
+                >
+                  {conversation
+                    ?.messages?.[0]
+                    ?.content ||
+                    "Start chatting"}
+                </p>
               </button>
             )
           )}
@@ -318,10 +356,55 @@ export default function MessagesPage() {
       {/* CHAT AREA */}
       {/* ================================= */}
 
-      <div className="flex flex-1 flex-col">
+      <div
+        className={`
+          ${
+            mobileChatOpen
+              ? "flex"
+              : "hidden lg:flex"
+          }
+
+          flex-1
+          flex-col
+        `}
+      >
         {/* Header */}
-        <div className="border-b border-slate-200 px-8 py-6">
-          <h2 className="text-2xl font-black text-slate-900">
+        <div
+          className="
+            flex
+            items-center
+            gap-4
+            border-b
+            border-slate-200
+            px-5
+            py-5
+            lg:px-8
+            lg:py-6
+          "
+        >
+          {/* Mobile back */}
+          <button
+            onClick={() =>
+              setMobileChatOpen(
+                false
+              )
+            }
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-xl
+              bg-slate-100
+              text-slate-700
+              lg:hidden
+            "
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+
+          <h2 className="text-xl font-black text-slate-900 lg:text-2xl">
             {currentConversation
               ? getConversationName(
                   currentConversation
@@ -331,7 +414,17 @@ export default function MessagesPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 space-y-6 overflow-y-auto px-8 py-8">
+        <div
+          className="
+            flex-1
+            space-y-6
+            overflow-y-auto
+            px-4
+            py-6
+            lg:px-8
+            lg:py-8
+          "
+        >
           {!activeConversation && (
             <div className="flex h-full items-center justify-center">
               <p className="text-slate-500">
@@ -357,10 +450,12 @@ export default function MessagesPage() {
                 >
                   <div
                     className={`
-                      max-w-[75%]
+                      max-w-[90%]
                       rounded-3xl
-                      px-6
+                      px-5
                       py-4
+                      lg:max-w-[75%]
+
                       ${
                         isCurrentUser
                           ? "bg-blue-600 text-white"
@@ -375,7 +470,7 @@ export default function MessagesPage() {
                       }
                     </p>
 
-                    <p className="mt-2 leading-7">
+                    <p className="mt-2 break-words leading-7">
                       {
                         message.content
                       }
@@ -389,8 +484,8 @@ export default function MessagesPage() {
 
         {/* Input */}
         {activeConversation && (
-          <div className="border-t border-slate-200 p-6">
-            <div className="flex items-center gap-4">
+          <div className="border-t border-slate-200 p-4 lg:p-6">
+            <div className="flex items-center gap-3 lg:gap-4">
               <input
                 value={content}
                 onChange={(e) =>
@@ -415,6 +510,7 @@ export default function MessagesPage() {
                   border-slate-200
                   bg-white
                   px-5
+                  text-sm
                   outline-none
                 "
               />
@@ -427,6 +523,7 @@ export default function MessagesPage() {
                   flex
                   h-14
                   w-14
+                  shrink-0
                   items-center
                   justify-center
                   rounded-2xl
