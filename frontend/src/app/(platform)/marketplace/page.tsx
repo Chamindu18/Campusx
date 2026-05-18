@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { MarketplaceCardSkeleton } from "@/components/ui/MarketplaceCardSkeleton";
 
 import {
   ChevronLeft,
@@ -165,10 +166,14 @@ export default function MarketplacePage() {
       {/* ================================= */}
 
       {isLoading && (
-        <div className="flex h-[40vh] items-center justify-center">
-          <p className="text-slate-500">
-            Loading listings...
-          </p>
+        <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({
+            length: 6,
+          }).map((_, index) => (
+            <MarketplaceCardSkeleton
+              key={index}
+            />
+          ))}
         </div>
       )}
 
