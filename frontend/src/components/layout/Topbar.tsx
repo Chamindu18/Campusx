@@ -4,7 +4,12 @@
  * Platform topbar.
  */
 
-import { Bell, LogOut, Search } from "lucide-react";
+import {
+  Bell,
+  LogOut,
+  Menu,
+  Search,
+} from "lucide-react";
 
 import { useRouter } from "next/navigation";
 
@@ -12,13 +17,21 @@ import toast from "react-hot-toast";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-export function Topbar() {
+interface TopbarProps {
+  onMenuClick: () => void;
+}
+
+export function Topbar({
+  onMenuClick,
+}: TopbarProps) {
   /**
    * Current authenticated user.
    */
-  const { user, mutate } = useCurrentUser();
+  const { user, mutate } =
+    useCurrentUser();
 
-  const router = useRouter();
+  const router =
+    useRouter();
 
   /**
    * Logout handler.
@@ -32,13 +45,18 @@ export function Topbar() {
         }
       );
 
-      await mutate(null, false);
+      await mutate(
+        null,
+        false
+      );
 
       toast.success(
         "Logged out"
       );
 
-      router.replace("/login");
+      router.replace(
+        "/login"
+      );
 
       router.refresh();
     } catch {
@@ -61,42 +79,67 @@ export function Topbar() {
         border-b
         border-white/20
         bg-white/50
-        px-10
+        px-4
         backdrop-blur-xl
+        md:px-10
       "
     >
-      {/* SEARCH */}
-      <div
-        className="
-          flex
-          h-14
-          w-full
-          max-w-md
-          items-center
-          gap-3
-          rounded-2xl
-          border
-          border-slate-200
-          bg-white/70
-          px-5
-        "
-      >
-        <Search className="h-5 w-5 text-slate-500" />
-
-        <input
-          placeholder="Search marketplace..."
+      {/* LEFT */}
+      <div className="flex items-center gap-4">
+        {/* MOBILE MENU */}
+        <button
+          onClick={
+            onMenuClick
+          }
           className="
-            w-full
-            bg-transparent
-            text-sm
-            outline-none
-            placeholder:text-slate-400
+            flex
+            h-12
+            w-12
+            items-center
+            justify-center
+            rounded-2xl
+            bg-white/70
+            text-slate-700
+            lg:hidden
           "
-        />
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* SEARCH */}
+        <div
+          className="
+            hidden
+            h-14
+            w-full
+            max-w-md
+            items-center
+            gap-3
+            rounded-2xl
+            border
+            border-slate-200
+            bg-white/70
+            px-5
+            md:flex
+          "
+        >
+          <Search className="h-5 w-5 text-slate-500" />
+
+          <input
+            placeholder="Search..."
+            className="
+              w-full
+              bg-transparent
+              text-sm
+              outline-none
+              placeholder:text-slate-400
+            "
+          />
+        </div>
       </div>
 
-      {/* RIGHT ACTIONS */}
-      <div className="flex items-center gap-5">
+      {/* RIGHT */}
+      <div className="flex items-center gap-3 md:gap-5">
         {/* Notifications */}
         <button
           className="
@@ -116,7 +159,7 @@ export function Topbar() {
         </button>
 
         {/* USER */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           {/* User Info */}
           <div className="hidden text-right md:block">
             <p className="text-sm font-semibold text-slate-900">
@@ -133,8 +176,8 @@ export function Topbar() {
           <div
             className="
               flex
-              h-12
-              w-12
+              h-11
+              w-11
               items-center
               justify-center
               rounded-2xl
@@ -142,6 +185,8 @@ export function Topbar() {
               text-sm
               font-bold
               text-white
+              md:h-12
+              md:w-12
             "
           >
             {user?.name
@@ -157,8 +202,8 @@ export function Topbar() {
             }
             className="
               flex
-              h-12
-              w-12
+              h-11
+              w-11
               items-center
               justify-center
               rounded-2xl
@@ -166,6 +211,8 @@ export function Topbar() {
               text-red-600
               transition
               hover:bg-red-200
+              md:h-12
+              md:w-12
             "
           >
             <LogOut className="h-5 w-5" />

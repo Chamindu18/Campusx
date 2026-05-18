@@ -16,9 +16,14 @@ import {
   Settings,
   PlusSquare,
   Home,
+  X,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+interface SidebarProps {
+  onClose?: () => void;
+}
 
 /**
  * Sidebar navigation items.
@@ -73,7 +78,9 @@ const navigationItems = [
   },
 ];
 
-export function Sidebar() {
+export function Sidebar({
+  onClose,
+}: SidebarProps) {
   /**
    * Current active pathname.
    */
@@ -83,10 +90,7 @@ export function Sidebar() {
   return (
     <aside
       className="
-        fixed
-        left-0
-        top-0
-        z-40
+        relative
         flex
         h-screen
         w-[280px]
@@ -99,6 +103,27 @@ export function Sidebar() {
         backdrop-blur-xl
       "
     >
+      {/* MOBILE CLOSE BUTTON */}
+      <button
+        onClick={onClose}
+        className="
+          absolute
+          right-5
+          top-5
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-xl
+          bg-white/70
+          text-slate-700
+          lg:hidden
+        "
+      >
+        <X className="h-5 w-5" />
+      </button>
+
       {/* BRAND */}
       <div>
         <Link
@@ -119,7 +144,7 @@ export function Sidebar() {
       </div>
 
       {/* NAVIGATION */}
-      <nav className="mt-12 flex flex-1 flex-col gap-2">
+      <nav className="mt-12 flex flex-1 flex-col gap-2 overflow-y-auto">
         {navigationItems.map(
           (item) => {
             /**
@@ -142,6 +167,9 @@ export function Sidebar() {
                 }
                 href={
                   item.href
+                }
+                onClick={
+                  onClose
                 }
                 className={cn(
                   `
@@ -203,6 +231,7 @@ export function Sidebar() {
       {/* FOOTER */}
       <div
         className="
+          mt-6
           rounded-3xl
           border
           border-white/30
