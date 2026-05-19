@@ -24,6 +24,8 @@ import toast from "react-hot-toast";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 
+import { MessageSkeleton } from "@/components/ui/MessageSkeleton";
+
 const fetcher = async (
   url: string
 ) => {
@@ -132,8 +134,10 @@ export default function MessagesPage() {
    * Messages.
    */
   const {
-    data: messages = [],
+    data: messages,
     mutate,
+    isLoading:
+      messagesLoading,
   } = useSWR(
     activeConversation
       ? `/api/messages?conversationId=${activeConversation}`
@@ -245,10 +249,7 @@ export default function MessagesPage() {
         backdrop-blur-xl
       "
     >
-      {/* ================================= */}
       {/* SIDEBAR */}
-      {/* ================================= */}
-
       <div
         className={`
           ${
@@ -352,10 +353,7 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      {/* ================================= */}
       {/* CHAT AREA */}
-      {/* ================================= */}
-
       <div
         className={`
           ${
@@ -433,52 +431,73 @@ export default function MessagesPage() {
             </div>
           )}
 
-          {messages.map(
-            (message: any) => {
-              const isCurrentUser =
-                user?.id ===
-                message.user.id;
+          {messagesLoading ? (
+            <MessageSkeleton />
+          ) : messages?.length ===
+            0 ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-slate-900">
+                  No messages yet
+                </h3>
 
-              return (
-                <div
-                  key={message.id}
-                  className={`flex ${
-                    isCurrentUser
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
+                <p className="mt-3 text-slate-500">
+                  Start the conversation by sending a message.
+                </p>
+              </div>
+            </div>
+          ) : (
+            messages?.map(
+              (
+                message: any
+              ) => {
+                const isCurrentUser =
+                  user?.id ===
+                  message.user.id;
+
+                return (
                   <div
-                    className={`
-                      max-w-[90%]
-                      rounded-3xl
-                      px-5
-                      py-4
-                      lg:max-w-[75%]
-
-                      ${
-                        isCurrentUser
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-100 text-slate-900"
-                      }
-                    `}
+                    key={
+                      message.id
+                    }
+                    className={`flex ${
+                      isCurrentUser
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
                   >
-                    <p className="text-xs font-bold opacity-70">
-                      {
-                        message.user
-                          .name
-                      }
-                    </p>
+                    <div
+                      className={`
+                        max-w-[90%]
+                        rounded-3xl
+                        px-5
+                        py-4
+                        lg:max-w-[75%]
 
-                    <p className="mt-2 break-words leading-7">
-                      {
-                        message.content
-                      }
-                    </p>
+                        ${
+                          isCurrentUser
+                            ? "bg-blue-600 text-white"
+                            : "bg-slate-100 text-slate-900"
+                        }
+                      `}
+                    >
+                      <p className="text-xs font-bold opacity-70">
+                        {
+                          message.user
+                            .name
+                        }
+                      </p>
+
+                      <p className="mt-2 break-words leading-7">
+                        {
+                          message.content
+                        }
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
+            )
           )}
         </div>
 
