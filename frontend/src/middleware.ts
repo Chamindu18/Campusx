@@ -28,15 +28,29 @@ import {
 /* ROUTES */
 /* ===================================================== */
 
+/**
+ * ONLY protected routes.
+ *
+ * Marketplace + dorm browsing
+ * are now PUBLIC.
+ */
 const protectedRoutes = [
   "/dashboard",
-  "/marketplace",
+
   "/messages",
+
   "/profile",
+
   "/create-listing",
+
+  "/create-dorm",
+
   "/saved",
+
   "/settings",
+
   "/notifications",
+
   "/admin",
 ];
 
@@ -110,6 +124,9 @@ export async function middleware(
       AUTH_COOKIE_NAME
     )?.value;
 
+  /**
+   * Missing token.
+   */
   if (!token) {
     return buildLoginRedirect(
       request
@@ -168,13 +185,21 @@ export async function middleware(
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/marketplace/:path*",
+
     "/messages/:path*",
+
     "/profile/:path*",
+
     "/create-listing/:path*",
+
+    "/create-dorm/:path*",
+
     "/saved/:path*",
+
     "/settings/:path*",
+
     "/notifications/:path*",
+
     "/admin/:path*",
   ],
 };
