@@ -5,7 +5,6 @@
  */
 
 import { useState } from "react";
-import { MarketplaceCardSkeleton } from "@/components/ui/MarketplaceCardSkeleton";
 
 import {
   ChevronLeft,
@@ -14,6 +13,8 @@ import {
 } from "lucide-react";
 
 import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
+
+import { MarketplaceCardSkeleton } from "@/components/ui/MarketplaceCardSkeleton";
 
 import { useListings } from "@/hooks/use-listings";
 
@@ -62,10 +63,7 @@ export default function MarketplacePage() {
 
   return (
     <div>
-      {/* ================================= */}
       {/* HEADER */}
-      {/* ================================= */}
-
       <div>
         <h1 className="text-5xl font-black tracking-tight text-slate-900">
           Marketplace
@@ -77,10 +75,7 @@ export default function MarketplacePage() {
         </p>
       </div>
 
-      {/* ================================= */}
       {/* SEARCH + FILTERS */}
-      {/* ================================= */}
-
       <div className="mt-10 flex flex-col gap-5">
         {/* Search */}
         <div
@@ -161,10 +156,7 @@ export default function MarketplacePage() {
         </div>
       </div>
 
-      {/* ================================= */}
       {/* LOADING */}
-      {/* ================================= */}
-
       {isLoading && (
         <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({
@@ -177,74 +169,64 @@ export default function MarketplacePage() {
         </div>
       )}
 
-      {/* ================================= */}
       {/* EMPTY STATE */}
-      {/* ================================= */}
-
       {!isLoading &&
         listings.length === 0 && (
           <div
             className="
-              mt-16
-              rounded-3xl
+              mt-20
+              rounded-[32px]
               border
               border-dashed
               border-slate-300
               bg-white/50
-              px-10
-              py-24
+              p-16
               text-center
-              backdrop-blur-xl
             "
           >
-            <h3 className="text-3xl font-bold text-slate-900">
+            <h2 className="text-3xl font-black text-slate-900">
               No listings found
-            </h3>
+            </h2>
 
             <p className="mt-4 text-slate-500">
-              Try changing your search or
-              filters.
+              Try adjusting your search or category filters.
             </p>
           </div>
         )}
 
-      {/* ================================= */}
       {/* GRID */}
-      {/* ================================= */}
-
-      <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-        {listings.map(
-          (listing: any) => (
-            <MarketplaceCard
-              key={listing.id}
-              id={listing.id}
-              title={listing.title}
-              category={
-                listing.category
-              }
-              price={listing.price}
-              condition={
-                listing.condition
-              }
-              location={
-                listing.location
-              }
-              imageUrls={
-                listing.imageUrls
-              }
-            />
-          )
+      {!isLoading &&
+        listings.length > 0 && (
+          <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {listings.map(
+              (listing) => (
+                <MarketplaceCard
+                  key={
+                    listing.id
+                  }
+                  listing={
+                    listing
+                  }
+                />
+              )
+            )}
+          </div>
         )}
-      </div>
 
-      {/* ================================= */}
       {/* PAGINATION */}
-      {/* ================================= */}
-
-      {pagination &&
+      {!isLoading &&
+        pagination &&
         pagination.totalPages >
           1 && (
-          <div className="mt-16 flex items-center justify-center gap-4">
+          <div
+            className="
+              mt-16
+              flex
+              items-center
+              justify-center
+              gap-4
+            "
+          >
             {/* Prev */}
             <button
               disabled={
@@ -252,7 +234,9 @@ export default function MarketplacePage() {
               }
               onClick={() =>
                 setPage(
-                  (prev) =>
+                  (
+                    prev
+                  ) =>
                     prev - 1
                 )
               }
@@ -263,25 +247,26 @@ export default function MarketplacePage() {
                 items-center
                 justify-center
                 rounded-2xl
+                border
+                border-white/40
                 bg-white/70
                 transition
-                hover:bg-white
-                disabled:opacity-40
+                disabled:opacity-50
               "
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
 
-            {/* Page Info */}
+            {/* Page */}
             <div
               className="
                 rounded-2xl
-                bg-white/70
+                bg-blue-600
                 px-6
                 py-3
                 text-sm
-                font-medium
-                text-slate-700
+                font-semibold
+                text-white
               "
             >
               Page {page} of{" "}
@@ -298,7 +283,9 @@ export default function MarketplacePage() {
               }
               onClick={() =>
                 setPage(
-                  (prev) =>
+                  (
+                    prev
+                  ) =>
                     prev + 1
                 )
               }
@@ -309,10 +296,11 @@ export default function MarketplacePage() {
                 items-center
                 justify-center
                 rounded-2xl
+                border
+                border-white/40
                 bg-white/70
                 transition
-                hover:bg-white
-                disabled:opacity-40
+                disabled:opacity-50
               "
             >
               <ChevronRight className="h-5 w-5" />
