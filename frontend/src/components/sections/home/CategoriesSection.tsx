@@ -1,66 +1,249 @@
 "use client";
 
-/**
- * Homepage categories section.
- */
+import Link from "next/link";
 
-import { motion } from "framer-motion";
+import {
+  BookOpen,
+  Home,
+  Laptop,
+  MessageCircle,
+  ArrowRight,
+} from "lucide-react";
 
-import { categories } from "@/constants/home";
+const categories = [
+  {
+    title: "Student Dorms",
 
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/ui/Reveal";
-import { SectionTitle } from "@/components/ui/SectionTitle";
-import { CategoryCard } from "@/components/ui/CategoryCard";
+    description:
+      "Find places to stay close to university and settle into campus life.",
+
+    icon: Home,
+
+    href: "/dorms",
+  },
+
+  {
+    title: "Marketplace",
+
+    description:
+      "Discover electronics, furniture and student essentials.",
+
+    icon: Laptop,
+
+    href: "/marketplace",
+  },
+
+  {
+    title:
+      "Study Essentials",
+
+    description:
+      "Books, desks and useful things that support learning.",
+
+    icon:
+      BookOpen,
+
+    href:
+      "/marketplace",
+  },
+
+  {
+    title:
+      "Connect",
+
+    description:
+      "Talk directly with students and make decisions easier.",
+
+    icon:
+      MessageCircle,
+
+    href:
+      "/messages",
+  },
+];
 
 export function CategoriesSection() {
   return (
     <section
-      id="categories"
-      className="relative py-32"
+      className="
+        relative
+        bg-white
+        py-32
+      "
     >
-      <Container>
-        {/* Section Title */}
-        <Reveal>
-          <SectionTitle
-            title="Everything students need, all in one place"
-            subtitle="Discover categories designed around modern student life and campus communities."
-          />
-        </Reveal>
+      <div
+        className="
+          mx-auto
+          max-w-7xl
+          px-6
+        "
+      >
+        {/* HEADER */}
+        <div
+          className="
+            mx-auto
+            max-w-3xl
+            text-center
+          "
+        >
+          <p
+            className="
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              text-blue-600
+            "
+          >
+            Explore
+          </p>
 
-        {/* Cards Grid */}
-        <div className="mt-24 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{
-                opacity: 0,
-                y: 50,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.1,
-              }}
-            >
-              <CategoryCard
-                title={category.title}
-                description={
-                  category.description
-                }
-                icon={category.icon}
-              />
-            </motion.div>
-          ))}
+          <h2
+            className="
+              mt-6
+              text-4xl
+              font-black
+              text-slate-900
+              md:text-5xl
+            "
+          >
+            Start where
+            student life happens.
+          </h2>
+
+          <p
+            className="
+              mx-auto
+              mt-8
+              max-w-2xl
+              text-lg
+              leading-9
+              text-slate-600
+            "
+          >
+            Explore categories designed
+            around the way students
+            actually live and move.
+          </p>
         </div>
-      </Container>
+
+        {/* GRID */}
+        <div
+          className="
+            mt-24
+            grid
+            gap-8
+            md:grid-cols-2
+          "
+        >
+          {categories.map(
+            (
+              category
+            ) => {
+              const Icon =
+                category.icon;
+
+              return (
+                <Link
+                  key={
+                    category.title
+                  }
+                  href={
+                    category.href
+                  }
+                >
+                  <div
+                    className="
+                      group
+                      h-full
+                      rounded-[32px]
+                      border
+                      border-slate-200
+                      bg-white
+                      p-10
+                      shadow-sm
+                      transition-all
+                      duration-300
+                      hover:-translate-y-1
+                      hover:border-blue-200
+                      hover:shadow-xl
+                    "
+                  >
+                    {/* ICON */}
+                    <div
+                      className="
+                        flex
+                        h-16
+                        w-16
+                        items-center
+                        justify-center
+                        rounded-2xl
+                        bg-blue-50
+                      "
+                    >
+                      <Icon
+                        className="
+                          h-8
+                          w-8
+                          text-blue-600
+                        "
+                      />
+                    </div>
+
+                    {/* CONTENT */}
+                    <h3
+                      className="
+                        mt-8
+                        text-3xl
+                        font-bold
+                        text-slate-900
+                      "
+                    >
+                      {
+                        category.title
+                      }
+                    </h3>
+
+                    <p
+                      className="
+                        mt-5
+                        leading-8
+                        text-slate-600
+                      "
+                    >
+                      {
+                        category.description
+                      }
+                    </p>
+
+                    {/* FOOTER */}
+                    <div
+                      className="
+                        mt-10
+                        flex
+                        items-center
+                        gap-3
+                        font-semibold
+                        text-blue-600
+                      "
+                    >
+                      Explore
+
+                      <ArrowRight
+                        className="
+                          h-4
+                          w-4
+                          transition
+                          group-hover:translate-x-1
+                        "
+                      />
+                    </div>
+                  </div>
+                </Link>
+              );
+            }
+          )}
+        </div>
+      </div>
     </section>
   );
 }

@@ -2,7 +2,7 @@
 
 /**
  * Story section —
- * life before solution.
+ * why CampusX exists.
  */
 
 import {
@@ -10,8 +10,6 @@ import {
   Home,
   MessageCircle,
 } from "lucide-react";
-
-import { Container } from "@/components/ui/Container";
 
 const stories = [
   {
@@ -21,7 +19,7 @@ const stories = [
       "Find what you actually need",
 
     description:
-      "Books, electronics, furniture and student essentials shouldn't take days of searching.",
+      "Books, electronics, furniture and student essentials without endless searching.",
   },
 
   {
@@ -31,7 +29,7 @@ const stories = [
       "Settle into campus life",
 
     description:
-      "Discover dorms and places to stay without endless messages and uncertainty.",
+      "Discover places to stay and make moving easier.",
   },
 
   {
@@ -42,22 +40,26 @@ const stories = [
       "Connect naturally",
 
     description:
-      "Talk directly with students and make decisions without unnecessary friction.",
+      "Talk directly and make decisions without friction.",
   },
 ];
 
 export function FeaturesSection() {
   return (
     <section
-      id="features"
       className="
-        relative
         bg-white
         py-36
       "
     >
-      <Container>
-        {/* STORY INTRO */}
+      <div
+        className="
+          mx-auto
+          max-w-7xl
+          px-6
+        "
+      >
+        {/* INTRO */}
         <div
           className="
             mx-auto
@@ -87,8 +89,7 @@ export function FeaturesSection() {
             "
           >
             Student life already
-            comes with enough
-            decisions.
+            comes with enough decisions.
           </h2>
 
           <p
@@ -101,20 +102,18 @@ export function FeaturesSection() {
               text-slate-600
             "
           >
-            Finding things,
-            finding places,
-            and connecting with people
-            should feel easier —
-            not like another assignment.
+            Finding what you need
+            shouldn’t feel like
+            another assignment.
           </p>
         </div>
 
-        {/* STORY BLOCKS */}
+        {/* ITEMS */}
         <div
           className="
             mt-24
             grid
-            gap-10
+            gap-12
             md:grid-cols-3
           "
         >
@@ -130,11 +129,6 @@ export function FeaturesSection() {
                   key={
                     item.title
                   }
-                  className="
-                    flex
-                    flex-col
-                    items-start
-                  "
                 >
                   <div
                     className="
@@ -151,7 +145,7 @@ export function FeaturesSection() {
                       className="
                         h-7
                         w-7
-                        text-slate-800
+                        text-slate-900
                       "
                     />
                   </div>
@@ -161,7 +155,6 @@ export function FeaturesSection() {
                       mt-8
                       text-2xl
                       font-bold
-                      text-slate-900
                     "
                   >
                     {
@@ -185,7 +178,7 @@ export function FeaturesSection() {
             }
           )}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
