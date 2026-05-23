@@ -1,114 +1,76 @@
 "use client";
 
-/**
- * Homepage hero section.
- */
-
-import {
-  useState,
-} from "react";
-
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-
-import {
-  useRouter,
-} from "next/navigation";
-
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Search,
 } from "lucide-react";
 
-/**
- * Keywords that indicate
- * dorm/housing intent.
- */
 const dormKeywords = [
   "dorm",
   "boarding",
   "hostel",
   "room",
   "rooms",
-  "boarding house",
   "girls dorm",
   "boys dorm",
-  "accommodation",
   "rent",
-  "hostel room",
+  "accommodation",
   "nsbm",
   "sliit",
   "ucsc",
   "mora",
-  "moratuwa",
-  "university",
 ];
 
-/**
- * Detect dorm intent.
- */
 function isDormSearch(
   query: string
 ) {
-  const normalized =
-    query.toLowerCase();
-
   return dormKeywords.some(
-    (keyword) =>
-      normalized.includes(
-        keyword
-      )
+    (item) =>
+      query
+        .toLowerCase()
+        .includes(item)
   );
 }
 
 export function HeroSection() {
-  /**
-   * Router.
-   */
   const router =
     useRouter();
 
-  /**
-   * Search state.
-   */
-  const [search, setSearch] =
+  const [
+    search,
+    setSearch,
+  ] =
     useState("");
 
-  /**
-   * Smart search handler.
-   */
   function handleSearch() {
     if (
       !search.trim()
-    ) {
+    )
       return;
-    }
 
-    const encodedQuery =
+    const encoded =
       encodeURIComponent(
         search
       );
 
-    /**
-     * Route intelligently.
-     */
     if (
       isDormSearch(
         search
       )
     ) {
       router.push(
-        `/dorms?search=${encodedQuery}`
+        `/dorms?search=${encoded}`
       );
 
       return;
     }
 
-    /**
-     * Default:
-     * marketplace.
-     */
     router.push(
-      `/marketplace?search=${encodedQuery}`
+      `/marketplace?search=${encoded}`
     );
   }
 
@@ -116,52 +78,69 @@ export function HeroSection() {
     <section
       className="
         relative
+        min-h-[900px]
         overflow-hidden
-        px-6
-        pb-24
-        pt-32
-        lg:px-12
-        lg:pt-40
       "
     >
-      {/* BACKGROUND GRADIENT */}
+      {/* IMAGE */}
+      <Image
+        src="/images/hero/campus-life.jpg"
+        alt="Campus life"
+        fill
+        priority
+        quality={90}
+        sizes="100vw"
+        className="
+          object-cover
+          object-center
+          scale-[1.02]
+          brightness-[0.78]
+        "
+      />
+
+      {/* OVERLAY */}
       <div
         className="
           absolute
           inset-0
-          -z-10
-          bg-gradient-to-br
-          from-blue-50
-          via-indigo-50
-          to-violet-100
+          bg-gradient-to-b
+          from-black/60
+          via-black/45
+          to-black/75
+        "
+      />
+
+      {/* LIGHT */}
+      <div
+        className="
+          absolute
+          inset-0
+          bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_55%)]
         "
       />
 
       {/* CONTENT */}
-      <div className="mx-auto max-w-7xl">
-        <div className="max-w-4xl">
-          {/* BADGE */}
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-3
-              rounded-full
-              border
-              border-blue-200
-              bg-white/80
-              px-5
-              py-3
-              text-sm
-              font-semibold
-              text-blue-700
-              shadow-lg
-              shadow-blue-100/40
-              backdrop-blur-xl
-            "
-          >
-            🚀 Sri Lanka's Student Marketplace Platform
-          </div>
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          flex
+          min-h-[900px]
+          max-w-7xl
+          items-center
+          justify-center
+          px-6
+          pt-32
+          pb-20
+        "
+      >
+        <div
+          className="
+            max-w-4xl
+            text-center
+          "
+        >
 
           {/* TITLE */}
           <h1
@@ -169,47 +148,68 @@ export function HeroSection() {
               mt-8
               text-5xl
               font-black
-              leading-[1.05]
-              tracking-tight
-              text-slate-900
+              leading-[1]
+              text-white
               sm:text-6xl
               lg:text-7xl
             "
           >
-            Buy, Sell & Find
-            <span className="block text-blue-600">
-              Everything For Campus Life
+            Campus life moves fast.
+
+            <span
+              className="
+                mt-4
+                block
+                text-blue-300
+              "
+            >
+              Find everything in one place.
             </span>
           </h1>
 
-          {/* DESCRIPTION */}
+          {/* DESC */}
           <p
             className="
+              mx-auto
               mt-8
               max-w-2xl
               text-lg
               leading-9
-              text-slate-600
-              sm:text-xl
+              text-white/85
             "
           >
-            CampusX helps university students discover marketplace items,
-            boarding places, dorms, study essentials, and student services
-            across Sri Lanka.
+            Discover dorms,
+            buy essentials,
+            sell what you no longer need,
+            and connect with students —
+            all in one place.
           </p>
+
+          {/* MICRO */}
+          <div
+            className="
+              mt-6
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              text-white/60
+            "
+          >
+            Buy • Sell • Stay • Connect
+          </div>
 
           {/* SEARCH */}
           <div
             className="
-              mt-12
-              rounded-[32px]
+              mx-auto
+              mt-8
+              max-w-3xl
+              rounded-[30px]
               border
-              border-white/40
-              bg-white/70
+              border-white/20
+              bg-white/8
               p-4
-              shadow-2xl
-              shadow-slate-200/30
-              backdrop-blur-xl
+              backdrop-blur-2xl
             "
           >
             <div
@@ -220,7 +220,6 @@ export function HeroSection() {
                 lg:flex-row
               "
             >
-              {/* INPUT */}
               <div
                 className="
                   flex
@@ -229,13 +228,17 @@ export function HeroSection() {
                   items-center
                   gap-4
                   rounded-2xl
-                  border
-                  border-slate-200
                   bg-white
-                  px-5
+                  px-6
                 "
               >
-                <Search className="h-5 w-5 text-slate-400" />
+                <Search
+                  className="
+                    h-5
+                    w-5
+                    text-slate-400
+                  "
+                />
 
                 <input
                   value={search}
@@ -252,114 +255,55 @@ export function HeroSection() {
                       handleSearch();
                     }
                   }}
-                  placeholder="Search dorms, laptops, books, gaming items..."
+                  placeholder="Search dorms, books, laptops..."
                   className="
                     w-full
                     bg-transparent
-                    text-sm
                     outline-none
-                    placeholder:text-slate-400
                   "
                 />
               </div>
 
-              {/* BUTTON */}
               <button
                 onClick={
                   handleSearch
                 }
                 className="
-                  inline-flex
                   h-16
-                  items-center
-                  justify-center
-                  gap-3
                   rounded-2xl
                   bg-blue-600
-                  px-8
-                  text-sm
+                  px-10
                   font-semibold
                   text-white
-                  transition
-                  hover:bg-blue-700
                 "
               >
-                Search CampusX
-
-                <ArrowRight className="h-5 w-5" />
+                <span className="flex items-center gap-3">
+                  Start Exploring
+                  <ArrowRight />
+                </span>
               </button>
-            </div>
-
-            {/* SUGGESTIONS */}
-            <div className="mt-5 flex flex-wrap gap-3">
-              {[
-                "MacBook",
-                "NSBM boarding",
-                "Gaming chair",
-                "Girls dorm",
-                "Java books",
-              ].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => {
-                    setSearch(
-                      item
-                    );
-
-                    const encoded =
-                      encodeURIComponent(
-                        item
-                      );
-
-                    if (
-                      isDormSearch(
-                        item
-                      )
-                    ) {
-                      router.push(
-                        `/dorms?search=${encoded}`
-                      );
-
-                      return;
-                    }
-
-                    router.push(
-                      `/marketplace?search=${encoded}`
-                    );
-                  }}
-                  className="
-                    rounded-full
-                    bg-slate-100
-                    px-4
-                    py-2
-                    text-sm
-                    font-medium
-                    text-slate-700
-                    transition
-                    hover:bg-slate-200
-                  "
-                >
-                  {item}
-                </button>
-              ))}
             </div>
           </div>
 
           {/* CTA */}
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div
+            className="
+              mt-8
+              flex
+              flex-wrap
+              justify-center
+              gap-4
+            "
+          >
             <Link
               href="/marketplace"
               className="
-                inline-flex
-                items-center
-                justify-center
                 rounded-2xl
-                bg-slate-900
+                bg-white
                 px-8
                 py-4
-                text-sm
                 font-semibold
-                text-white
+                text-slate-900
               "
             >
               Explore Marketplace
@@ -368,23 +312,29 @@ export function HeroSection() {
             <Link
               href="/dorms"
               className="
-                inline-flex
-                items-center
-                justify-center
                 rounded-2xl
                 border
-                border-slate-300
-                bg-white/70
+                border-white/30
                 px-8
                 py-4
-                text-sm
                 font-semibold
-                text-slate-900
-                backdrop-blur-xl
+                text-white
               "
             >
-              Find Student Dorms
+              Find Dorms
             </Link>
+          </div>
+
+          {/* SCROLL */}
+          <div
+            className="
+              mt-14
+              animate-bounce
+              text-sm
+              text-white/50
+            "
+          >
+            Scroll to explore ↓
           </div>
         </div>
       </div>

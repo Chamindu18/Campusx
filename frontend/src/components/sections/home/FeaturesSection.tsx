@@ -1,17 +1,50 @@
 "use client";
 
 /**
- * Homepage features section.
+ * Story section —
+ * life before solution.
  */
 
-import { motion } from "framer-motion";
-
-import { features } from "@/constants/home";
+import {
+  BookOpen,
+  Home,
+  MessageCircle,
+} from "lucide-react";
 
 import { Container } from "@/components/ui/Container";
-import { FeatureCard } from "@/components/ui/FeatureCard";
-import { Reveal } from "@/components/ui/Reveal";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+
+const stories = [
+  {
+    icon: BookOpen,
+
+    title:
+      "Find what you actually need",
+
+    description:
+      "Books, electronics, furniture and student essentials shouldn't take days of searching.",
+  },
+
+  {
+    icon: Home,
+
+    title:
+      "Settle into campus life",
+
+    description:
+      "Discover dorms and places to stay without endless messages and uncertainty.",
+  },
+
+  {
+    icon:
+      MessageCircle,
+
+    title:
+      "Connect naturally",
+
+    description:
+      "Talk directly with students and make decisions without unnecessary friction.",
+  },
+];
 
 export function FeaturesSection() {
   return (
@@ -19,77 +52,138 @@ export function FeaturesSection() {
       id="features"
       className="
         relative
-        overflow-hidden
+        bg-white
         py-36
       "
     >
-      {/* Atmospheric Background */}
-      <div
-        className="
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-transparent
-          via-blue-50/60
-          to-indigo-50/50
-        "
-      />
+      <Container>
+        {/* STORY INTRO */}
+        <div
+          className="
+            mx-auto
+            max-w-3xl
+            text-center
+          "
+        >
+          <p
+            className="
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              text-slate-400
+            "
+          >
+            Student Life
+          </p>
 
-      {/* Blur Glow */}
-      <div
-        className="
-          absolute
-          left-1/2
-          top-40
-          h-[500px]
-          w-[500px]
-          -translate-x-1/2
-          rounded-full
-          bg-blue-200/30
-          blur-3xl
-        "
-      />
+          <h2
+            className="
+              mt-6
+              text-4xl
+              font-black
+              leading-tight
+              text-slate-900
+              md:text-5xl
+            "
+          >
+            Student life already
+            comes with enough
+            decisions.
+          </h2>
 
-      <Container className="relative z-10">
-        {/* Section Heading */}
-        <Reveal>
-          <SectionTitle
-            title="Designed for safer campus trading"
-            subtitle="CampusX focuses on trust, simplicity, and modern student experiences."
-          />
-        </Reveal>
+          <p
+            className="
+              mx-auto
+              mt-8
+              max-w-2xl
+              text-lg
+              leading-9
+              text-slate-600
+            "
+          >
+            Finding things,
+            finding places,
+            and connecting with people
+            should feel easier —
+            not like another assignment.
+          </p>
+        </div>
 
-        {/* Features Grid */}
-        <div className="mt-24 grid gap-8 lg:grid-cols-2">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{
-                opacity: 0,
-                y: 50,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.7,
-                delay: index * 0.12,
-              }}
-            >
-              <FeatureCard
-                title={feature.title}
-                description={
-                  feature.description
-                }
-                icon={feature.icon}
-              />
-            </motion.div>
-          ))}
+        {/* STORY BLOCKS */}
+        <div
+          className="
+            mt-24
+            grid
+            gap-10
+            md:grid-cols-3
+          "
+        >
+          {stories.map(
+            (
+              item
+            ) => {
+              const Icon =
+                item.icon;
+
+              return (
+                <div
+                  key={
+                    item.title
+                  }
+                  className="
+                    flex
+                    flex-col
+                    items-start
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      h-16
+                      w-16
+                      items-center
+                      justify-center
+                      rounded-2xl
+                      bg-slate-100
+                    "
+                  >
+                    <Icon
+                      className="
+                        h-7
+                        w-7
+                        text-slate-800
+                      "
+                    />
+                  </div>
+
+                  <h3
+                    className="
+                      mt-8
+                      text-2xl
+                      font-bold
+                      text-slate-900
+                    "
+                  >
+                    {
+                      item.title
+                    }
+                  </h3>
+
+                  <p
+                    className="
+                      mt-5
+                      leading-8
+                      text-slate-600
+                    "
+                  >
+                    {
+                      item.description
+                    }
+                  </p>
+                </div>
+              );
+            }
+          )}
         </div>
       </Container>
     </section>

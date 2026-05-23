@@ -5,7 +5,6 @@
  */
 
 import Link from "next/link";
-
 import Image from "next/image";
 
 import { motion } from "framer-motion";
@@ -24,13 +23,13 @@ interface MarketplaceCardProps {
 
   title: string;
 
-  category: string;
+  category?: string;
 
-  price: number;
+  price?: number;
 
-  condition: string;
+  condition?: string;
 
-  location: string;
+  location?: string;
 
   imageUrls?: string[];
 }
@@ -38,21 +37,18 @@ interface MarketplaceCardProps {
 export function MarketplaceCard({
   id,
   title,
-  category,
-  price,
-  condition,
-  location,
+  category = "General",
+  price = 0,
+  condition = "Not specified",
+  location = "Unknown location",
   imageUrls = [],
 }: MarketplaceCardProps) {
   /**
-   * Save listing handler.
+   * Save listing.
    */
   async function handleSave(
     event: React.MouseEvent
   ) {
-    /**
-     * Prevent card navigation.
-     */
     event.preventDefault();
 
     try {
@@ -78,7 +74,8 @@ export function MarketplaceCard({
 
       if (!response.ok) {
         toast.error(
-          result.error
+          result.error ||
+            "Failed to save listing"
         );
 
         return;
@@ -87,14 +84,26 @@ export function MarketplaceCard({
       toast.success(
         "Listing saved"
       );
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Failed to save listing"
       );
     }
   }
+
+  /**
+   * Safe price display.
+   */
+  const formattedPrice =
+    Number(
+      price
+    ).toLocaleString();
 
   return (
     <motion.div
@@ -131,7 +140,7 @@ export function MarketplaceCard({
               bg-slate-100
             "
           >
-            {/* Save Button */}
+            {/* Save */}
             <button
               onClick={
                 handleSave
@@ -148,20 +157,20 @@ export function MarketplaceCard({
                 justify-center
                 rounded-2xl
                 bg-white/80
-                text-slate-700
                 backdrop-blur-xl
-                transition
-                hover:bg-white
               "
             >
               <Heart className="h-5 w-5" />
             </button>
 
-            {/* Real Image */}
-            {imageUrls[0] ? (
+            {imageUrls?.[0] ? (
               <Image
-                src={imageUrls[0]}
-                alt={title}
+                src={
+                  imageUrls[0]
+                }
+                alt={
+                  title
+                }
                 fill
                 className="
                   object-cover
@@ -185,7 +194,6 @@ export function MarketplaceCard({
 
           {/* CONTENT */}
           <div className="p-6">
-            {/* Category */}
             <div
               className="
                 inline-flex
@@ -201,14 +209,14 @@ export function MarketplaceCard({
               {category}
             </div>
 
-            {/* Title */}
             <h3 className="mt-5 text-2xl font-bold text-slate-900">
               {title}
             </h3>
 
-            {/* Meta */}
             <div className="mt-5 space-y-3 text-sm text-slate-500">
-              <p>{condition}</p>
+              <p>
+                {condition}
+              </p>
 
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
@@ -219,11 +227,12 @@ export function MarketplaceCard({
               </div>
             </div>
 
-            {/* Footer */}
             <div className="mt-8 flex items-center justify-between">
               <span className="text-2xl font-black text-slate-900">
                 LKR{" "}
-                {price.toLocaleString()}
+                {
+                  formattedPrice
+                }
               </span>
 
               <span
