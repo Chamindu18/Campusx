@@ -1,46 +1,38 @@
 "use client";
 
-/**
- * Story section —
- * why CampusX exists.
- */
-
 import {
-  BookOpen,
-  Home,
-  MessageCircle,
+  ArrowRight,
 } from "lucide-react";
 
 const stories = [
   {
-    icon: BookOpen,
+    number: "01",
 
     title:
-      "Find what you actually need",
+      "Finding things shouldn't take days",
 
     description:
-      "Books, electronics, furniture and student essentials without endless searching.",
+      "Whether it's a laptop, study desk or something small — students shouldn't have to search everywhere.",
   },
 
   {
-    icon: Home,
+    number: "02",
 
     title:
-      "Settle into campus life",
+      "Moving near campus should feel easier",
 
     description:
-      "Discover places to stay and make moving easier.",
+      "Finding a place to stay should feel predictable and less stressful.",
   },
 
   {
-    icon:
-      MessageCircle,
+    number: "03",
 
     title:
-      "Connect naturally",
+      "People make campus life easier",
 
     description:
-      "Talk directly and make decisions without friction.",
+      "Conversations and community matter as much as listings.",
   },
 ];
 
@@ -48,7 +40,8 @@ export function FeaturesSection() {
   return (
     <section
       className="
-        bg-white
+        relative
+        bg-slate-50
         py-36
       "
     >
@@ -62,9 +55,7 @@ export function FeaturesSection() {
         {/* INTRO */}
         <div
           className="
-            mx-auto
-            max-w-3xl
-            text-center
+            max-w-4xl
           "
         >
           <p
@@ -72,29 +63,28 @@ export function FeaturesSection() {
               text-sm
               uppercase
               tracking-[0.35em]
-              text-slate-400
+              text-blue-600
             "
           >
-            Student Life
+            Why CampusX
           </p>
 
           <h2
             className="
               mt-6
-              text-4xl
+              text-5xl
               font-black
               leading-tight
               text-slate-900
-              md:text-5xl
             "
           >
             Student life already
-            comes with enough decisions.
+            comes with enough
+            decisions.
           </h2>
 
           <p
             className="
-              mx-auto
               mt-8
               max-w-2xl
               text-lg
@@ -102,80 +92,100 @@ export function FeaturesSection() {
               text-slate-600
             "
           >
-            Finding what you need
-            shouldn’t feel like
-            another assignment.
+            Finding what you need,
+            where to stay,
+            and who to trust
+            should feel simpler.
           </p>
         </div>
 
-        {/* ITEMS */}
+        {/* STORY */}
         <div
           className="
-            mt-24
-            grid
-            gap-12
-            md:grid-cols-3
+            mt-28
+            space-y-10
           "
         >
           {stories.map(
             (
               item
-            ) => {
-              const Icon =
-                item.icon;
-
-              return (
+            ) => (
+              <div
+                key={
+                  item.number
+                }
+                className="
+                  group
+                  rounded-[32px]
+                  bg-white
+                  p-10
+                  shadow-sm
+                  transition
+                  hover:shadow-lg
+                "
+              >
                 <div
-                  key={
-                    item.title
-                  }
+                  className="
+                    flex
+                    flex-col
+                    gap-8
+                    md:flex-row
+                    md:items-center
+                    md:justify-between
+                  "
                 >
-                  <div
-                    className="
-                      flex
-                      h-16
-                      w-16
-                      items-center
-                      justify-center
-                      rounded-2xl
-                      bg-slate-100
-                    "
-                  >
-                    <Icon
+                  <div>
+                    <div
                       className="
-                        h-7
-                        w-7
+                        text-sm
+                        font-bold
+                        text-blue-600
+                      "
+                    >
+                      {
+                        item.number
+                      }
+                    </div>
+
+                    <h3
+                      className="
+                        mt-3
+                        text-3xl
+                        font-bold
                         text-slate-900
                       "
-                    />
+                    >
+                      {
+                        item.title
+                      }
+                    </h3>
+
+                    <p
+                      className="
+                        mt-5
+                        max-w-2xl
+                        leading-8
+                        text-slate-600
+                      "
+                    >
+                      {
+                        item.description
+                      }
+                    </p>
                   </div>
 
-                  <h3
+                  <ArrowRight
                     className="
-                      mt-8
-                      text-2xl
-                      font-bold
+                      h-6
+                      w-6
+                      text-slate-300
+                      transition
+                      group-hover:translate-x-2
                     "
-                  >
-                    {
-                      item.title
-                    }
-                  </h3>
-
-                  <p
-                    className="
-                      mt-5
-                      leading-8
-                      text-slate-600
-                    "
-                  >
-                    {
-                      item.description
-                    }
-                  </p>
+                  />
                 </div>
-              );
-            }
+              </div>
+            )
           )}
         </div>
       </div>
