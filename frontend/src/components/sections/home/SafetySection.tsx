@@ -1,170 +1,144 @@
 "use client";
 
-/**
- * Homepage safety section.
- */
+const principles = [
+  {
+    title:
+      "Student focused",
 
-import { motion } from "framer-motion";
+    description:
+      "Built around how students actually discover, move and connect.",
+  },
 
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/ui/Reveal";
-import { SectionTitle } from "@/components/ui/SectionTitle";
-import { SafetyCard } from "@/components/ui/SafetyCard";
+  {
+    title:
+      "Simple interactions",
+
+    description:
+      "Less complexity and fewer steps to find what matters.",
+  },
+
+  {
+    title:
+      "Real connections",
+
+    description:
+      "Talk directly and make decisions naturally.",
+  },
+];
 
 export function SafetySection() {
   return (
     <section
-      id="safety"
       className="
-        relative
-        overflow-hidden
-        py-40
+        bg-white
+        py-36
       "
     >
-      {/* Atmospheric Background */}
       <div
         className="
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-indigo-50/40
-          via-blue-50/50
-          to-slate-50
+          mx-auto
+          max-w-7xl
+          px-6
         "
-      />
+      >
+        {/* HEADER */}
+        <div
+          className="
+            mx-auto
+            max-w-3xl
+            text-center
+          "
+        >
+          <p
+            className="
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              text-blue-600
+            "
+          >
+            Built For Students
+          </p>
 
-      {/* Large Ambient Glow */}
-      <div
-        className="
-          absolute
-          right-[-120px]
-          top-20
-          h-[500px]
-          w-[500px]
-          rounded-full
-          bg-cyan-200/30
-          blur-3xl
-        "
-      />
+          <h2
+            className="
+              mt-6
+              text-5xl
+              font-black
+              text-slate-900
+            "
+          >
+            Designed to feel
+            straightforward.
+          </h2>
 
-      {/* Ambient Glow 2 */}
-      <div
-        className="
-          absolute
-          bottom-[-150px]
-          left-[-100px]
-          h-[450px]
-          w-[450px]
-          rounded-full
-          bg-blue-200/20
-          blur-3xl
-        "
-      />
-
-      <Container className="relative z-10">
-        {/* Heading */}
-        <Reveal>
-          <SectionTitle
-            title="Built with student safety in mind"
-            subtitle="CampusX is designed to encourage trusted interactions, safer communication, and campus-focused moderation."
-          />
-        </Reveal>
-
-        {/* Content Layout */}
-        <div className="mt-24 grid items-center gap-16 lg:grid-cols-2">
-          {/* Left Text */}
-          <Reveal>
-            <div>
-              <h3 className="text-4xl font-bold leading-tight text-slate-900">
-                Modern campus trading should feel
-                secure and transparent.
-              </h3>
-
-              <p className="mt-8 text-lg leading-8 text-slate-600">
-                CampusX focuses on creating safer
-                student interactions through
-                university-based communities,
-                reporting systems, moderation tools,
-                and trusted communication flows.
-              </p>
-            </div>
-          </Reveal>
-
-          {/* Right Cards */}
-          <div className="space-y-8">
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.7,
-              }}
-            >
-              <SafetyCard
-                title="Verified Communities"
-                description="University-focused access helps create more trusted student interactions."
-              />
-            </motion.div>
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.8,
-                delay: 0.1,
-              }}
-            >
-              <SafetyCard
-                title="Moderation Tools"
-                description="Reporting and moderation systems help maintain healthier marketplace interactions."
-              />
-            </motion.div>
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.9,
-                delay: 0.2,
-              }}
-            >
-              <SafetyCard
-                title="Campus Communication"
-                description="Students can communicate safely before transactions and meetups."
-              />
-            </motion.div>
-          </div>
+          <p
+            className="
+              mx-auto
+              mt-8
+              max-w-2xl
+              text-lg
+              leading-9
+              text-slate-600
+            "
+          >
+            No unnecessary complexity.
+            Just a place that helps
+            students find what matters.
+          </p>
         </div>
-      </Container>
+
+        {/* GRID */}
+        <div
+          className="
+            mt-24
+            grid
+            gap-8
+            md:grid-cols-3
+          "
+        >
+          {principles.map(
+            (
+              item
+            ) => (
+              <div
+                key={
+                  item.title
+                }
+                className="
+                  rounded-[30px]
+                  bg-slate-50
+                  p-10
+                "
+              >
+                <h3
+                  className="
+                    text-2xl
+                    font-bold
+                    text-slate-900
+                  "
+                >
+                  {
+                    item.title
+                  }
+                </h3>
+
+                <p
+                  className="
+                    mt-5
+                    leading-8
+                    text-slate-600
+                  "
+                >
+                  {
+                    item.description
+                  }
+                </p>
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </section>
   );
 }
