@@ -13,6 +13,8 @@ import {
 
 import { Card } from "@/components/ui/Card";
 
+import { Button } from "@/components/ui/Button";
+
 import {
   useSavedListings,
 } from "@/hooks/use-saved-listings";
@@ -82,110 +84,42 @@ export default function DashboardPage() {
     "Student";
 
   return (
-    <div
-      className="
-        space-y-14
-      "
-    >
+    <div className="space-y-14">
       {/* HERO */}
-      <Card
-        className="
-          rounded-[36px]
-          p-10
-        "
-      >
-        <div
-          className="
-            flex
-            flex-col
-            gap-8
-
-            lg:flex-row
-            lg:items-end
-            lg:justify-between
-          "
-        >
+      <Card className="rounded-[36px] p-10">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p
-              className="
-                font-medium
-                text-blue-600
-              "
-            >
+            <p className="font-medium text-blue-600">
               Dashboard
             </p>
 
-            <h1
-              className="
-                mt-4
-
-                text-5xl
-                font-black
-
-                tracking-tight
-              "
-            >
+            <h1 className="mt-4 text-5xl font-black">
               Welcome back,
               {" "}
               {username}
             </h1>
 
-            <p
-              className="
-                mt-5
-
-                max-w-2xl
-
-                text-lg
-                leading-8
-
-                text-slate-600
-              "
-            >
+            <p className="mt-5 max-w-2xl text-lg text-slate-600">
               Continue your
               student journey.
             </p>
           </div>
 
-          <Link
-            href="/marketplace"
-            className="
-              rounded-2xl
-
-              bg-slate-900
-
-              px-8
-              py-4
-
-              text-white
-            "
-          >
-            Explore
+          <Link href="/marketplace">
+            <Button>
+              Explore
+            </Button>
           </Link>
         </div>
       </Card>
 
       {/* QUICK ACTIONS */}
       <section>
-        <h2
-          className="
-            text-3xl
-            font-black
-          "
-        >
+        <h2 className="text-3xl font-black">
           Quick Actions
         </h2>
 
-        <div
-          className="
-            mt-8
-
-            grid
-            gap-6
-
-            md:grid-cols-2
-          "
-        >
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {quickActions.map(
             (
               action
@@ -202,19 +136,7 @@ export default function DashboardPage() {
                     action.href
                   }
                 >
-                  <Card
-                    className="
-                      h-full
-
-                      rounded-[30px]
-
-                      p-8
-
-                      transition
-
-                      hover:-translate-y-1
-                    "
-                  >
+                  <Card className="h-full rounded-[30px] p-8 transition hover:-translate-y-1">
                     <div
                       className={`
                         inline-flex
@@ -226,24 +148,13 @@ export default function DashboardPage() {
                       <Icon />
                     </div>
 
-                    <h3
-                      className="
-                        mt-7
-                        text-2xl
-                        font-bold
-                      "
-                    >
+                    <h3 className="mt-7 text-2xl font-bold">
                       {
                         action.title
                       }
                     </h3>
 
-                    <p
-                      className="
-                        mt-3
-                        text-slate-500
-                      "
-                    >
+                    <p className="mt-3 text-slate-500">
                       {
                         action.subtitle
                       }
@@ -258,22 +169,11 @@ export default function DashboardPage() {
 
       {/* MY LISTINGS */}
       <section>
-        <h2
-          className="
-            text-3xl
-            font-black
-          "
-        >
+        <h2 className="text-3xl font-black">
           My Listings
         </h2>
 
-        <div
-          className="
-            mt-8
-            grid
-            gap-5
-          "
-        >
+        <div className="mt-8 grid gap-5">
           {listingsLoading ? (
             <Card className="p-8">
               Loading...
@@ -285,44 +185,46 @@ export default function DashboardPage() {
                 (
                   listing: any
                 ) => (
-                  <Link
+                  <Card
                     key={
                       listing.id
                     }
-                    href={`/marketplace/${listing.id}`}
+                    className="p-8"
                   >
-                    <Card
-                      className="
-                        p-8
-                        transition
-                        hover:-translate-y-1
-                        hover:shadow-md
-                      "
-                    >
-                      <h3
-                        className="
-                          text-xl
-                          font-bold
-                        "
+                    <div className="flex items-start justify-between gap-6">
+                      <Link
+                        href={`/marketplace/${listing.id}`}
+                        className="flex-1"
                       >
-                        {
-                          listing.title
-                        }
-                      </h3>
+                        <h3 className="text-xl font-bold">
+                          {
+                            listing.title
+                          }
+                        </h3>
 
-                      <p
-                        className="
-                          mt-3
-                          text-slate-500
-                        "
+                        <p className="mt-3 text-slate-500">
+                          Rs.
+                          {
+                            listing.price
+                          }
+                        </p>
+
+                        <div className="mt-6 text-blue-600">
+                          Open →
+                        </div>
+                      </Link>
+
+                      <Link
+                        href={`/marketplace/${listing.id}/edit`}
                       >
-                        Rs.
-                        {
-                          listing.price
-                        }
-                      </p>
-                    </Card>
-                  </Link>
+                        <Button
+                          size="sm"
+                        >
+                          Edit
+                        </Button>
+                      </Link>
+                    </div>
+                  </Card>
                 )
               )
           ) : (
@@ -335,39 +237,15 @@ export default function DashboardPage() {
 
       {/* SAVED */}
       <section>
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-          "
-        >
-          <Heart
-            className="
-              text-red-500
-            "
-          />
+        <div className="flex items-center gap-3">
+          <Heart className="text-red-500" />
 
-          <h2
-            className="
-              text-3xl
-              font-black
-            "
-          >
+          <h2 className="text-3xl font-black">
             Saved Listings
           </h2>
         </div>
 
-        <div
-          className="
-            mt-8
-
-            grid
-            gap-5
-
-            lg:grid-cols-3
-          "
-        >
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {savedLoading ? (
             <Card className="p-8">
               Loading...
@@ -385,20 +263,8 @@ export default function DashboardPage() {
                     }
                     href={`/marketplace/${item.listingId}`}
                   >
-                    <Card
-                      className="
-                        p-7
-                        transition
-                        hover:-translate-y-1
-                        hover:shadow-md
-                      "
-                    >
-                      <h3
-                        className="
-                          text-xl
-                          font-bold
-                        "
-                      >
+                    <Card className="p-7 transition hover:-translate-y-1 hover:shadow-md">
+                      <h3 className="text-xl font-bold">
                         {
                           item
                             .listing
@@ -406,17 +272,7 @@ export default function DashboardPage() {
                         }
                       </h3>
 
-                      <div
-                        className="
-                          mt-8
-
-                          flex
-                          items-center
-                          gap-3
-
-                          text-blue-600
-                        "
-                      >
+                      <div className="mt-8 flex items-center gap-3 text-blue-600">
                         Open
 
                         <ArrowRight />
