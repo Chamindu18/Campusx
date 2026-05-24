@@ -71,9 +71,12 @@ export function CTASection() {
         className="
           relative
           z-10
+
           mx-auto
           max-w-5xl
+
           px-6
+
           text-center
         "
       >
@@ -89,6 +92,7 @@ export function CTASection() {
             text-sm
             uppercase
             tracking-[0.35em]
+
             text-blue-300
           "
         >
@@ -105,15 +109,21 @@ export function CTASection() {
           custom={0.15}
           className="
             mt-8
+
             text-5xl
             font-black
+
             leading-tight
+
             text-white
+
             md:text-6xl
           "
         >
           Start somewhere.
+
           <br />
+
           Campus life will
           figure out the rest.
         </motion.h2>
@@ -129,9 +139,12 @@ export function CTASection() {
           className="
             mx-auto
             mt-10
+
             max-w-2xl
+
             text-lg
             leading-9
+
             text-white/70
           "
         >
@@ -151,9 +164,12 @@ export function CTASection() {
           custom={0.45}
           className="
             mt-14
+
             flex
             flex-wrap
+
             justify-center
+
             gap-5
           "
         >
@@ -161,11 +177,16 @@ export function CTASection() {
             href="/marketplace"
             className="
               hover-scale
+
               rounded-2xl
+
               bg-white
+
               px-8
               py-4
+
               font-semibold
+
               text-slate-900
             "
           >
@@ -176,13 +197,19 @@ export function CTASection() {
             href="/dorms"
             className="
               hover-scale
+
               rounded-2xl
+
               border
               border-white/20
+
               px-8
               py-4
+
               font-semibold
+
               text-white
+
               hover:bg-white/10
             "
           >

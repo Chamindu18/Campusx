@@ -68,6 +68,7 @@ const reveal = {
 export function CategoriesSection() {
   return (
     <section
+      id="categories"
       className="
         relative
         bg-white
@@ -193,7 +194,6 @@ export function CategoriesSection() {
                         hover:shadow-xl
                       "
                     >
-                      {/* ICON */}
                       <div
                         className="
                           flex
@@ -217,7 +217,6 @@ export function CategoriesSection() {
                         />
                       </div>
 
-                      {/* CONTENT */}
                       <h3
                         className="
                           mt-8
@@ -241,7 +240,6 @@ export function CategoriesSection() {
                         }
                       </p>
 
-                      {/* FOOTER */}
                       <div
                         className="
                           mt-10
