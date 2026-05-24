@@ -1,105 +1,134 @@
 "use client";
 
-/**
- * Final homepage CTA section.
- */
-
-import { motion } from "framer-motion";
-
-import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
+import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="relative overflow-hidden py-40">
-      {/* Background */}
+    <section
+      className="
+        relative
+        overflow-hidden
+        py-40
+      "
+    >
+      {/* BACKGROUND */}
       <div
         className="
           absolute
           inset-0
-          bg-gradient-to-br
-          from-blue-600
-          via-indigo-600
-          to-sky-600
+          bg-[url('/images/hero/campus-life.jpg')]
+          bg-cover
+          bg-center
         "
       />
 
-      {/* Glow */}
+      {/* OVERLAY */}
       <div
         className="
           absolute
-          left-1/2
-          top-1/2
-          h-[500px]
-          w-[500px]
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-white/10
-          blur-3xl
+          inset-0
+          bg-black/70
         "
       />
 
-      <Container className="relative z-10">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            duration: 0.8,
-          }}
-          className="mx-auto max-w-4xl text-center"
+      {/* CONTENT */}
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          max-w-5xl
+          px-6
+          text-center
+        "
+      >
+        <p
+          className="
+            text-sm
+            uppercase
+            tracking-[0.35em]
+            text-blue-300
+          "
         >
-          {/* Heading */}
-          <h2 className="text-5xl font-black tracking-tight text-white sm:text-6xl">
-            Start your campus marketplace
-            experience
-          </h2>
+          Your next semester
+        </p>
 
-          {/* Description */}
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-blue-100">
-            CampusX creates a modern platform for
-            students to trade, connect, and interact
-            more safely inside trusted campus
-            communities.
-          </p>
+        <h2
+          className="
+            mt-8
+            text-5xl
+            font-black
+            leading-tight
+            text-white
+            md:text-6xl
+          "
+        >
+          Start somewhere.
+          <br />
+          Campus life will
+          figure out the rest.
+        </h2>
 
-          {/* Buttons */}
-          <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
-            <Button
-              size="lg"
-              className="
-                bg-white
-                text-slate-900
-                hover:bg-slate-100
-              "
-            >
-              Create Account
-            </Button>
+        <p
+          className="
+            mx-auto
+            mt-10
+            max-w-2xl
+            text-lg
+            leading-9
+            text-white/70
+          "
+        >
+          Discover places,
+          find essentials,
+          and make student life
+          feel a little easier.
+        </p>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="
-                border-white/40
-                bg-white/10
-                text-white
-                hover:bg-white/20
-              "
-            >
-              Explore Platform
-            </Button>
-          </div>
-        </motion.div>
-      </Container>
+        {/* ACTIONS */}
+        <div
+          className="
+            mt-14
+            flex
+            flex-wrap
+            justify-center
+            gap-5
+          "
+        >
+          <Link
+            href="/marketplace"
+            className="
+              rounded-2xl
+              bg-white
+              px-8
+              py-4
+              font-semibold
+              text-slate-900
+              transition
+              hover:scale-[1.02]
+            "
+          >
+            Explore Marketplace
+          </Link>
+
+          <Link
+            href="/dorms"
+            className="
+              rounded-2xl
+              border
+              border-white/20
+              px-8
+              py-4
+              font-semibold
+              text-white
+              transition
+              hover:bg-white/10
+            "
+          >
+            Find Dorms
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }
