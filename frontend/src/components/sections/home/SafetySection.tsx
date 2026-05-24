@@ -50,6 +50,7 @@ const reveal = {
 export function SafetySection() {
   return (
     <section
+      id="safety"
       className="
         bg-white
         py-40
@@ -141,9 +142,7 @@ export function SafetySection() {
                   once: true,
                   amount: 0.15,
                 }}
-                variants={
-                  reveal
-                }
+                variants={reveal}
                 custom={
                   index *
                   0.08
@@ -169,9 +168,7 @@ export function SafetySection() {
                       text-slate-900
                     "
                   >
-                    {
-                      item.title
-                    }
+                    {item.title}
                   </h3>
 
                   <p
@@ -181,9 +178,7 @@ export function SafetySection() {
                       text-slate-600
                     "
                   >
-                    {
-                      item.description
-                    }
+                    {item.description}
                   </p>
                 </div>
               </motion.div>

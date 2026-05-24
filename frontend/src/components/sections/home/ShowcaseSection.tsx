@@ -234,9 +234,7 @@ export function ShowcaseSection() {
                           text-blue-300
                         "
                       >
-                        {
-                          item.label
-                        }
+                        {item.label}
                       </div>
 
                       <h3
@@ -247,9 +245,7 @@ export function ShowcaseSection() {
                           text-white
                         "
                       >
-                        {
-                          item.title
-                        }
+                        {item.title}
                       </h3>
 
                       <p
@@ -259,9 +255,7 @@ export function ShowcaseSection() {
                           text-white/65
                         "
                       >
-                        {
-                          item.description
-                        }
+                        {item.description}
                       </p>
 
                       <div

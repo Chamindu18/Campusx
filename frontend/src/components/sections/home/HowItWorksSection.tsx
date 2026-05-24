@@ -5,30 +5,21 @@ import { motion } from "framer-motion";
 const steps = [
   {
     number: "01",
-
-    title:
-      "Explore",
-
+    title: "Explore",
     description:
       "Browse categories, discover listings and find places that fit student life.",
   },
 
   {
     number: "02",
-
-    title:
-      "Find",
-
+    title: "Find",
     description:
       "Compare options and discover what works for your needs.",
   },
 
   {
     number: "03",
-
-    title:
-      "Connect",
-
+    title: "Connect",
     description:
       "Reach out directly and make decisions with confidence.",
   },
@@ -56,6 +47,7 @@ const reveal = {
 export function HowItWorksSection() {
   return (
     <section
+      id="how-it-works"
       className="
         relative
         bg-white
@@ -145,9 +137,7 @@ export function HowItWorksSection() {
                   once: true,
                   amount: 0.15,
                 }}
-                variants={
-                  reveal
-                }
+                variants={reveal}
                 custom={
                   index *
                   0.08
@@ -172,9 +162,7 @@ export function HowItWorksSection() {
                       text-blue-600
                     "
                   >
-                    {
-                      step.number
-                    }
+                    {step.number}
                   </div>
 
                   <h3
@@ -185,9 +173,7 @@ export function HowItWorksSection() {
                       text-slate-900
                     "
                   >
-                    {
-                      step.title
-                    }
+                    {step.title}
                   </h3>
 
                   <p
@@ -197,9 +183,7 @@ export function HowItWorksSection() {
                       text-slate-600
                     "
                   >
-                    {
-                      step.description
-                    }
+                    {step.description}
                   </p>
                 </div>
               </motion.div>

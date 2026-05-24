@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 
 import {
-  ArrowRight,
   Search,
 } from "lucide-react";
 
@@ -71,19 +72,20 @@ export function HeroSection() {
     useState("");
 
   function handleSearch() {
-    if (
-      !search.trim()
-    )
+    const value =
+      search.trim();
+
+    if (!value)
       return;
 
     const encoded =
       encodeURIComponent(
-        search
+        value
       );
 
     if (
       isDormSearch(
-        search
+        value
       )
     ) {
       router.push(
@@ -100,16 +102,17 @@ export function HeroSection() {
 
   return (
     <section
+      id="hero"
       className="
         relative
-        min-h-[900px]
+        min-h-screen
         overflow-hidden
       "
     >
-      {/* BG */}
+      {/* BACKGROUND */}
       <motion.div
         initial={{
-          scale: 1.08,
+          scale: 1.06,
           opacity: 0,
         }}
         animate={{
@@ -117,53 +120,67 @@ export function HeroSection() {
           opacity: 1,
         }}
         transition={{
-          duration: 1.2,
+          duration: 1.1,
         }}
+        className="
+          absolute
+          inset-0
+        "
       >
         <Image
           src="/images/hero/campus-life.jpg"
           alt="Campus life"
+
           fill
           priority
           quality={90}
           sizes="100vw"
+
           className="
             object-cover
-            brightness-[0.78]
           "
         />
       </motion.div>
 
+      {/* OVERLAYS */}
       <div
         className="
           absolute
           inset-0
+          bg-black/45
+        "
+      />
+
+      <div
+        className="
+          absolute
+          inset-0
+
           bg-gradient-to-b
-          from-black/60
-          via-black/45
-          to-black/75
+          from-black/35
+          via-black/10
+          to-black/70
         "
       />
 
-      <div
-        className="
-          absolute
-          inset-0
-          bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_55%)]
-        "
-      />
-
+      {/* CONTENT */}
       <div
         className="
           relative
           z-10
+
           mx-auto
+
           flex
-          min-h-[900px]
+          min-h-screen
+
           max-w-7xl
+
           items-center
           justify-center
+
           px-6
+
           pt-32
           pb-20
         "
@@ -178,12 +195,14 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0.15}
+            custom={0.1}
             className="
               text-5xl
               font-black
               leading-[1]
+
               text-white
+
               sm:text-6xl
               lg:text-7xl
             "
@@ -205,13 +224,16 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0.3}
+            custom={0.25}
             className="
               mx-auto
               mt-8
+
               max-w-2xl
+
               text-lg
               leading-9
+
               text-white/85
             "
           >
@@ -222,41 +244,31 @@ export function HeroSection() {
             all in one place.
           </motion.p>
 
+          {/* SEARCH */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0.45}
-            className="
-              mt-6
-              text-sm
-              uppercase
-              tracking-[0.35em]
-              text-white/60
-            "
-          >
-            Buy • Sell • Stay • Connect
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={0.6}
+            custom={0.4}
             className="
               mx-auto
-              mt-8
+              mt-14
+
               max-w-3xl
             "
           >
             <div
               className="
                 rounded-[30px]
+
                 border
-                border-white/20
-                bg-white/8
+                border-white/15
+
+                bg-white/10
+
                 p-4
-                backdrop-blur-2xl
+
+                backdrop-blur-xl
               "
             >
               <div
@@ -264,6 +276,7 @@ export function HeroSection() {
                   flex
                   flex-col
                   gap-4
+
                   lg:flex-row
                 "
               >
@@ -272,10 +285,14 @@ export function HeroSection() {
                     flex
                     h-16
                     flex-1
+
                     items-center
                     gap-4
+
                     rounded-2xl
+
                     bg-white
+
                     px-6
                   "
                 >
@@ -283,7 +300,7 @@ export function HeroSection() {
                     className="
                       h-5
                       w-5
-                      text-slate-400
+                      text-slate-500
                     "
                   />
 
@@ -297,10 +314,26 @@ export function HeroSection() {
                           .value
                       )
                     }
+                    onKeyDown={(
+                      e
+                    ) => {
+                      if (
+                        e.key ===
+                        "Enter"
+                      ) {
+                        handleSearch();
+                      }
+                    }}
                     placeholder="Search dorms, books, laptops..."
                     className="
                       w-full
+
                       bg-transparent
+
+                      text-slate-900
+
+                      placeholder:text-slate-500
+
                       outline-none
                     "
                   />
@@ -311,13 +344,17 @@ export function HeroSection() {
                     handleSearch
                   }
                   className="
-                    hover-scale
-                    h-16
                     rounded-2xl
+
                     bg-blue-600
+
                     px-10
-                    font-semibold
+
                     text-white
+
+                    transition
+
+                    hover:bg-blue-700
                   "
                 >
                   Start Exploring
@@ -326,27 +363,36 @@ export function HeroSection() {
             </div>
           </motion.div>
 
+          {/* CTA */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0.75}
+            custom={0.55}
             className="
-              mt-8
+              mt-10
+
               flex
+              flex-wrap
+
               justify-center
-              gap-4
+
+              gap-5
             "
           >
             <Link
               href="/marketplace"
               className="
-                hover-scale
                 rounded-2xl
+
                 bg-white
+
                 px-8
                 py-4
+
                 font-semibold
+
+                text-slate-900
               "
             >
               Explore Marketplace
@@ -355,13 +401,19 @@ export function HeroSection() {
             <Link
               href="/dorms"
               className="
-                hover-scale
                 rounded-2xl
+
                 border
-                border-white/30
+                border-white/25
+
                 px-8
                 py-4
+
+                font-semibold
+
                 text-white
+
+                hover:bg-white/10
               "
             >
               Find Dorms
