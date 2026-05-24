@@ -1,95 +1,161 @@
 "use client";
 
-/**
- * Homepage process section.
- */
+const steps = [
+  {
+    number: "01",
 
-import { motion } from "framer-motion";
+    title:
+      "Explore",
 
-import { steps } from "@/constants/home";
+    description:
+      "Browse categories, discover listings and find places that fit student life.",
+  },
 
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/ui/Reveal";
-import { SectionTitle } from "@/components/ui/SectionTitle";
-import { StepCard } from "@/components/ui/StepCard";
+  {
+    number: "02",
+
+    title:
+      "Find",
+
+    description:
+      "Compare options and discover what works for your needs.",
+  },
+
+  {
+    number: "03",
+
+    title:
+      "Connect",
+
+    description:
+      "Reach out directly and make decisions with confidence.",
+  },
+];
 
 export function HowItWorksSection() {
   return (
     <section
-      id="how-it-works"
       className="
         relative
-        overflow-hidden
-        py-40
+        bg-white
+        py-36
       "
     >
-      {/* Background Transition */}
       <div
         className="
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-slate-50
-          via-blue-50/30
-          to-slate-100
+          mx-auto
+          max-w-7xl
+          px-6
         "
-      />
+      >
+        {/* HEADER */}
+        <div
+          className="
+            text-center
+          "
+        >
+          <p
+            className="
+              text-sm
+              uppercase
+              tracking-[0.35em]
+              text-blue-600
+            "
+          >
+            Simple Process
+          </p>
 
-      {/* Glow */}
-      <div
-        className="
-          absolute
-          left-1/2
-          top-40
-          h-[500px]
-          w-[500px]
-          -translate-x-1/2
-          rounded-full
-          bg-blue-200/20
-          blur-3xl
-        "
-      />
+          <h2
+            className="
+              mt-6
+              text-5xl
+              font-black
+              text-slate-900
+            "
+          >
+            Three steps.
+            Nothing complicated.
+          </h2>
 
-      <Container className="relative z-10">
-        {/* Heading */}
-        <Reveal>
-          <SectionTitle
-            title="Simple from start to finish"
-            subtitle="CampusX is designed to make campus trading feel intuitive, modern, and approachable."
-          />
-        </Reveal>
-
-        {/* Steps Grid */}
-        <div className="mt-24 grid gap-8 lg:grid-cols-3">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.number}
-              initial={{
-                opacity: 0,
-                y: 50,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.2,
-              }}
-              transition={{
-                duration: 0.7,
-                delay: index * 0.12,
-              }}
-            >
-              <StepCard
-                number={step.number}
-                title={step.title}
-                description={step.description}
-              />
-            </motion.div>
-          ))}
+          <p
+            className="
+              mx-auto
+              mt-8
+              max-w-2xl
+              text-lg
+              leading-9
+              text-slate-600
+            "
+          >
+            Campus life moves quickly.
+            Finding what matters should not.
+          </p>
         </div>
-      </Container>
+
+        {/* STEPS */}
+        <div
+          className="
+            mt-28
+            grid
+            gap-10
+            md:grid-cols-3
+          "
+        >
+          {steps.map(
+            (
+              step
+            ) => (
+              <div
+                key={
+                  step.number
+                }
+                className="
+                  rounded-[32px]
+                  bg-slate-50
+                  p-10
+                "
+              >
+                <div
+                  className="
+                    text-sm
+                    font-bold
+                    text-blue-600
+                  "
+                >
+                  {
+                    step.number
+                  }
+                </div>
+
+                <h3
+                  className="
+                    mt-6
+                    text-3xl
+                    font-bold
+                    text-slate-900
+                  "
+                >
+                  {
+                    step.title
+                  }
+                </h3>
+
+                <p
+                  className="
+                    mt-6
+                    leading-8
+                    text-slate-600
+                  "
+                >
+                  {
+                    step.description
+                  }
+                </p>
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </section>
   );
 }

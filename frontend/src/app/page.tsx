@@ -10,6 +10,7 @@ import { CategoriesSection } from "@/components/sections/home/CategoriesSection"
 import { FeaturesSection } from "@/components/sections/home/FeaturesSection";
 import { SafetySection } from "@/components/sections/home/SafetySection";
 import { HowItWorksSection } from "@/components/sections/home/HowItWorksSection";
+import { ShowcaseSection } from "@/components/sections/home/ShowcaseSection";
 import { CTASection } from "@/components/sections/home/CTASection";
 
 export default function HomePage() {
@@ -32,6 +33,9 @@ export default function HomePage() {
 
       {/* How It Works */}
       <HowItWorksSection />
+
+      {/* Showcase */}
+      <ShowcaseSection />
 
       {/* CTA */}
       <CTASection />
