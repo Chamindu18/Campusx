@@ -1,10 +1,12 @@
 "use client";
 
 /**
- * Cinematic homepage navbar.
+ * Homepage navbar.
  */
 
 import Link from "next/link";
+
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -12,72 +14,153 @@ import { NotificationBell } from "@/components/ui/NotificationBell";
 
 export function Navbar() {
   return (
-    <header className="fixed left-0 top-0 z-50 w-full">
+    <motion.header
+      initial={{
+        opacity: 0,
+        y: -16,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.6,
+      }}
+      className="
+        fixed
+        left-0
+        top-0
+        z-50
+        w-full
+      "
+    >
       <Container>
-        <div className="mt-5 flex h-20 items-center justify-between rounded-2xl border border-white/40 bg-white/60 px-6 shadow-lg shadow-slate-200/40 backdrop-blur-xl">
-          {/* Logo */}
+        <div
+          className="
+            mt-5
+            flex
+            h-20
+            items-center
+            justify-between
+            rounded-[28px]
+            border
+            border-white/20
+            bg-white/65
+            px-6
+            shadow-lg
+            shadow-slate-200/20
+            backdrop-blur-xl
+          "
+        >
+          {/* LOGO */}
           <Link
             href="/"
-            className="text-3xl font-black tracking-tight text-slate-900"
+            className="
+              text-3xl
+              font-black
+              tracking-tight
+              text-slate-900
+            "
           >
             CampusX
           </Link>
 
-          {/* Navigation */}
-          <nav className="hidden items-center gap-8 md:flex">
-            <a
-              href="#categories"
-              className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
-            >
-              Categories
-            </a>
+          {/* NAV */}
+          <nav
+            className="
+              hidden
+              items-center
+              gap-8
+              md:flex
+            "
+          >
+            {[
+              [
+                "Categories",
+                "#categories",
+              ],
 
-            <a
-              href="#features"
-              className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
-            >
-              Features
-            </a>
+              [
+                "Features",
+                "#features",
+              ],
 
-            <a
-              href="#safety"
-              className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
-            >
-              Safety
-            </a>
+              [
+                "Safety",
+                "#safety",
+              ],
 
-            <a
-              href="#how-it-works"
-              className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
-            >
-              How It Works
-            </a>
+              [
+                "How It Works",
+                "#how-it-works",
+              ],
+            ].map(
+              (
+                item
+              ) => (
+                <a
+                  key={
+                    item[0]
+                  }
+                  href={
+                    item[1]
+                  }
+                  className="
+                    relative
+                    text-sm
+                    font-medium
+                    text-slate-600
+                    transition
+                    hover:text-slate-900
+                  "
+                >
+                  {
+                    item[0]
+                  }
+                </a>
+              )
+            )}
           </nav>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            {/* Login */}
-            <Link href="/login">
+          {/* ACTIONS */}
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+            "
+          >
+            <Link
+              href="/login"
+            >
               <Button
                 variant="outline"
                 size="sm"
+                className="
+                  hover-scale
+                "
               >
                 Login
               </Button>
             </Link>
 
-            {/* Signup */}
-            <Link href="/signup">
-              <Button size="sm">
+            <Link
+              href="/signup"
+            >
+              <Button
+                size="sm"
+                className="
+                  hover-scale
+                "
+              >
                 Get Started
               </Button>
             </Link>
 
-            {/* Notifications */}
             <NotificationBell />
           </div>
         </div>
       </Container>
-    </header>
+    </motion.header>
   );
 }
