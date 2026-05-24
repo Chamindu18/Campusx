@@ -15,32 +15,36 @@ import { CTASection } from "@/components/sections/home/CTASection";
 
 export default function HomePage() {
   return (
-    <main className="relative overflow-hidden bg-slate-50">
-      {/* Navigation */}
+    <main
+      className="
+        relative
+        overflow-hidden
+      "
+    >
       <Navbar />
 
-      {/* Hero */}
       <HeroSection />
 
-      {/* Categories */}
-      <CategoriesSection />
+      <div className="bg-white">
+        <CategoriesSection />
+      </div>
 
-      {/* Features */}
-      <FeaturesSection />
+      <div className="bg-slate-50">
+        <FeaturesSection />
+      </div>
 
-      {/* Safety */}
-      <SafetySection />
+      <div className="bg-white">
+        <HowItWorksSection />
+      </div>
 
-      {/* How It Works */}
-      <HowItWorksSection />
-
-      {/* Showcase */}
       <ShowcaseSection />
 
-      {/* CTA */}
+      <div className="bg-white">
+        <SafetySection />
+      </div>
+
       <CTASection />
 
-      {/* Footer */}
       <Footer />
     </main>
   );

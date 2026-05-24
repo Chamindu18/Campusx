@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 const principles = [
   {
     title:
@@ -26,12 +28,31 @@ const principles = [
   },
 ];
 
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.65,
+      delay,
+    },
+  }),
+};
+
 export function SafetySection() {
   return (
     <section
       className="
         bg-white
-        py-36
+        py-40
       "
     >
       <div
@@ -42,7 +63,15 @@ export function SafetySection() {
         "
       >
         {/* HEADER */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          variants={reveal}
+          custom={0}
           className="
             mx-auto
             max-w-3xl
@@ -86,7 +115,7 @@ export function SafetySection() {
             Just a place that helps
             students find what matters.
           </p>
-        </div>
+        </motion.div>
 
         {/* GRID */}
         <div
@@ -99,42 +128,65 @@ export function SafetySection() {
         >
           {principles.map(
             (
-              item
+              item,
+              index
             ) => (
-              <div
+              <motion.div
                 key={
                   item.title
                 }
-                className="
-                  rounded-[30px]
-                  bg-slate-50
-                  p-10
-                "
+                initial="hidden"
+                whileInView="visible"
+                viewport={{
+                  once: true,
+                  amount: 0.15,
+                }}
+                variants={
+                  reveal
+                }
+                custom={
+                  index *
+                  0.08
+                }
               >
-                <h3
+                <div
                   className="
-                    text-2xl
-                    font-bold
-                    text-slate-900
+                    group
+                    rounded-[30px]
+                    bg-slate-50
+                    p-10
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    hover:bg-white
+                    hover:shadow-lg
                   "
                 >
-                  {
-                    item.title
-                  }
-                </h3>
+                  <h3
+                    className="
+                      text-2xl
+                      font-bold
+                      text-slate-900
+                    "
+                  >
+                    {
+                      item.title
+                    }
+                  </h3>
 
-                <p
-                  className="
-                    mt-5
-                    leading-8
-                    text-slate-600
-                  "
-                >
-                  {
-                    item.description
-                  }
-                </p>
-              </div>
+                  <p
+                    className="
+                      mt-5
+                      leading-8
+                      text-slate-600
+                    "
+                  >
+                    {
+                      item.description
+                    }
+                  </p>
+                </div>
+              </motion.div>
             )
           )}
         </div>

@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
-
 import Link from "next/link";
 
 import {
   ArrowRight,
 } from "lucide-react";
+
+import {
+  motion,
+} from "framer-motion";
 
 const items = [
   {
@@ -44,12 +47,32 @@ const items = [
   },
 ];
 
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.7,
+      delay,
+    },
+  }),
+};
+
 export function ShowcaseSection() {
   return (
     <section
       className="
+        relative
         bg-slate-950
-        py-36
+        py-40
       "
     >
       <div
@@ -60,7 +83,15 @@ export function ShowcaseSection() {
         "
       >
         {/* HEADER */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          variants={reveal}
+          custom={0}
           className="
             text-center
           "
@@ -100,7 +131,7 @@ export function ShowcaseSection() {
             See how CampusX fits naturally
             into everyday student life.
           </p>
-        </div>
+        </motion.div>
 
         {/* CARDS */}
         <div
@@ -113,128 +144,158 @@ export function ShowcaseSection() {
         >
           {items.map(
             (
-              item
+              item,
+              index
             ) => (
-              <Link
+              <motion.div
                 key={
                   item.title
                 }
-                href={
-                  item.href
+                initial="hidden"
+                whileInView="visible"
+                viewport={{
+                  once: true,
+                  amount: 0.15,
+                }}
+                variants={reveal}
+                custom={
+                  index *
+                  0.12
                 }
               >
-                <div
+                <Link
+                  href={
+                    item.href
+                  }
                   className="
-                    group
-                    overflow-hidden
-                    rounded-[36px]
-                    border
-                    border-white/10
-                    bg-white/5
-                    transition
-                    hover:-translate-y-1
+                    block
                   "
                 >
-                  {/* IMAGE */}
                   <div
                     className="
-                      relative
-                      h-[320px]
+                      group
+                      overflow-hidden
+                      rounded-[36px]
+                      border
+                      border-white/10
+                      bg-white/5
+                      transition-all
+                      duration-300
+                      hover:-translate-y-1
+                      hover:bg-white/[0.08]
                     "
                   >
-                    <Image
-                      src={
-                        item.image
-                      }
-                      alt={
-                        item.title
-                      }
-                      fill
-                      sizes="50vw"
-                      className="
-                        object-cover
-                        transition
-                        duration-700
-                        group-hover:scale-105
-                      "
-                    />
-
+                    {/* IMAGE */}
                     <div
                       className="
-                        absolute
-                        inset-0
-                        bg-gradient-to-t
-                        from-black/70
-                        to-transparent
-                      "
-                    />
-                  </div>
-
-                  {/* CONTENT */}
-                  <div
-                    className="
-                      p-10
-                    "
-                  >
-                    <div
-                      className="
-                        text-sm
-                        text-blue-300
+                        relative
+                        h-[320px]
+                        overflow-hidden
                       "
                     >
-                      {
-                        item.label
-                      }
-                    </div>
-
-                    <h3
-                      className="
-                        mt-5
-                        text-4xl
-                        font-black
-                        text-white
-                      "
-                    >
-                      {
-                        item.title
-                      }
-                    </h3>
-
-                    <p
-                      className="
-                        mt-6
-                        leading-8
-                        text-white/70
-                      "
-                    >
-                      {
-                        item.description
-                      }
-                    </p>
-
-                    <div
-                      className="
-                        mt-10
-                        flex
-                        items-center
-                        gap-3
-                        text-blue-300
-                      "
-                    >
-                      Explore
-
-                      <ArrowRight
+                      <Image
+                        src={
+                          item.image
+                        }
+                        alt={
+                          item.title
+                        }
+                        fill
+                        sizes="50vw"
                         className="
-                          h-4
-                          w-4
-                          transition
-                          group-hover:translate-x-1
+                          object-cover
+                          transition-transform
+                          duration-700
+                          group-hover:scale-105
+                        "
+                      />
+
+                      <div
+                        className="
+                          absolute
+                          inset-0
+                          bg-gradient-to-t
+                          from-black/75
+                          via-black/10
+                          to-transparent
                         "
                       />
                     </div>
+
+                    {/* CONTENT */}
+                    <div
+                      className="
+                        p-10
+                      "
+                    >
+                      <div
+                        className="
+                          text-sm
+                          text-blue-300
+                        "
+                      >
+                        {
+                          item.label
+                        }
+                      </div>
+
+                      <h3
+                        className="
+                          mt-5
+                          text-4xl
+                          font-black
+                          text-white
+                        "
+                      >
+                        {
+                          item.title
+                        }
+                      </h3>
+
+                      <p
+                        className="
+                          mt-6
+                          leading-8
+                          text-white/65
+                        "
+                      >
+                        {
+                          item.description
+                        }
+                      </p>
+
+                      <div
+                        className="
+                          mt-10
+                          inline-flex
+                          items-center
+                          gap-3
+                          rounded-full
+                          bg-blue-500/10
+                          px-5
+                          py-3
+                          font-medium
+                          text-blue-300
+                          transition
+                          group-hover:bg-blue-500/20
+                        "
+                      >
+                        Explore
+
+                        <ArrowRight
+                          className="
+                            h-4
+                            w-4
+                            transition-transform
+                            duration-300
+                            group-hover:translate-x-1
+                          "
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
             )
           )}
         </div>

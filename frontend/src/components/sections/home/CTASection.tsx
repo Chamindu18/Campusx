@@ -2,6 +2,27 @@
 
 import Link from "next/link";
 
+import { motion } from "framer-motion";
+
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.7,
+      delay,
+    },
+  }),
+};
+
 export function CTASection() {
   return (
     <section
@@ -12,7 +33,21 @@ export function CTASection() {
       "
     >
       {/* BACKGROUND */}
-      <div
+      <motion.div
+        initial={{
+          scale: 1.06,
+          opacity: 0,
+        }}
+        whileInView={{
+          scale: 1,
+          opacity: 1,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          duration: 1,
+        }}
         className="
           absolute
           inset-0
@@ -42,7 +77,14 @@ export function CTASection() {
           text-center
         "
       >
-        <p
+        <motion.p
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+          }}
+          variants={reveal}
+          custom={0}
           className="
             text-sm
             uppercase
@@ -51,9 +93,16 @@ export function CTASection() {
           "
         >
           Your next semester
-        </p>
+        </motion.p>
 
-        <h2
+        <motion.h2
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+          }}
+          variants={reveal}
+          custom={0.15}
           className="
             mt-8
             text-5xl
@@ -67,9 +116,16 @@ export function CTASection() {
           <br />
           Campus life will
           figure out the rest.
-        </h2>
+        </motion.h2>
 
-        <p
+        <motion.p
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+          }}
+          variants={reveal}
+          custom={0.3}
           className="
             mx-auto
             mt-10
@@ -83,10 +139,16 @@ export function CTASection() {
           find essentials,
           and make student life
           feel a little easier.
-        </p>
+        </motion.p>
 
-        {/* ACTIONS */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+          }}
+          variants={reveal}
+          custom={0.45}
           className="
             mt-14
             flex
@@ -98,14 +160,13 @@ export function CTASection() {
           <Link
             href="/marketplace"
             className="
+              hover-scale
               rounded-2xl
               bg-white
               px-8
               py-4
               font-semibold
               text-slate-900
-              transition
-              hover:scale-[1.02]
             "
           >
             Explore Marketplace
@@ -114,6 +175,7 @@ export function CTASection() {
           <Link
             href="/dorms"
             className="
+              hover-scale
               rounded-2xl
               border
               border-white/20
@@ -121,13 +183,12 @@ export function CTASection() {
               py-4
               font-semibold
               text-white
-              transition
               hover:bg-white/10
             "
           >
             Find Dorms
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

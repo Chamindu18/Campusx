@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 const steps = [
   {
     number: "01",
@@ -32,13 +34,32 @@ const steps = [
   },
 ];
 
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.65,
+      delay,
+    },
+  }),
+};
+
 export function HowItWorksSection() {
   return (
     <section
       className="
         relative
         bg-white
-        py-36
+        py-40
       "
     >
       <div
@@ -49,7 +70,15 @@ export function HowItWorksSection() {
         "
       >
         {/* HEADER */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          variants={reveal}
+          custom={0}
           className="
             text-center
           "
@@ -90,7 +119,7 @@ export function HowItWorksSection() {
             Campus life moves quickly.
             Finding what matters should not.
           </p>
-        </div>
+        </motion.div>
 
         {/* STEPS */}
         <div
@@ -103,55 +132,77 @@ export function HowItWorksSection() {
         >
           {steps.map(
             (
-              step
+              step,
+              index
             ) => (
-              <div
+              <motion.div
                 key={
                   step.number
                 }
-                className="
-                  rounded-[32px]
-                  bg-slate-50
-                  p-10
-                "
+                initial="hidden"
+                whileInView="visible"
+                viewport={{
+                  once: true,
+                  amount: 0.15,
+                }}
+                variants={
+                  reveal
+                }
+                custom={
+                  index *
+                  0.08
+                }
               >
                 <div
                   className="
-                    text-sm
-                    font-bold
-                    text-blue-600
+                    group
+                    rounded-[32px]
+                    bg-slate-50
+                    p-10
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    hover:shadow-lg
                   "
                 >
-                  {
-                    step.number
-                  }
+                  <div
+                    className="
+                      text-sm
+                      font-bold
+                      text-blue-600
+                    "
+                  >
+                    {
+                      step.number
+                    }
+                  </div>
+
+                  <h3
+                    className="
+                      mt-6
+                      text-3xl
+                      font-bold
+                      text-slate-900
+                    "
+                  >
+                    {
+                      step.title
+                    }
+                  </h3>
+
+                  <p
+                    className="
+                      mt-6
+                      leading-8
+                      text-slate-600
+                    "
+                  >
+                    {
+                      step.description
+                    }
+                  </p>
                 </div>
-
-                <h3
-                  className="
-                    mt-6
-                    text-3xl
-                    font-bold
-                    text-slate-900
-                  "
-                >
-                  {
-                    step.title
-                  }
-                </h3>
-
-                <p
-                  className="
-                    mt-6
-                    leading-8
-                    text-slate-600
-                  "
-                >
-                  {
-                    step.description
-                  }
-                </p>
-              </div>
+              </motion.div>
             )
           )}
         </div>

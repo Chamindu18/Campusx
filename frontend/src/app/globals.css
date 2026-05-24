@@ -3,54 +3,230 @@
  *
  * Tailwind v3 setup.
  */
+
 @import "uploadthing/tw/v4";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global theme variables */
+/* =======================================================
+   THEME
+======================================================= */
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+
+  /* Motion */
+  --duration-fast: 180ms;
+  --duration-base: 280ms;
+  --duration-slow: 600ms;
+
+  --ease:
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
 }
 
-/* Global reset */
-* {
-  box-sizing: border-box;
+/* =======================================================
+   RESET
+======================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing:
+    border-box;
 }
 
-/* Smooth scrolling */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior:
+    smooth;
 }
 
-/* Body styles */
 body {
-  min-height: 100vh;
-  overflow-x: hidden;
+  min-height:
+    100vh;
 
-  background: var(--background);
-  color: var(--foreground);
+  overflow-x:
+    hidden;
+
+  background:
+    var(
+      --background
+    );
+
+  color:
+    var(
+      --foreground
+    );
 
   font-family:
     Inter,
     system-ui,
     sans-serif;
+
+  text-rendering:
+    optimizeLegibility;
+
+  -webkit-font-smoothing:
+    antialiased;
+
+  -moz-osx-font-smoothing:
+    grayscale;
 }
 
-/**
- * Hero search text animation.
- */
+/* =======================================================
+   GLOBAL TRANSITIONS
+======================================================= */
 
-@keyframes fadeSlide {
+a,
+button {
+  transition:
+    transform
+      var(
+        --duration-fast
+      )
+      var(
+        --ease
+      ),
+    background-color
+      var(
+        --duration-fast
+      )
+      var(
+        --ease
+      ),
+    color
+      var(
+        --duration-fast
+      )
+      var(
+        --ease
+      ),
+    border-color
+      var(
+        --duration-fast
+      )
+      var(
+        --ease
+      );
+}
+
+img {
+  transition:
+    transform
+      var(
+        --duration-slow
+      )
+      var(
+        --ease
+      );
+}
+
+/* =======================================================
+   SECTION REVEAL
+======================================================= */
+
+@keyframes sectionReveal {
   from {
     opacity: 0;
-    transform: translateY(12px);
+
+    transform:
+      translateY(
+        28px
+      );
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+
+    transform:
+      translateY(
+        0
+      );
+  }
+}
+
+.animate-section {
+  animation:
+    sectionReveal
+      700ms
+      var(
+        --ease
+      )
+      both;
+}
+
+/* =======================================================
+   HERO SEARCH
+======================================================= */
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(
+        12px
+      );
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(
+        0
+      );
+  }
+}
+
+/* =======================================================
+   MICRO INTERACTIONS
+======================================================= */
+
+.hover-lift:hover {
+  transform:
+    translateY(
+      -4px
+    );
+}
+
+.hover-scale:hover {
+  transform:
+    scale(
+      1.02
+    );
+}
+
+/* =======================================================
+   REDUCED MOTION
+======================================================= */
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  html {
+    scroll-behavior:
+      auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation:
+      none !important;
+
+    transition:
+      none !important;
+
+    scroll-behavior:
+      auto !important;
   }
 }

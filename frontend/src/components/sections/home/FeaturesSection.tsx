@@ -1,194 +1,140 @@
 "use client";
 
-import {
-  ArrowRight,
-} from "lucide-react";
+/**
+ * Homepage features section.
+ * Animation polish only.
+ */
 
-const stories = [
-  {
-    number: "01",
+import { motion } from "framer-motion";
 
-    title:
-      "Finding things shouldn't take days",
+import { features } from "@/constants/home";
 
-    description:
-      "Whether it's a laptop, study desk or something small — students shouldn't have to search everywhere.",
+import { Container } from "@/components/ui/Container";
+import { FeatureCard } from "@/components/ui/FeatureCard";
+import { Reveal } from "@/components/ui/Reveal";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 24,
   },
 
-  {
-    number: "02",
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
 
-    title:
-      "Moving near campus should feel easier",
-
-    description:
-      "Finding a place to stay should feel predictable and less stressful.",
-  },
-
-  {
-    number: "03",
-
-    title:
-      "People make campus life easier",
-
-    description:
-      "Conversations and community matter as much as listings.",
-  },
-];
+    transition: {
+      duration: 0.65,
+      delay,
+    },
+  }),
+};
 
 export function FeaturesSection() {
   return (
     <section
+      id="features"
       className="
         relative
-        bg-slate-50
-        py-36
+        overflow-hidden
+        py-40
       "
     >
+      {/* SOFT BACKGROUND */}
       <div
         className="
-          mx-auto
-          max-w-7xl
-          px-6
+          absolute
+          inset-0
+          bg-gradient-to-b
+          from-transparent
+          via-slate-50
+          to-transparent
+        "
+      />
+
+      {/* LIGHT GLOW */}
+      <div
+        className="
+          absolute
+          left-1/2
+          top-40
+          h-[420px]
+          w-[420px]
+          -translate-x-1/2
+          rounded-full
+          bg-blue-100/40
+          blur-3xl
+        "
+      />
+
+      <Container
+        className="
+          relative
+          z-10
         "
       >
-        {/* INTRO */}
+        {/* HEADER */}
+        <Reveal>
+          <SectionTitle
+            title="Designed for safer campus trading"
+            subtitle="CampusX focuses on trust, simplicity, and modern student experiences."
+          />
+        </Reveal>
+
+        {/* GRID */}
         <div
           className="
-            max-w-4xl
+            mt-24
+            grid
+            gap-8
+            lg:grid-cols-2
           "
         >
-          <p
-            className="
-              text-sm
-              uppercase
-              tracking-[0.35em]
-              text-blue-600
-            "
-          >
-            Why CampusX
-          </p>
-
-          <h2
-            className="
-              mt-6
-              text-5xl
-              font-black
-              leading-tight
-              text-slate-900
-            "
-          >
-            Student life already
-            comes with enough
-            decisions.
-          </h2>
-
-          <p
-            className="
-              mt-8
-              max-w-2xl
-              text-lg
-              leading-9
-              text-slate-600
-            "
-          >
-            Finding what you need,
-            where to stay,
-            and who to trust
-            should feel simpler.
-          </p>
-        </div>
-
-        {/* STORY */}
-        <div
-          className="
-            mt-28
-            space-y-10
-          "
-        >
-          {stories.map(
+          {features.map(
             (
-              item
+              feature,
+              index
             ) => (
-              <div
+              <motion.div
                 key={
-                  item.number
+                  feature.title
+                }
+                initial="hidden"
+                whileInView="visible"
+                viewport={{
+                  once: true,
+                  amount: 0.15,
+                }}
+                variants={
+                  reveal
+                }
+                custom={
+                  index *
+                  0.08
                 }
                 className="
-                  group
-                  rounded-[32px]
-                  bg-white
-                  p-10
-                  shadow-sm
-                  transition
-                  hover:shadow-lg
+                  hover-lift
                 "
               >
-                <div
-                  className="
-                    flex
-                    flex-col
-                    gap-8
-                    md:flex-row
-                    md:items-center
-                    md:justify-between
-                  "
-                >
-                  <div>
-                    <div
-                      className="
-                        text-sm
-                        font-bold
-                        text-blue-600
-                      "
-                    >
-                      {
-                        item.number
-                      }
-                    </div>
-
-                    <h3
-                      className="
-                        mt-3
-                        text-3xl
-                        font-bold
-                        text-slate-900
-                      "
-                    >
-                      {
-                        item.title
-                      }
-                    </h3>
-
-                    <p
-                      className="
-                        mt-5
-                        max-w-2xl
-                        leading-8
-                        text-slate-600
-                      "
-                    >
-                      {
-                        item.description
-                      }
-                    </p>
-                  </div>
-
-                  <ArrowRight
-                    className="
-                      h-6
-                      w-6
-                      text-slate-300
-                      transition
-                      group-hover:translate-x-2
-                    "
-                  />
-                </div>
-              </div>
+                <FeatureCard
+                  title={
+                    feature.title
+                  }
+                  description={
+                    feature.description
+                  }
+                  icon={
+                    feature.icon
+                  }
+                />
+              </motion.div>
             )
           )}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

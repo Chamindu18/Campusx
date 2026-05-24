@@ -10,57 +10,60 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { motion } from "framer-motion";
+
 const categories = [
   {
     title: "Student Dorms",
-
     description:
       "Find places to stay close to university and settle into campus life.",
-
     icon: Home,
-
     href: "/dorms",
   },
 
   {
     title: "Marketplace",
-
     description:
       "Discover electronics, furniture and student essentials.",
-
     icon: Laptop,
-
     href: "/marketplace",
   },
 
   {
-    title:
-      "Study Essentials",
-
+    title: "Study Essentials",
     description:
       "Books, desks and useful things that support learning.",
-
-    icon:
-      BookOpen,
-
-    href:
-      "/marketplace",
+    icon: BookOpen,
+    href: "/marketplace",
   },
 
   {
-    title:
-      "Connect",
-
+    title: "Connect",
     description:
       "Talk directly with students and make decisions easier.",
-
-    icon:
-      MessageCircle,
-
-    href:
-      "/messages",
+    icon: MessageCircle,
+    href: "/messages",
   },
 ];
+
+const reveal = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+
+  visible: (
+    delay: number
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.6,
+      delay,
+    },
+  }),
+};
 
 export function CategoriesSection() {
   return (
@@ -68,7 +71,7 @@ export function CategoriesSection() {
       className="
         relative
         bg-white
-        py-32
+        py-40
       "
     >
       <div
@@ -79,7 +82,15 @@ export function CategoriesSection() {
         "
       >
         {/* HEADER */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          variants={reveal}
+          custom={0}
           className="
             mx-auto
             max-w-3xl
@@ -124,7 +135,7 @@ export function CategoriesSection() {
             around the way students
             actually live and move.
           </p>
-        </div>
+        </motion.div>
 
         {/* GRID */}
         <div
@@ -137,108 +148,125 @@ export function CategoriesSection() {
         >
           {categories.map(
             (
-              category
+              category,
+              index
             ) => {
               const Icon =
                 category.icon;
 
               return (
-                <Link
+                <motion.div
                   key={
                     category.title
                   }
-                  href={
-                    category.href
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{
+                    once: true,
+                    amount: 0.15,
+                  }}
+                  variants={reveal}
+                  custom={
+                    index * 0.08
                   }
                 >
-                  <div
-                    className="
-                      group
-                      h-full
-                      rounded-[32px]
-                      border
-                      border-slate-200
-                      bg-white
-                      p-10
-                      shadow-sm
-                      transition-all
-                      duration-300
-                      hover:-translate-y-1
-                      hover:border-blue-200
-                      hover:shadow-xl
-                    "
+                  <Link
+                    href={
+                      category.href
+                    }
+                    className="block"
                   >
-                    {/* ICON */}
                     <div
                       className="
-                        flex
-                        h-16
-                        w-16
-                        items-center
-                        justify-center
-                        rounded-2xl
-                        bg-blue-50
+                        group
+                        h-full
+                        rounded-[32px]
+                        border
+                        border-slate-200
+                        bg-white
+                        p-10
+                        shadow-sm
+                        transition-all
+                        duration-300
+                        hover:-translate-y-1
+                        hover:border-blue-200
+                        hover:shadow-xl
                       "
                     >
-                      <Icon
+                      {/* ICON */}
+                      <div
                         className="
-                          h-8
-                          w-8
+                          flex
+                          h-16
+                          w-16
+                          items-center
+                          justify-center
+                          rounded-2xl
+                          bg-blue-50
+                          transition
+                          duration-300
+                          group-hover:scale-105
+                        "
+                      >
+                        <Icon
+                          className="
+                            h-8
+                            w-8
+                            text-blue-600
+                          "
+                        />
+                      </div>
+
+                      {/* CONTENT */}
+                      <h3
+                        className="
+                          mt-8
+                          text-3xl
+                          font-bold
+                          text-slate-900
+                        "
+                      >
+                        {category.title}
+                      </h3>
+
+                      <p
+                        className="
+                          mt-5
+                          leading-8
+                          text-slate-600
+                        "
+                      >
+                        {
+                          category.description
+                        }
+                      </p>
+
+                      {/* FOOTER */}
+                      <div
+                        className="
+                          mt-10
+                          flex
+                          items-center
+                          gap-3
+                          font-semibold
                           text-blue-600
                         "
-                      />
+                      >
+                        Explore
+
+                        <ArrowRight
+                          className="
+                            h-4
+                            w-4
+                            transition-transform
+                            duration-300
+                            group-hover:translate-x-1
+                          "
+                        />
+                      </div>
                     </div>
-
-                    {/* CONTENT */}
-                    <h3
-                      className="
-                        mt-8
-                        text-3xl
-                        font-bold
-                        text-slate-900
-                      "
-                    >
-                      {
-                        category.title
-                      }
-                    </h3>
-
-                    <p
-                      className="
-                        mt-5
-                        leading-8
-                        text-slate-600
-                      "
-                    >
-                      {
-                        category.description
-                      }
-                    </p>
-
-                    {/* FOOTER */}
-                    <div
-                      className="
-                        mt-10
-                        flex
-                        items-center
-                        gap-3
-                        font-semibold
-                        text-blue-600
-                      "
-                    >
-                      Explore
-
-                      <ArrowRight
-                        className="
-                          h-4
-                          w-4
-                          transition
-                          group-hover:translate-x-1
-                        "
-                      />
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               );
             }
           )}

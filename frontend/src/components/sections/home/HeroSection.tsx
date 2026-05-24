@@ -4,10 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import {
   ArrowRight,
   Search,
 } from "lucide-react";
+
+import {
+  motion,
+} from "framer-motion";
 
 const dormKeywords = [
   "dorm",
@@ -35,6 +40,25 @@ function isDormSearch(
         .includes(item)
   );
 }
+
+const fadeUp = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+
+  visible: (
+    delay = 0
+  ) => ({
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.7,
+      delay,
+    },
+  }),
+};
 
 export function HeroSection() {
   const router =
@@ -82,23 +106,34 @@ export function HeroSection() {
         overflow-hidden
       "
     >
-      {/* IMAGE */}
-      <Image
-        src="/images/hero/campus-life.jpg"
-        alt="Campus life"
-        fill
-        priority
-        quality={90}
-        sizes="100vw"
-        className="
-          object-cover
-          object-center
-          scale-[1.02]
-          brightness-[0.78]
-        "
-      />
+      {/* BG */}
+      <motion.div
+        initial={{
+          scale: 1.08,
+          opacity: 0,
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+        }}
+        transition={{
+          duration: 1.2,
+        }}
+      >
+        <Image
+          src="/images/hero/campus-life.jpg"
+          alt="Campus life"
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="
+            object-cover
+            brightness-[0.78]
+          "
+        />
+      </motion.div>
 
-      {/* OVERLAY */}
       <div
         className="
           absolute
@@ -110,7 +145,6 @@ export function HeroSection() {
         "
       />
 
-      {/* LIGHT */}
       <div
         className="
           absolute
@@ -119,7 +153,6 @@ export function HeroSection() {
         "
       />
 
-      {/* CONTENT */}
       <div
         className="
           relative
@@ -141,11 +174,12 @@ export function HeroSection() {
             text-center
           "
         >
-
-          {/* TITLE */}
-          <h1
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.15}
             className="
-              mt-8
               text-5xl
               font-black
               leading-[1]
@@ -165,10 +199,13 @@ export function HeroSection() {
             >
               Find everything in one place.
             </span>
-          </h1>
+          </motion.h1>
 
-          {/* DESC */}
-          <p
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.3}
             className="
               mx-auto
               mt-8
@@ -183,10 +220,13 @@ export function HeroSection() {
             sell what you no longer need,
             and connect with students —
             all in one place.
-          </p>
+          </motion.p>
 
-          {/* MICRO */}
-          <div
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.45}
             className="
               mt-6
               text-sm
@@ -196,101 +236,104 @@ export function HeroSection() {
             "
           >
             Buy • Sell • Stay • Connect
-          </div>
+          </motion.div>
 
-          {/* SEARCH */}
-          <div
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.6}
             className="
               mx-auto
               mt-8
               max-w-3xl
-              rounded-[30px]
-              border
-              border-white/20
-              bg-white/8
-              p-4
-              backdrop-blur-2xl
             "
           >
             <div
               className="
-                flex
-                flex-col
-                gap-4
-                lg:flex-row
+                rounded-[30px]
+                border
+                border-white/20
+                bg-white/8
+                p-4
+                backdrop-blur-2xl
               "
             >
               <div
                 className="
                   flex
-                  h-16
-                  flex-1
-                  items-center
+                  flex-col
                   gap-4
-                  rounded-2xl
-                  bg-white
-                  px-6
+                  lg:flex-row
                 "
               >
-                <Search
+                <div
                   className="
-                    h-5
-                    w-5
-                    text-slate-400
+                    flex
+                    h-16
+                    flex-1
+                    items-center
+                    gap-4
+                    rounded-2xl
+                    bg-white
+                    px-6
                   "
-                />
+                >
+                  <Search
+                    className="
+                      h-5
+                      w-5
+                      text-slate-400
+                    "
+                  />
 
-                <input
-                  value={search}
-                  onChange={(e) =>
-                    setSearch(
-                      e.target.value
-                    )
-                  }
-                  onKeyDown={(e) => {
-                    if (
-                      e.key ===
-                      "Enter"
-                    ) {
-                      handleSearch();
+                  <input
+                    value={
+                      search
                     }
-                  }}
-                  placeholder="Search dorms, books, laptops..."
+                    onChange={(e) =>
+                      setSearch(
+                        e.target
+                          .value
+                      )
+                    }
+                    placeholder="Search dorms, books, laptops..."
+                    className="
+                      w-full
+                      bg-transparent
+                      outline-none
+                    "
+                  />
+                </div>
+
+                <button
+                  onClick={
+                    handleSearch
+                  }
                   className="
-                    w-full
-                    bg-transparent
-                    outline-none
+                    hover-scale
+                    h-16
+                    rounded-2xl
+                    bg-blue-600
+                    px-10
+                    font-semibold
+                    text-white
                   "
-                />
-              </div>
-
-              <button
-                onClick={
-                  handleSearch
-                }
-                className="
-                  h-16
-                  rounded-2xl
-                  bg-blue-600
-                  px-10
-                  font-semibold
-                  text-white
-                "
-              >
-                <span className="flex items-center gap-3">
+                >
                   Start Exploring
-                  <ArrowRight />
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* CTA */}
-          <div
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.75}
             className="
               mt-8
               flex
-              flex-wrap
               justify-center
               gap-4
             "
@@ -298,12 +341,12 @@ export function HeroSection() {
             <Link
               href="/marketplace"
               className="
+                hover-scale
                 rounded-2xl
                 bg-white
                 px-8
                 py-4
                 font-semibold
-                text-slate-900
               "
             >
               Explore Marketplace
@@ -312,30 +355,18 @@ export function HeroSection() {
             <Link
               href="/dorms"
               className="
+                hover-scale
                 rounded-2xl
                 border
                 border-white/30
                 px-8
                 py-4
-                font-semibold
                 text-white
               "
             >
               Find Dorms
             </Link>
-          </div>
-
-          {/* SCROLL */}
-          <div
-            className="
-              mt-14
-              animate-bounce
-              text-sm
-              text-white/50
-            "
-          >
-            Scroll to explore ↓
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
