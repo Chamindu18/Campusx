@@ -32,11 +32,11 @@ export const Input =
             border
             border-white/15
 
-            bg-white/90
+            bg-white/80
 
             px-5
 
-            text-slate-100
+            text-slate-900
 
             placeholder:text-slate-500
 

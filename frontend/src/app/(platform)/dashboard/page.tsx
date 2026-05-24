@@ -1,11 +1,10 @@
-/**
- * Dashboard homepage.
- */
+"use client";
 
 import Link from "next/link";
 
 import {
-  Building2,
+  ArrowRight,
+  Heart,
   Home,
   MessageCircle,
   Plus,
@@ -14,373 +13,425 @@ import {
 
 import { Card } from "@/components/ui/Card";
 
+import {
+  useSavedListings,
+} from "@/hooks/use-saved-listings";
+
+import {
+  useMyListings,
+} from "@/hooks/use-my-listings";
+
+import {
+  useCurrentUser,
+} from "@/hooks/use-current-user";
+
+const quickActions = [
+  {
+    title: "Create Listing",
+    subtitle: "Post marketplace products",
+    href: "/create-listing",
+    icon: Plus,
+    color: "bg-blue-100 text-blue-700",
+  },
+
+  {
+    title: "Create Dorm",
+    subtitle: "Add accommodation",
+    href: "/create-dorm",
+    icon: Home,
+    color: "bg-emerald-100 text-emerald-700",
+  },
+
+  {
+    title: "Marketplace",
+    subtitle: "Continue browsing",
+    href: "/marketplace",
+    icon: ShoppingBag,
+    color: "bg-violet-100 text-violet-700",
+  },
+
+  {
+    title: "Messages",
+    subtitle: "Continue conversations",
+    href: "/messages",
+    icon: MessageCircle,
+    color: "bg-pink-100 text-pink-700",
+  },
+];
+
 export default function DashboardPage() {
+  const {
+    savedListings,
+    isLoading:
+      savedLoading,
+  } =
+    useSavedListings();
+
+  const {
+    listings,
+    isLoading:
+      listingsLoading,
+  } =
+    useMyListings();
+
+  const user =
+    useCurrentUser();
+
+  const username =
+    user?.name ??
+    "Student";
+
   return (
-    <div>
-      {/* HEADER */}
-      <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
-          Dashboard
-        </h1>
-
-        <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-          Manage your marketplace listings, dorms, and student activity from one place.
-        </p>
-      </div>
-
-      {/* STATS */}
-      <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {/* Marketplace */}
-        <Card
+    <div
+      className="
+        space-y-14
+      "
+    >
+      {/* HERO */}
+      <Card
+        className="
+          rounded-[36px]
+          p-10
+        "
+      >
+        <div
           className="
-            border-white/40
-            bg-white/70
-            p-6
-            backdrop-blur-xl
+            flex
+            flex-col
+            gap-8
+
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
           "
         >
-          <div className="flex items-center justify-between">
-            <div
+          <div>
+            <p
               className="
-                rounded-2xl
-                bg-blue-100
-                p-3
+                font-medium
+                text-blue-600
               "
             >
-              <ShoppingBag className="h-6 w-6 text-blue-700" />
-            </div>
+              Dashboard
+            </p>
 
-            <span className="text-sm font-medium text-slate-500">
-              Marketplace
-            </span>
-          </div>
-
-          <h2 className="mt-6 text-4xl font-black text-slate-900">
-            Items
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Buy and sell student products.
-          </p>
-        </Card>
-
-        {/* Dorms */}
-        <Card
-          className="
-            border-white/40
-            bg-white/70
-            p-6
-            backdrop-blur-xl
-          "
-        >
-          <div className="flex items-center justify-between">
-            <div
+            <h1
               className="
-                rounded-2xl
-                bg-emerald-100
-                p-3
+                mt-4
+
+                text-5xl
+                font-black
+
+                tracking-tight
               "
             >
-              <Home className="h-6 w-6 text-emerald-700" />
-            </div>
+              Welcome back,
+              {" "}
+              {username}
+            </h1>
 
-            <span className="text-sm font-medium text-slate-500">
-              Housing
-            </span>
-          </div>
-
-          <h2 className="mt-6 text-4xl font-black text-slate-900">
-            Dorms
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Manage student boarding listings.
-          </p>
-        </Card>
-
-        {/* Messages */}
-        <Card
-          className="
-            border-white/40
-            bg-white/70
-            p-6
-            backdrop-blur-xl
-          "
-        >
-          <div className="flex items-center justify-between">
-            <div
+            <p
               className="
-                rounded-2xl
-                bg-purple-100
-                p-3
+                mt-5
+
+                max-w-2xl
+
+                text-lg
+                leading-8
+
+                text-slate-600
               "
             >
-              <MessageCircle className="h-6 w-6 text-purple-700" />
-            </div>
-
-            <span className="text-sm font-medium text-slate-500">
-              Communication
-            </span>
+              Continue your
+              student journey.
+            </p>
           </div>
 
-          <h2 className="mt-6 text-4xl font-black text-slate-900">
-            Chat
-          </h2>
+          <Link
+            href="/marketplace"
+            className="
+              rounded-2xl
 
-          <p className="mt-2 text-sm text-slate-500">
-            Stay connected with students.
-          </p>
-        </Card>
+              bg-slate-900
 
-        {/* Platform */}
-        <Card
-          className="
-            border-white/40
-            bg-white/70
-            p-6
-            backdrop-blur-xl
-          "
-        >
-          <div className="flex items-center justify-between">
-            <div
-              className="
-                rounded-2xl
-                bg-orange-100
-                p-3
-              "
-            >
-              <Building2 className="h-6 w-6 text-orange-700" />
-            </div>
+              px-8
+              py-4
 
-            <span className="text-sm font-medium text-slate-500">
-              CampusX
-            </span>
-          </div>
-
-          <h2 className="mt-6 text-4xl font-black text-slate-900">
-            Platform
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Student marketplace ecosystem.
-          </p>
-        </Card>
-      </div>
+              text-white
+            "
+          >
+            Explore
+          </Link>
+        </div>
+      </Card>
 
       {/* QUICK ACTIONS */}
-      <div className="mt-14">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-black text-slate-900">
-              Quick Actions
-            </h2>
-
-            <p className="mt-3 text-slate-500">
-              Fast access to your most-used features.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {/* Create Listing */}
-          <Link href="/create-listing">
-            <Card
-              className="
-                group
-                border-white/40
-                bg-white/70
-                p-8
-                backdrop-blur-xl
-                transition
-                hover:-translate-y-1
-              "
-            >
-              <div
-                className="
-                  inline-flex
-                  rounded-2xl
-                  bg-blue-100
-                  p-4
-                "
-              >
-                <Plus className="h-6 w-6 text-blue-700" />
-              </div>
-
-              <h3 className="mt-6 text-2xl font-bold text-slate-900">
-                Create Listing
-              </h3>
-
-              <p className="mt-3 leading-7 text-slate-600">
-                Post marketplace products for students.
-              </p>
-            </Card>
-          </Link>
-
-          {/* Create Dorm */}
-          <Link href="/create-dorm">
-            <Card
-              className="
-                group
-                border-white/40
-                bg-white/70
-                p-8
-                backdrop-blur-xl
-                transition
-                hover:-translate-y-1
-              "
-            >
-              <div
-                className="
-                  inline-flex
-                  rounded-2xl
-                  bg-emerald-100
-                  p-4
-                "
-              >
-                <Home className="h-6 w-6 text-emerald-700" />
-              </div>
-
-              <h3 className="mt-6 text-2xl font-bold text-slate-900">
-                Create Dorm
-              </h3>
-
-              <p className="mt-3 leading-7 text-slate-600">
-                Add a student boarding listing.
-              </p>
-            </Card>
-          </Link>
-
-          {/* Marketplace */}
-          <Link href="/marketplace">
-            <Card
-              className="
-                group
-                border-white/40
-                bg-white/70
-                p-8
-                backdrop-blur-xl
-                transition
-                hover:-translate-y-1
-              "
-            >
-              <div
-                className="
-                  inline-flex
-                  rounded-2xl
-                  bg-violet-100
-                  p-4
-                "
-              >
-                <ShoppingBag className="h-6 w-6 text-violet-700" />
-              </div>
-
-              <h3 className="mt-6 text-2xl font-bold text-slate-900">
-                Marketplace
-              </h3>
-
-              <p className="mt-3 leading-7 text-slate-600">
-                Browse products posted by students.
-              </p>
-            </Card>
-          </Link>
-
-          {/* Messages */}
-          <Link href="/messages">
-            <Card
-              className="
-                group
-                border-white/40
-                bg-white/70
-                p-8
-                backdrop-blur-xl
-                transition
-                hover:-translate-y-1
-              "
-            >
-              <div
-                className="
-                  inline-flex
-                  rounded-2xl
-                  bg-pink-100
-                  p-4
-                "
-              >
-                <MessageCircle className="h-6 w-6 text-pink-700" />
-              </div>
-
-              <h3 className="mt-6 text-2xl font-bold text-slate-900">
-                Messages
-              </h3>
-
-              <p className="mt-3 leading-7 text-slate-600">
-                Continue your student conversations.
-              </p>
-            </Card>
-          </Link>
-        </div>
-      </div>
-
-      {/* PLATFORM SECTION */}
-      <div className="mt-16">
-        <Card
+      <section>
+        <h2
           className="
-            overflow-hidden
-            border-white/40
-            bg-gradient-to-br
-            from-blue-600
-            via-indigo-600
-            to-violet-700
-            p-10
-            text-white
+            text-3xl
+            font-black
           "
         >
-          <div className="max-w-3xl">
-            <h2 className="text-4xl font-black tracking-tight">
-              CampusX Student Ecosystem
-            </h2>
+          Quick Actions
+        </h2>
 
-            <p className="mt-6 text-lg leading-8 text-white/80">
-              CampusX connects university students through marketplace trading,
-              student housing, messaging, and campus-focused services in one platform.
-            </p>
+        <div
+          className="
+            mt-8
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/marketplace"
-                className="
-                  rounded-2xl
-                  bg-white
-                  px-6
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-slate-900
-                "
-              >
-                Explore Marketplace
-              </Link>
+            grid
+            gap-6
 
-              <Link
-                href="/dorms"
-                className="
-                  rounded-2xl
-                  border
-                  border-white/30
-                  bg-white/10
-                  px-6
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-white
-                  backdrop-blur-xl
-                "
-              >
-                Explore Dorms
-              </Link>
-            </div>
-          </div>
-        </Card>
-      </div>
+            md:grid-cols-2
+          "
+        >
+          {quickActions.map(
+            (
+              action
+            ) => {
+              const Icon =
+                action.icon;
+
+              return (
+                <Link
+                  key={
+                    action.href
+                  }
+                  href={
+                    action.href
+                  }
+                >
+                  <Card
+                    className="
+                      h-full
+
+                      rounded-[30px]
+
+                      p-8
+
+                      transition
+
+                      hover:-translate-y-1
+                    "
+                  >
+                    <div
+                      className={`
+                        inline-flex
+                        rounded-2xl
+                        p-4
+                        ${action.color}
+                      `}
+                    >
+                      <Icon />
+                    </div>
+
+                    <h3
+                      className="
+                        mt-7
+                        text-2xl
+                        font-bold
+                      "
+                    >
+                      {
+                        action.title
+                      }
+                    </h3>
+
+                    <p
+                      className="
+                        mt-3
+                        text-slate-500
+                      "
+                    >
+                      {
+                        action.subtitle
+                      }
+                    </p>
+                  </Card>
+                </Link>
+              );
+            }
+          )}
+        </div>
+      </section>
+
+      {/* MY LISTINGS */}
+      <section>
+        <h2
+          className="
+            text-3xl
+            font-black
+          "
+        >
+          My Listings
+        </h2>
+
+        <div
+          className="
+            mt-8
+            grid
+            gap-5
+          "
+        >
+          {listingsLoading ? (
+            <Card className="p-8">
+              Loading...
+            </Card>
+          ) : listings.length ? (
+            listings
+              .slice(0, 3)
+              .map(
+                (
+                  listing: any
+                ) => (
+                  <Link
+                    key={
+                      listing.id
+                    }
+                    href={`/marketplace/${listing.id}`}
+                  >
+                    <Card
+                      className="
+                        p-8
+                        transition
+                        hover:-translate-y-1
+                        hover:shadow-md
+                      "
+                    >
+                      <h3
+                        className="
+                          text-xl
+                          font-bold
+                        "
+                      >
+                        {
+                          listing.title
+                        }
+                      </h3>
+
+                      <p
+                        className="
+                          mt-3
+                          text-slate-500
+                        "
+                      >
+                        Rs.
+                        {
+                          listing.price
+                        }
+                      </p>
+                    </Card>
+                  </Link>
+                )
+              )
+          ) : (
+            <Card className="p-8">
+              No listings yet.
+            </Card>
+          )}
+        </div>
+      </section>
+
+      {/* SAVED */}
+      <section>
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+          "
+        >
+          <Heart
+            className="
+              text-red-500
+            "
+          />
+
+          <h2
+            className="
+              text-3xl
+              font-black
+            "
+          >
+            Saved Listings
+          </h2>
+        </div>
+
+        <div
+          className="
+            mt-8
+
+            grid
+            gap-5
+
+            lg:grid-cols-3
+          "
+        >
+          {savedLoading ? (
+            <Card className="p-8">
+              Loading...
+            </Card>
+          ) : savedListings.length ? (
+            savedListings
+              .slice(0, 3)
+              .map(
+                (
+                  item: any
+                ) => (
+                  <Link
+                    key={
+                      item.id
+                    }
+                    href={`/marketplace/${item.listingId}`}
+                  >
+                    <Card
+                      className="
+                        p-7
+                        transition
+                        hover:-translate-y-1
+                        hover:shadow-md
+                      "
+                    >
+                      <h3
+                        className="
+                          text-xl
+                          font-bold
+                        "
+                      >
+                        {
+                          item
+                            .listing
+                            ?.title
+                        }
+                      </h3>
+
+                      <div
+                        className="
+                          mt-8
+
+                          flex
+                          items-center
+                          gap-3
+
+                          text-blue-600
+                        "
+                      >
+                        Open
+
+                        <ArrowRight />
+                      </div>
+                    </Card>
+                  </Link>
+                )
+              )
+          ) : (
+            <Card className="p-8">
+              Nothing saved yet.
+            </Card>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
