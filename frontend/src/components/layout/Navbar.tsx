@@ -1,9 +1,5 @@
 "use client";
 
-/**
- * Homepage navbar.
- */
-
 import Link from "next/link";
 
 import { motion } from "framer-motion";
@@ -12,23 +8,41 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 
+const navItems = [
+  {
+    label: "Categories",
+    href: "#categories",
+  },
+
+  {
+    label: "Features",
+    href: "#features",
+  },
+
+  {
+    label: "Safety",
+    href: "#safety",
+  },
+
+  {
+    label: "How It Works",
+    href: "#how-it-works",
+  },
+];
+
 export function Navbar() {
   return (
     <motion.header
       initial={{
         opacity: 0,
-        y: -16,
+        y: -10,
       }}
       animate={{
         opacity: 1,
         y: 0,
       }}
-      transition={{
-        duration: 0.6,
-      }}
       className="
         fixed
-        left-0
         top-0
         z-50
         w-full
@@ -42,30 +56,30 @@ export function Navbar() {
             h-20
             items-center
             justify-between
+
             rounded-[28px]
+
             border
             border-white/20
+
             bg-white/65
+
             px-6
-            shadow-lg
-            shadow-slate-200/20
+
             backdrop-blur-xl
           "
         >
-          {/* LOGO */}
           <Link
             href="/"
             className="
               text-3xl
               font-black
-              tracking-tight
               text-slate-900
             "
           >
             CampusX
           </Link>
 
-          {/* NAV */}
           <nav
             className="
               hidden
@@ -74,55 +88,37 @@ export function Navbar() {
               md:flex
             "
           >
-            {[
-              [
-                "Categories",
-                "#categories",
-              ],
-
-              [
-                "Features",
-                "#features",
-              ],
-
-              [
-                "Safety",
-                "#safety",
-              ],
-
-              [
-                "How It Works",
-                "#how-it-works",
-              ],
-            ].map(
+            {navItems.map(
               (
                 item
               ) => (
-                <a
+                <Link
                   key={
-                    item[0]
+                    item.href
                   }
                   href={
-                    item[1]
+                    item.href
                   }
+                  scroll
                   className="
-                    relative
                     text-sm
                     font-medium
-                    text-slate-600
+
+                    text-slate-700
+
                     transition
-                    hover:text-slate-900
+
+                    hover:text-black
                   "
                 >
                   {
-                    item[0]
+                    item.label
                   }
-                </a>
+                </Link>
               )
             )}
           </nav>
 
-          {/* ACTIONS */}
           <div
             className="
               flex
@@ -130,29 +126,17 @@ export function Navbar() {
               gap-3
             "
           >
-            <Link
-              href="/login"
-            >
+            <Link href="/login">
               <Button
                 variant="outline"
                 size="sm"
-                className="
-                  hover-scale
-                "
               >
                 Login
               </Button>
             </Link>
 
-            <Link
-              href="/signup"
-            >
-              <Button
-                size="sm"
-                className="
-                  hover-scale
-                "
-              >
+            <Link href="/signup">
+              <Button size="sm">
                 Get Started
               </Button>
             </Link>

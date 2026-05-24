@@ -8,36 +8,58 @@ import { cn } from "@/lib/utils";
 interface InputProps
   extends InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input = forwardRef<
-  HTMLInputElement,
-  InputProps
->(({ className, ...props }, ref) => {
-  return (
-    <input
-      ref={ref}
-      className={cn(
-        `
-          h-12
-          w-full
-          rounded-xl
-          border
-          border-slate-200
-          bg-white/80
-          px-4
-          text-sm
-          text-slate-900
-          outline-none
-          transition
-          placeholder:text-slate-400
-          focus:border-blue-500
-          focus:ring-4
-          focus:ring-blue-100
-        `,
-        className
-      )}
-      {...props}
-    />
-  );
-});
+export const Input =
+  forwardRef<
+    HTMLInputElement,
+    InputProps
+  >(
+    (
+      {
+        className,
+        ...props
+      },
+      ref
+    ) => (
+      <input
+        ref={ref}
+        className={cn(
+          `
+            h-14
+            w-full
 
-Input.displayName = "Input";
+            rounded-2xl
+
+            border
+            border-white/15
+
+            bg-white/90
+
+            px-5
+
+            text-slate-100
+
+            placeholder:text-slate-500
+
+            shadow-sm
+
+            outline-none
+
+            transition-all
+            duration-300
+
+            focus:bg-white
+
+            focus:border-blue-400
+
+            focus:ring-4
+            focus:ring-blue-400/20
+          `,
+          className
+        )}
+        {...props}
+      />
+    )
+  );
+
+Input.displayName =
+  "Input";

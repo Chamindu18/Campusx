@@ -1,10 +1,8 @@
-/**
- * Reusable auth container card.
- */
+import type {
+  ReactNode,
+} from "react";
 
-import type { ReactNode } from "react";
-
-interface AuthCardProps {
+interface Props {
   title: string;
   description: string;
   children: ReactNode;
@@ -14,33 +12,52 @@ export function AuthCard({
   title,
   description,
   children,
-}: AuthCardProps) {
+}: Props) {
   return (
-    <div
-      className="
-        rounded-3xl
-        border
-        border-white/40
-        bg-white/70
-        p-10
-        shadow-2xl
-        shadow-slate-200/40
-        backdrop-blur-xl
-      "
-    >
-      {/* Heading */}
-      <div className="text-center">
-        <h1 className="text-4xl font-black tracking-tight text-slate-900">
+    <div>
+      {/* HEADER */}
+      <div
+        className="
+          text-center
+        "
+      >
+        <h1
+          className="
+            text-5xl
+            font-black
+            tracking-tight
+
+            text-white
+
+            drop-shadow-lg
+          "
+        >
           {title}
         </h1>
 
-        <p className="mt-4 leading-7 text-slate-600">
+        <p
+          className="
+            mx-auto
+            mt-5
+
+            max-w-md
+
+            text-lg
+            leading-8
+
+            text-white/90
+          "
+        >
           {description}
         </p>
       </div>
 
-      {/* Content */}
-      <div className="mt-10">
+      {/* FORM */}
+      <div
+        className="
+          mt-10
+        "
+      >
         {children}
       </div>
     </div>
