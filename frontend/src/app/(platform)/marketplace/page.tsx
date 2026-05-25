@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Advanced marketplace page.
+ * Marketplace page.
  */
 
 import { useState } from "react";
@@ -18,14 +18,9 @@ import { MarketplaceCardSkeleton } from "@/components/ui/MarketplaceCardSkeleton
 
 import { useListings } from "@/hooks/use-listings";
 
-const categories = [
-  "All",
-  "Books",
-  "Electronics",
-  "Gaming",
-  "Furniture",
-  "Accessories",
-];
+import {
+  MARKETPLACE_CATEGORIES,
+} from "@/constants/listing-categories";
 
 export default function MarketplacePage() {
   const [search, setSearch] =
@@ -34,60 +29,105 @@ export default function MarketplacePage() {
   const [
     category,
     setCategory,
-  ] = useState("All");
+  ] =
+    useState("All");
 
-  const [page, setPage] =
+  const [
+    page,
+    setPage,
+  ] =
     useState(1);
 
   const {
     listings,
     pagination,
     isLoading,
-  } = useListings({
-    search,
-    category,
-    page,
-  });
+  } =
+    useListings({
+      search,
+      category,
+      page,
+    });
 
   return (
     <div>
       {/* HEADER */}
       <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
+        <h1
+          className="
+            text-5xl
+            font-black
+            tracking-tight
+            text-slate-900
+          "
+        >
           Marketplace
         </h1>
 
-        <p className="mt-4 text-lg text-slate-600">
-          Discover listings from your campus community.
+        <p
+          className="
+            mt-4
+            text-lg
+            text-slate-600
+          "
+        >
+          Discover listings
+          from your campus
+          community.
         </p>
       </div>
 
       {/* SEARCH */}
-      <div className="mt-10 flex flex-col gap-5">
+      <div
+        className="
+          mt-10
+          flex
+          flex-col
+          gap-5
+        "
+      >
         <div
           className="
             flex
             h-14
             items-center
             gap-3
+
             rounded-2xl
+
             border
             border-white/40
+
             bg-white/70
+
             px-5
+
             backdrop-blur-xl
           "
         >
-          <Search className="h-5 w-5 text-slate-500" />
+          <Search
+            className="
+              h-5
+              w-5
+              text-slate-500
+            "
+          />
 
           <input
-            value={search}
-            onChange={(e) => {
+            value={
+              search
+            }
+            onChange={(
+              e
+            ) => {
               setSearch(
-                e.target.value
+                e.target
+                  .value
               );
 
-              setPage(1);
+              setPage(
+                1
+              );
             }}
             placeholder="Search listings..."
             className="
@@ -98,26 +138,57 @@ export default function MarketplacePage() {
           />
         </div>
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-3">
-          {categories.map(
-            (item) => (
+        {/* CATEGORIES */}
+        <div
+          className="
+            flex
+            flex-wrap
+            gap-3
+          "
+        >
+          {MARKETPLACE_CATEGORIES.map(
+            (
+              item
+            ) => (
               <button
-                key={item}
+                key={
+                  item
+                }
                 onClick={() => {
                   setCategory(
                     item
                   );
 
-                  setPage(1);
+                  setPage(
+                    1
+                  );
                 }}
                 className={
-                  category === item
-                    ? "rounded-2xl bg-blue-600 px-5 py-3 text-white"
-                    : "rounded-2xl border border-white/40 bg-white/70 px-5 py-3"
+                  category ===
+                  item
+                    ? `
+                      rounded-2xl
+                      bg-blue-600
+                      px-5
+                      py-3
+                      text-white
+                    `
+                    : `
+                      rounded-2xl
+
+                      border
+                      border-white/40
+
+                      bg-white/70
+
+                      px-5
+                      py-3
+                    `
                 }
               >
-                {item}
+                {
+                  item
+                }
               </button>
             )
           )}
@@ -126,14 +197,29 @@ export default function MarketplacePage() {
 
       {/* LOADING */}
       {isLoading && (
-        <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div
+          className="
+            mt-12
+            grid
+            gap-8
+            md:grid-cols-2
+            xl:grid-cols-3
+          "
+        >
           {Array.from({
             length: 6,
-          }).map((_, index) => (
-            <MarketplaceCardSkeleton
-              key={index}
-            />
-          ))}
+          }).map(
+            (
+              _,
+              index
+            ) => (
+              <MarketplaceCardSkeleton
+                key={
+                  index
+                }
+              />
+            )
+          )}
         </div>
       )}
 
@@ -141,22 +227,57 @@ export default function MarketplacePage() {
       {!isLoading &&
         listings.length ===
           0 && (
-          <div className="mt-20 rounded-3xl border border-dashed p-16 text-center">
-            <h2 className="text-3xl font-black">
-              No listings found
+          <div
+            className="
+              mt-20
+
+              rounded-3xl
+
+              border
+              border-dashed
+
+              p-16
+
+              text-center
+            "
+          >
+            <h2
+              className="
+                text-3xl
+                font-black
+              "
+            >
+              No listings
+              found
             </h2>
 
-            <p className="mt-4 text-slate-500">
-              Try changing filters.
+            <p
+              className="
+                mt-4
+                text-slate-500
+              "
+            >
+              Try changing
+              filters.
             </p>
           </div>
         )}
 
-      {/* FIXED GRID */}
+      {/* GRID */}
       {!isLoading &&
         listings.length >
           0 && (
-          <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          <div
+            className="
+              mt-12
+
+              grid
+              gap-8
+
+              md:grid-cols-2
+              xl:grid-cols-3
+            "
+          >
             {listings.map(
               (
                 listing
@@ -175,31 +296,44 @@ export default function MarketplacePage() {
       {/* PAGINATION */}
       {!isLoading &&
         pagination &&
-        pagination.totalPages >
+        pagination
+          .totalPages >
           1 && (
-          <div className="mt-16 flex justify-center gap-4">
+          <div
+            className="
+              mt-16
+
+              flex
+              justify-center
+
+              gap-4
+            "
+          >
             <button
               disabled={
-                page === 1
+                page ===
+                1
               }
               onClick={() =>
                 setPage(
                   (
-                    prev
+                    previous
                   ) =>
-                    prev - 1
+                    previous -
+                    1
                 )
               }
             >
               <ChevronLeft />
             </button>
 
-            <div>
-              Page {page} of{" "}
+            <span>
+              {page}
+              {" / "}
               {
                 pagination.totalPages
               }
-            </div>
+            </span>
 
             <button
               disabled={
@@ -209,9 +343,10 @@ export default function MarketplacePage() {
               onClick={() =>
                 setPage(
                   (
-                    prev
+                    previous
                   ) =>
-                    prev + 1
+                    previous +
+                    1
                 )
               }
             >

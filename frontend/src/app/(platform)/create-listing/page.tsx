@@ -21,6 +21,10 @@ import {
   type ListingFormValues,
 } from "@/lib/validations/listing";
 
+import {
+  LISTING_CATEGORIES,
+} from "@/constants/listing-categories";
+
 import { Button } from "@/components/ui/Button";
 
 import { Card } from "@/components/ui/Card";
@@ -34,56 +38,51 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 
 export default function CreateListingPage() {
-  /**
-   * Router.
-   */
-  const router = useRouter();
+  const router =
+    useRouter();
 
-  /**
-   * Uploaded images.
-   */
   const [
     imageUrls,
     setImageUrls,
-  ] = useState<string[]>([]);
+  ] =
+    useState<string[]>(
+      []
+    );
 
-  /**
-   * Upload state.
-   */
   const [
     uploading,
     setUploading,
-  ] = useState(false);
+  ] =
+    useState(
+      false
+    );
 
-  /**
-   * React Hook Form.
-   */
   const {
     register,
     handleSubmit,
     reset,
+
     formState: {
       errors,
       isSubmitting,
     },
-  } = useForm<ListingFormValues>({
-    resolver: zodResolver(
-      listingSchema
-    ),
-  });
+  } =
+    useForm<ListingFormValues>(
+      {
+        resolver:
+          zodResolver(
+            listingSchema
+          ),
+      }
+    );
 
-  /**
-   * Submit listing.
-   */
   async function onSubmit(
     data: ListingFormValues
   ) {
     try {
-      /**
-       * Require image.
-       */
       if (
-        imageUrls.length === 0
+        imageUrls.length ===
+        0
       ) {
         toast.error(
           "Please upload at least one image"
@@ -92,35 +91,36 @@ export default function CreateListingPage() {
         return;
       }
 
-      /**
-       * API request.
-       */
       const response =
         await fetch(
           "/api/listings",
           {
-            method: "POST",
+            method:
+              "POST",
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
+            headers:
+              {
+                "Content-Type":
+                  "application/json",
+              },
 
-            body: JSON.stringify({
-              ...data,
+            body:
+              JSON.stringify(
+                {
+                  ...data,
 
-              imageUrls,
-            }),
+                  imageUrls,
+                }
+              ),
           }
         );
 
       const result =
         await response.json();
 
-      /**
-       * Backend error.
-       */
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         toast.error(
           result.error ||
             "Failed to create listing"
@@ -129,30 +129,27 @@ export default function CreateListingPage() {
         return;
       }
 
-      /**
-       * Success.
-       */
       toast.success(
         "Listing published"
       );
 
-      /**
-       * Reset state.
-       */
       reset();
 
-      setImageUrls([]);
+      setImageUrls(
+        []
+      );
 
-      /**
-       * Redirect.
-       */
       router.push(
         "/marketplace"
       );
 
       router.refresh();
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Something went wrong"
@@ -171,19 +168,38 @@ export default function CreateListingPage() {
         y: 0,
       }}
       transition={{
-        duration: 0.5,
+        duration:
+          0.5,
       }}
-      className="mx-auto max-w-4xl"
+      className="
+        mx-auto
+        max-w-4xl
+      "
     >
       {/* HEADER */}
       <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
-          Create Listing
+        <h1
+          className="
+            text-5xl
+            font-black
+            tracking-tight
+          "
+        >
+          Create
+          Listing
         </h1>
 
-        <p className="mt-4 text-lg text-slate-600">
-          Publish an item to the
-          campus marketplace.
+        <p
+          className="
+            mt-4
+            text-lg
+            text-slate-600
+          "
+        >
+          Publish an
+          item to the
+          campus
+          marketplace.
         </p>
       </div>
 
@@ -191,9 +207,13 @@ export default function CreateListingPage() {
       <Card
         className="
           mt-12
+
           border-white/40
+
           bg-white/70
+
           p-10
+
           backdrop-blur-xl
         "
       >
@@ -201,24 +221,31 @@ export default function CreateListingPage() {
           onSubmit={handleSubmit(
             onSubmit
           )}
-          className="space-y-8"
+          className="
+            space-y-8
+          "
         >
           {/* TITLE */}
           <div>
             <Label htmlFor="title">
-              Listing Title
+              Listing
+              Title
             </Label>
 
             <Input
               id="title"
               placeholder="MacBook Air M1"
               className="mt-2"
-              {...register("title")}
+              {...register(
+                "title"
+              )}
             />
 
             <FormError
               message={
-                errors.title?.message
+                errors
+                  .title
+                  ?.message
               }
             />
           </div>
@@ -231,50 +258,56 @@ export default function CreateListingPage() {
 
             <select
               id="category"
-              className="
-                mt-2
-                h-12
-                w-full
-                rounded-xl
-                border
-                border-slate-200
-                bg-white/80
-                px-4
-                text-sm
-                outline-none
-              "
               {...register(
                 "category"
               )}
+              className="
+                mt-2
+
+                h-14
+                w-full
+
+                rounded-2xl
+
+                border
+                border-slate-200
+
+                bg-white/80
+
+                px-5
+
+                outline-none
+              "
             >
               <option value="">
-                Select category
+                Select
+                category
               </option>
 
-              <option value="Electronics">
-                Electronics
-              </option>
-
-              <option value="Books">
-                Books
-              </option>
-
-              <option value="Furniture">
-                Furniture
-              </option>
-
-              <option value="Fashion">
-                Fashion
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
+              {LISTING_CATEGORIES.map(
+                (
+                  category
+                ) => (
+                  <option
+                    key={
+                      category
+                    }
+                    value={
+                      category
+                    }
+                  >
+                    {
+                      category
+                    }
+                  </option>
+                )
+              )}
             </select>
 
             <FormError
               message={
-                errors.category
+                errors
+                  .category
                   ?.message
               }
             />
@@ -290,7 +323,7 @@ export default function CreateListingPage() {
               id="price"
               type="number"
               step="0.01"
-              placeholder="250"
+              placeholder="25000"
               className="mt-2"
               {...register(
                 "price"
@@ -299,7 +332,8 @@ export default function CreateListingPage() {
 
             <FormError
               message={
-                errors.price
+                errors
+                  .price
                   ?.message
               }
             />
@@ -314,22 +348,27 @@ export default function CreateListingPage() {
             <textarea
               id="description"
               rows={6}
-              placeholder="Describe your item..."
-              className="
-                mt-2
-                w-full
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white/80
-                px-4
-                py-4
-                text-sm
-                outline-none
-              "
               {...register(
                 "description"
               )}
+              placeholder="Describe your item..."
+              className="
+                mt-2
+
+                w-full
+
+                rounded-2xl
+
+                border
+                border-slate-200
+
+                bg-white/80
+
+                px-5
+                py-4
+
+                outline-none
+              "
             />
 
             <FormError
@@ -344,7 +383,7 @@ export default function CreateListingPage() {
           {/* IMAGES */}
           <div>
             <Label>
-              Listing Images
+              Images
             </Label>
 
             <div className="mt-4">
@@ -355,12 +394,8 @@ export default function CreateListingPage() {
                 disabled={
                   uploading
                 }
-                onChange={(
-                  urls
-                ) =>
-                  setImageUrls(
-                    urls
-                  )
+                onChange={
+                  setImageUrls
                 }
                 onUploadStart={() =>
                   setUploading(
@@ -374,28 +409,21 @@ export default function CreateListingPage() {
                 }
               />
             </div>
-
-            <p className="mt-3 text-xs text-slate-500">
-              Max 5 images • 4MB
-              each
-            </p>
           </div>
 
-          {/* SUBMIT */}
           <Button
             type="submit"
             size="lg"
             disabled={
-              isSubmitting ||
-              uploading
+              uploading ||
+              isSubmitting
             }
-            className="w-full"
+            className="
+              w-full
+            "
           >
-            {uploading
-              ? "Uploading images..."
-              : isSubmitting
-              ? "Publishing..."
-              : "Publish Listing"}
+            Publish
+            Listing
           </Button>
         </form>
       </Card>
