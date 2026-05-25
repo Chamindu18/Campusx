@@ -370,7 +370,7 @@ export default function DashboardPage() {
                       </Link>
 
                       <Link
-                        href={`/marketplace/${listing.id}/edit`}
+                        href={`/marketplace/edit/${listing.id}`}
                       >
                         <button
                           className="
