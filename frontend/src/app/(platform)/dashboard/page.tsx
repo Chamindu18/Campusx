@@ -25,6 +25,8 @@ import {
   useCurrentUser,
 } from "@/hooks/use-current-user";
 
+import useSWR from "swr";
+
 const quickActions = [
   {
     title: "Create Listing",
@@ -88,6 +90,28 @@ export default function DashboardPage() {
       "@"
     )[0] ||
     "Student";
+
+  const fetcher = async (
+    url: string
+  ) => {
+    const response =
+      await fetch(url);
+
+    return response.json();
+  };
+
+  const {
+    data:
+      dormData,
+  } =
+    useSWR(
+      "/api/my-dorms",
+      fetcher
+    );
+
+  const dorms =
+    dormData?.dorms ||
+    [];
 
   return (
     <div className="space-y-14">
@@ -382,6 +406,199 @@ export default function DashboardPage() {
               No listings yet.
             </Card>
           )}
+        </div>
+      </section>
+
+      {/* MY DORMS */}
+      <section>
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+          "
+        >
+          <h2
+            className="
+              text-3xl
+              font-black
+            "
+          >
+            My Dorms
+            {" "}
+            (
+            {dorms.length}
+            )
+          </h2>
+
+          <Link
+            href="/dashboard/my-dorms"
+            className="
+              font-medium
+              text-blue-600
+            "
+          >
+            View All →
+          </Link>
+        </div>
+
+        <div
+          className="
+            mt-8
+
+            grid
+            gap-6
+
+            md:grid-cols-2
+          "
+        >
+          {dorms
+            .slice(
+              0,
+              4
+            )
+            .map(
+              (
+                dorm: any
+              ) => (
+                <Card
+                  key={
+                    dorm.id
+                  }
+                  className="
+                    rounded-[30px]
+
+                    p-8
+
+                    transition
+
+                    hover:-translate-y-1
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      justify-between
+                      gap-4
+                    "
+                  >
+                    <div>
+                      <div
+                        className="
+                          inline-flex
+
+                          rounded-full
+
+                          bg-blue-100
+
+                          px-3
+                          py-1
+
+                          text-xs
+
+                          font-medium
+
+                          text-blue-700
+                        "
+                      >
+                        <Home
+                          className="
+                            mr-2
+                            h-3
+                            w-3
+                          "
+                        />
+
+                        {
+                          dorm.university
+                        }
+                      </div>
+
+                      <h3
+                        className="
+                          mt-5
+
+                          text-2xl
+
+                          font-bold
+                        "
+                      >
+                        {
+                          dorm.title
+                        }
+                      </h3>
+
+                      <p
+                        className="
+                          mt-3
+
+                          text-slate-500
+                        "
+                      >
+                        LKR
+                        {" "}
+
+                        {
+                          dorm.price
+                            ?.toLocaleString()
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className="
+                      mt-8
+
+                      flex
+                      gap-3
+                    "
+                  >
+                    <Link
+                      href={`/dorms/${dorm.id}`}
+                    >
+                      <button
+                        className="
+                          rounded-full
+
+                          border
+
+                          px-5
+                          py-2
+
+                          font-medium
+
+                          hover:bg-slate-100
+                        "
+                      >
+                        Open
+                      </button>
+                    </Link>
+
+                    <Link
+                      href={`/dorms/edit/${dorm.id}`}
+                    >
+                      <button
+                        className="
+                          rounded-full
+
+                          bg-blue-600
+
+                          px-5
+                          py-2
+
+                          font-medium
+
+                          text-white
+                        "
+                      >
+                        Edit
+                      </button>
+                    </Link>
+                  </div>
+                </Card>
+              )
+            )}
         </div>
       </section>
 
