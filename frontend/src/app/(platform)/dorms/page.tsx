@@ -17,15 +17,8 @@ import {
   DormCardSkeleton,
 } from "@/components/ui/DormCardSkeleton";
 
-const universities = [
+const DEFAULT_UNIVERSITIES = [
   "All",
-  "NSBM",
-  "SLIIT",
-  "UCSC",
-  "University of Moratuwa",
-  "University of Colombo",
-  "University of Kelaniya",
-  "University of Peradeniya",
 ];
 
 const roomTypes = [
@@ -86,6 +79,14 @@ export default function DormsPage() {
     setMaxPrice,
   ] =
     useState("");
+
+  const [
+    universities,
+    setUniversities,
+  ] =
+  useState<string[]>(
+    DEFAULT_UNIVERSITIES
+  );
 
   useEffect(() => {
     async function fetchDorms() {
@@ -148,10 +149,43 @@ export default function DormsPage() {
         const data =
           await response.json();
 
-        setDorms(
+        const dormList =
           data.dorms ||
-            []
+          [];
+
+        setDorms(
+          dormList
         );
+
+        if (
+          search === "" &&
+          city === "" &&
+          gender === "" &&
+          roomType === "" &&
+          maxPrice === ""
+        ) {
+          const dynamicUniversities =
+            [
+              "All",
+
+              ...new Set(
+                dormList
+                  .map(
+                    (
+                      dorm: any
+                    ) =>
+                      dorm.university
+                  )
+                  .filter(
+                    Boolean
+                  )
+              ),
+            ];
+
+          setUniversities(
+            dynamicUniversities
+          );
+        }
       } finally {
         setLoading(
           false
@@ -268,6 +302,9 @@ export default function DormsPage() {
             ) => (
               <option
                 key={
+                  item
+                }
+                value={
                   item
                 }
               >

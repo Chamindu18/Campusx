@@ -61,6 +61,7 @@ const universities = [
   "University of Ruhuna",
   "Rajarata University",
   "Wayamba University",
+  "Other",
 ];
 
 /**
@@ -109,12 +110,23 @@ export default function CreateDormPage() {
     setUploading,
   ] = useState(false);
 
+  const [
+    selectedUniversity,
+    setSelectedUniversity,
+  ] = useState("");
+
+const [
+    customUniversity,
+    setCustomUniversity,
+  ] = useState("");
+
   /**
    * React Hook Form.
    */
   const {
     register,
     handleSubmit,
+    setValue,
     formState: {
       errors,
       isSubmitting,
@@ -356,6 +368,23 @@ export default function CreateDormPage() {
             </Label>
 
             <select
+              value={selectedUniversity}
+              onChange={(e) => {
+                const value =
+                  e.target.value;
+
+                setSelectedUniversity(
+                  value
+                );
+
+                setValue(
+                  "university",
+                  value ===
+                    "Other"
+                    ? ""
+                    : value
+                );
+              }}
               className="
                 mt-2
                 h-12
@@ -368,9 +397,6 @@ export default function CreateDormPage() {
                 text-sm
                 outline-none
               "
-              {...register(
-                "university"
-              )}
             >
               <option value="">
                 Select university
@@ -395,6 +421,39 @@ export default function CreateDormPage() {
                 )
               )}
             </select>
+
+            {selectedUniversity ===
+              "Other" && (
+              <Input
+                className="mt-4"
+                placeholder="Enter university name"
+                value={
+                  customUniversity
+                }
+                onChange={(e) => {
+                  setCustomUniversity(
+                    e.target
+                      .value
+                  );
+
+                  setValue(
+                    "university",
+                    e.target
+                      .value
+                  );
+                }}
+              />
+            )}
+
+            {errors.university && (
+              <p className="mt-2 text-sm text-red-500">
+                {
+                  errors
+                    .university
+                    ?.message
+                }
+              </p>
+            )}
           </div>
 
           {/* CITY */}
