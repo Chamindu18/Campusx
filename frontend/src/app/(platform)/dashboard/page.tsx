@@ -615,7 +615,7 @@ export default function DashboardPage() {
 
           <Link
             href="/dashboard/saved"
-            className="text-blue-600"
+            className="font-medium text-blue-600"
           >
             View All →
           </Link>
@@ -626,40 +626,116 @@ export default function DashboardPage() {
             <Card className="p-8">
               Loading...
             </Card>
-          ) : (
+          ) : savedListings.length ? (
             savedListings
-              .slice(
-                0,
-                4
-              )
+              .slice(0, 4)
               .map(
                 (
                   item: any
                 ) => (
-                  <Link
-                    key={
-                      item.id
-                    }
-                    href={`/marketplace/${item.listingId}`}
+                  <Card
+                    key={item.id}
+                    className="
+                      rounded-[30px]
+                      p-8
+                      transition
+                      hover:-translate-y-1
+                      hover:shadow-md
+                    "
                   >
-                    <Card className="rounded-[28px] p-7 transition hover:-translate-y-1">
-                      <h3 className="text-xl font-bold">
-                        {
-                          item
-                            .listing
-                            ?.title
-                        }
-                      </h3>
+                    <h3 className="text-xl font-bold">
+                      {
+                        item
+                          .listing
+                          ?.title
+                      }
+                    </h3>
 
-                      <div className="mt-8 flex items-center gap-3 text-blue-600">
-                        Open
+                    <p className="mt-3 text-slate-500">
+                      {
+                        item
+                          .listing
+                          ?.category
+                      }
+                    </p>
 
-                        <ArrowRight />
-                      </div>
-                    </Card>
-                  </Link>
+                    <div className="mt-8 flex gap-3">
+                      <Link
+                        href={`/marketplace/${item.listingId}`}
+                      >
+                        <button
+                          className="
+                            rounded-full
+                            border
+                            px-5
+                            py-2
+                            font-medium
+                            transition
+                            hover:bg-slate-100
+                          "
+                        >
+                          Open
+                        </button>
+                      </Link>
+
+                      <button
+                        onClick={async () => {
+                          const response =
+                            await fetch(
+                              "/api/saved-listings",
+                              {
+                                method:
+                                  "DELETE",
+
+                                headers:
+                                  {
+                                    "Content-Type":
+                                      "application/json",
+                                  },
+
+                                body:
+                                  JSON.stringify(
+                                    {
+                                      listingId:
+                                        item.listingId,
+                                    }
+                                  ),
+                              }
+                            );
+
+                          if (
+                            response.ok
+                          ) {
+                            window.location.reload();
+                          }
+                        }}
+                        className="
+                          rounded-full
+
+                          bg-red-50
+
+                          px-5
+                          py-2
+
+                          font-medium
+
+                          text-red-600
+
+                          transition
+
+                          hover:bg-red-100
+                        "
+                      >
+                        Remove ❤️
+                      </button>
+                    </div>
+                  </Card>
                 )
               )
+          ) : (
+            <Card className="p-8">
+              No saved listings yet.
+            </Card>
           )}
         </div>
       </section>

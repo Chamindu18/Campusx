@@ -14,9 +14,6 @@ import { getCurrentUser } from "@/lib/current-user";
 
 export async function GET() {
   try {
-    /**
-     * Authenticated user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -32,9 +29,6 @@ export async function GET() {
       );
     }
 
-    /**
-     * Fetch saved listings.
-     */
     const savedListings =
       await prisma.savedListing.findMany({
         where: {
@@ -63,8 +57,12 @@ export async function GET() {
     return NextResponse.json(
       savedListings
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
@@ -86,9 +84,6 @@ export async function POST(
   request: Request
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -104,9 +99,6 @@ export async function POST(
       );
     }
 
-    /**
-     * Parse request.
-     */
     const body =
       await request.json();
 
@@ -114,24 +106,21 @@ export async function POST(
       listingId,
     } = body;
 
-    /**
-     * Check duplicate.
-     */
     const existing =
-      await prisma.savedListing.findUnique({
-        where: {
-          userId_listingId: {
-            userId:
-              currentUser.id,
+      await prisma.savedListing.findUnique(
+        {
+          where: {
+            userId_listingId:
+              {
+                userId:
+                  currentUser.id,
 
-            listingId,
+                listingId,
+              },
           },
-        },
-      });
+        }
+      );
 
-    /**
-     * Already saved.
-     */
     if (existing) {
       return NextResponse.json(
         {
@@ -144,29 +133,98 @@ export async function POST(
       );
     }
 
-    /**
-     * Save listing.
-     */
     const savedListing =
-      await prisma.savedListing.create({
-        data: {
-          userId:
-            currentUser.id,
+      await prisma.savedListing.create(
+        {
+          data: {
+            userId:
+              currentUser.id,
 
-          listingId,
-        },
-      });
+            listingId,
+          },
+        }
+      );
 
     return NextResponse.json(
       savedListing
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
         error:
           "Failed to save listing",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+/* ===================================================== */
+/* REMOVE SAVED LISTING */
+/* ===================================================== */
+
+export async function DELETE(
+  request: Request
+) {
+  try {
+    const currentUser =
+      await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          error:
+            "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const body =
+      await request.json();
+
+    const {
+      listingId,
+    } = body;
+
+    await prisma.savedListing.deleteMany(
+      {
+        where: {
+          userId:
+            currentUser.id,
+
+          listingId,
+        },
+      }
+    );
+
+    return NextResponse.json(
+      {
+        success:
+          true,
+      }
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Failed to remove saved listing",
       },
       {
         status: 500,
