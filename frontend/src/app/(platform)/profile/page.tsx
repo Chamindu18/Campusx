@@ -12,39 +12,24 @@ import {
   School,
 } from "lucide-react";
 
-import { useCurrentUser } from "@/hooks/use-current-user";
+import Link from "next/link";
 
-import { useMyListings } from "@/hooks/use-my-listings";
+import {
+  useCurrentUser,
+} from "@/hooks/use-current-user";
 
-import { Card } from "@/components/ui/Card";
-
-import { ProfileListingCard } from "@/components/ui/ProfileListingCard";
+import {
+  Card,
+} from "@/components/ui/Card";
 
 export default function ProfilePage() {
-  /**
-   * Current authenticated user.
-   */
-  const { user } =
+  const {
+    user,
+  } =
     useCurrentUser();
 
   /**
-   * User listings.
-   */
-  const {
-    listings,
-    isLoading,
-    mutate,
-  } = useMyListings();
-
-  /**
-   * Remove deleted listing.
-   */
-  function handleDelete() {
-    mutate();
-  }
-
-  /**
-   * Loading state.
+   * Loading.
    */
   if (!user) {
     return (
@@ -58,9 +43,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      {/* ================================= */}
-      {/* PROFILE HEADER */}
-      {/* ================================= */}
+      {/* PROFILE */}
 
       <motion.div
         initial={{
@@ -83,35 +66,46 @@ export default function ProfilePage() {
         "
       >
         {/* Banner */}
+
         <div
           className="
             h-48
+
             bg-gradient-to-br
+
             from-blue-500
             via-indigo-500
             to-cyan-500
           "
         />
 
-        {/* Content */}
         <div className="relative px-10 pb-10">
           {/* Avatar */}
+
           <div
             className="
               absolute
               -top-16
+
               flex
               h-32
               w-32
+
               items-center
               justify-center
+
               rounded-[28px]
+
               border-4
               border-white
+
               bg-white
+
               text-4xl
               font-black
+
               text-slate-900
+
               shadow-xl
             "
           >
@@ -120,24 +114,23 @@ export default function ProfilePage() {
               ?.toUpperCase()}
           </div>
 
-          {/* Profile Content */}
+          {/* Content */}
+
           <div className="pt-24">
-            <div className="flex flex-col gap-10 xl:flex-row xl:items-start xl:justify-between">
-              {/* Left */}
+            <div className="flex flex-col gap-10 xl:flex-row xl:justify-between">
               <div>
-                <h1 className="text-5xl font-black tracking-tight text-slate-900">
+                <h1 className="text-5xl font-black">
                   {user.name}
                 </h1>
 
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                <p className="mt-6 max-w-2xl text-lg text-slate-600">
                   {user.bio ||
-                    "CampusX marketplace member."}
+                    "CampusX member"}
                 </p>
 
-                {/* Meta */}
-                <div className="mt-8 flex flex-col gap-4 text-sm text-slate-500">
+                <div className="mt-8 flex flex-col gap-4 text-slate-500">
                   <div className="flex items-center gap-3">
-                    <School className="h-5 w-5" />
+                    <School />
 
                     <span>
                       {user.university ||
@@ -146,7 +139,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5" />
+                    <Mail />
 
                     <span>
                       {user.email}
@@ -154,7 +147,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5" />
+                    <Calendar />
 
                     <span>
                       CampusX Member
@@ -164,19 +157,20 @@ export default function ProfilePage() {
               </div>
 
               {/* Stats */}
+
               <div className="grid grid-cols-2 gap-5">
                 <Card className="border-white/40 bg-white/70 p-6 text-center backdrop-blur-xl">
-                  <div className="text-4xl font-black text-slate-900">
-                    {listings.length}
+                  <div className="text-4xl font-black">
+                    —
                   </div>
 
                   <p className="mt-2 text-sm text-slate-500">
-                    Listings
+                    Marketplace
                   </p>
                 </Card>
 
                 <Card className="border-white/40 bg-white/70 p-6 text-center backdrop-blur-xl">
-                  <div className="text-4xl font-black text-slate-900">
+                  <div className="text-4xl font-black">
                     Active
                   </div>
 
@@ -190,78 +184,40 @@ export default function ProfilePage() {
         </div>
       </motion.div>
 
-      {/* ================================= */}
-      {/* USER LISTINGS */}
-      {/* ================================= */}
+      {/* DASHBOARD */}
 
       <div className="mt-16">
-        {/* Heading */}
-        <div>
-          <h2 className="text-4xl font-black tracking-tight text-slate-900">
-            My Listings
+        <Card className="border-white/40 bg-white/70 p-10 backdrop-blur-xl">
+          <h2 className="text-3xl font-black">
+            Manage Content
           </h2>
 
-          <p className="mt-3 text-slate-500">
-            Manage your marketplace listings.
+          <p className="mt-4 text-slate-600">
+            Manage listings,
+            saved items,
+            and dorms from dashboard.
           </p>
-        </div>
 
-        {/* Loading */}
-        {isLoading && (
-          <div className="mt-10">
-            <p className="text-slate-500">
-              Loading listings...
-            </p>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!isLoading &&
-          listings.length === 0 && (
-            <div
+          <div className="mt-8">
+            <Link
+              href="/dashboard"
               className="
-                mt-10
-                rounded-3xl
-                border
-                border-dashed
-                border-slate-300
-                bg-white/50
-                px-10
-                py-20
-                text-center
-                backdrop-blur-xl
+                inline-flex
+
+                rounded-2xl
+
+                bg-slate-900
+
+                px-6
+                py-3
+
+                text-white
               "
             >
-              <h3 className="text-2xl font-bold text-slate-900">
-                No listings yet
-              </h3>
-
-              <p className="mt-4 text-slate-500">
-                Create your first marketplace
-                listing.
-              </p>
-            </div>
-          )}
-
-        {/* Listings Grid */}
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
-          {listings.map(
-            (listing: any) => (
-              <ProfileListingCard
-                key={listing.id}
-                id={listing.id}
-                title={listing.title}
-                price={listing.price}
-                category={
-                  listing.category
-                }
-                onDelete={
-                  handleDelete
-                }
-              />
-            )
-          )}
-        </div>
+              Open Dashboard
+            </Link>
+          </div>
+        </Card>
       </div>
     </div>
   );
