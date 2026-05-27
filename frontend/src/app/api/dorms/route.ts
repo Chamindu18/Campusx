@@ -21,7 +21,7 @@ export async function POST(
 ) {
   try {
     /**
-     * Authenticated user.
+     * Current user.
      */
     const currentUser =
       await getCurrentUser();
@@ -39,24 +39,24 @@ export async function POST(
     }
 
     /**
-     * Request body.
+     * Parse request.
      */
     const body =
       await request.json();
 
-    /**
-     * Validate body.
-     */
     const parsed =
       dormSchema.safeParse(
         body
       );
 
-    if (!parsed.success) {
+    if (
+      !parsed.success
+    ) {
       return NextResponse.json(
         {
           error:
-            parsed.error.issues[0]
+            parsed.error
+              .issues[0]
               ?.message ||
             "Invalid dorm data",
         },
@@ -82,8 +82,12 @@ export async function POST(
     return NextResponse.json(
       dorm
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
@@ -111,120 +115,158 @@ export async function GET(
       request.url
     );
 
-    /**
-     * Filters.
-     */
     const search =
-      searchParams.get(
-        "search"
-      );
+      searchParams
+        .get(
+          "search"
+        )
+        ?.trim();
 
     const university =
-      searchParams.get(
-        "university"
-      );
+      searchParams
+        .get(
+          "university"
+        )
+        ?.trim();
 
     const city =
-      searchParams.get(
-        "city"
-      );
+      searchParams
+        .get(
+          "city"
+        )
+        ?.trim();
 
     const gender =
-      searchParams.get(
-        "gender"
-      );
+      searchParams
+        .get(
+          "gender"
+        )
+        ?.trim();
 
     const roomType =
-      searchParams.get(
-        "roomType"
-      );
+      searchParams
+        .get(
+          "roomType"
+        )
+        ?.trim();
 
     const maxPrice =
-      searchParams.get(
-        "maxPrice"
-      );
+      searchParams
+        .get(
+          "maxPrice"
+        );
 
     const sort =
-      searchParams.get(
-        "sort"
-      );
+      searchParams
+        .get(
+          "sort"
+        );
 
     /**
-     * Query dorms.
+     * Query.
      */
+    const where: Record<
+      string,
+      unknown
+    > = {};
+
+    if (
+      search
+    ) {
+      where.OR = [
+        {
+          title: {
+            contains:
+              search,
+
+            mode:
+              "insensitive",
+          },
+        },
+
+        {
+          description:
+            {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+        },
+      ];
+    }
+
+    if (
+      university &&
+      university !==
+        "All"
+    ) {
+      where.university =
+        university;
+    }
+
+    if (
+      city
+    ) {
+      where.city =
+        {
+          contains:
+            city,
+
+          mode:
+            "insensitive",
+        };
+    }
+
+    if (
+      gender
+    ) {
+      where.gender =
+        gender;
+    }
+
+    if (
+      roomType
+    ) {
+      where.roomType =
+        roomType;
+    }
+
+    if (
+      maxPrice
+    ) {
+      where.price =
+        {
+          lte:
+            Number(
+              maxPrice
+            ),
+        };
+    }
+
     const dorms =
       await prisma.dorm.findMany(
         {
-          where: {
-            ...(search && {
-              OR: [
-                {
-                  title: {
-                    contains:
-                      search,
+          where,
 
-                    mode:
-                      "insensitive",
-                  },
-                },
-
+          include:
+            {
+              user:
                 {
-                  description:
+                  select:
                     {
-                      contains:
-                        search,
+                      id:
+                        true,
 
-                      mode:
-                        "insensitive",
+                      name:
+                        true,
+
+                      university:
+                        true,
                     },
                 },
-              ],
-            }),
-
-            ...(university &&
-              university !==
-                "All" && {
-                university,
-              }),
-
-            ...(city && {
-              city: {
-                contains:
-                  city,
-
-                mode:
-                  "insensitive",
-              },
-            }),
-
-            ...(gender && {
-              gender,
-            }),
-
-            ...(roomType && {
-              roomType,
-            }),
-
-            ...(maxPrice && {
-              price: {
-                lte: Number(
-                  maxPrice
-                ),
-              },
-            }),
-          },
-
-          include: {
-            user: {
-              select: {
-                id: true,
-
-                name: true,
-
-                university: true,
-              },
             },
-          },
 
           orderBy:
             sort ===
@@ -246,11 +288,17 @@ export async function GET(
         }
       );
 
-    return NextResponse.json({
-      dorms,
-    });
-  } catch (error) {
-    console.error(error);
+    return NextResponse.json(
+      {
+        dorms,
+      }
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {

@@ -31,25 +31,21 @@ export async function GET(
       await params;
 
     const dorm =
-      await prisma.dorm.findUnique(
-        {
-          where: {
-            id,
-          },
+      await prisma.dorm.findUnique({
+        where: {
+          id,
+        },
 
-          include: {
-            user: {
-              select: {
-                id: true,
-
-                name: true,
-
-                university: true,
-              },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              university: true,
             },
           },
-        }
-      );
+        },
+      });
 
     if (!dorm) {
       return NextResponse.json(
@@ -90,9 +86,6 @@ export async function PATCH(
   { params }: RouteParams
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -108,25 +101,17 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Params.
-     */
     const { id } =
       await params;
 
-    /**
-     * Existing dorm.
-     */
-    const existingDorm =
-      await prisma.dorm.findUnique(
-        {
-          where: {
-            id,
-          },
-        }
-      );
+    const dorm =
+      await prisma.dorm.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (!existingDorm) {
+    if (!dorm) {
       return NextResponse.json(
         {
           error:
@@ -138,13 +123,13 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Ownership validation.
-     */
-    if (
-      existingDorm.userId !==
-      currentUser.id
-    ) {
+    const canEdit =
+      dorm.userId ===
+        currentUser.id ||
+      currentUser.role ===
+        "ADMIN";
+
+    if (!canEdit) {
       return NextResponse.json(
         {
           error:
@@ -156,27 +141,23 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Body.
-     */
     const body =
       await request.json();
 
-    /**
-     * Validate.
-     */
     const parsed =
       dormSchema.safeParse(
         body
       );
 
-    if (!parsed.success) {
+    if (
+      !parsed.success
+    ) {
       return NextResponse.json(
         {
           error:
-            parsed.error.issues[0]
-              ?.message ||
-            "Invalid dorm data",
+            parsed.error
+              .issues[0]
+              ?.message,
         },
         {
           status: 400,
@@ -184,20 +165,18 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Update dorm.
-     */
-    const updatedDorm =
+    const updated =
       await prisma.dorm.update({
         where: {
           id,
         },
 
-        data: parsed.data,
+        data:
+          parsed.data,
       });
 
     return NextResponse.json(
-      updatedDorm
+      updated
     );
   } catch (error) {
     console.error(error);
@@ -223,9 +202,6 @@ export async function DELETE(
   { params }: RouteParams
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -241,25 +217,17 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Params.
-     */
     const { id } =
       await params;
 
-    /**
-     * Existing dorm.
-     */
-    const existingDorm =
-      await prisma.dorm.findUnique(
-        {
-          where: {
-            id,
-          },
-        }
-      );
+    const dorm =
+      await prisma.dorm.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (!existingDorm) {
+    if (!dorm) {
       return NextResponse.json(
         {
           error:
@@ -271,13 +239,13 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Ownership check.
-     */
-    if (
-      existingDorm.userId !==
-      currentUser.id
-    ) {
+    const canDelete =
+      dorm.userId ===
+        currentUser.id ||
+      currentUser.role ===
+        "ADMIN";
+
+    if (!canDelete) {
       return NextResponse.json(
         {
           error:
@@ -289,9 +257,6 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Delete dorm.
-     */
     await prisma.dorm.delete({
       where: {
         id,
@@ -299,7 +264,8 @@ export async function DELETE(
     });
 
     return NextResponse.json({
-      success: true,
+      success:
+        true,
     });
   } catch (error) {
     console.error(error);
