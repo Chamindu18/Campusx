@@ -1,224 +1,234 @@
-"use client";
-
 /**
- * Real authenticated profile page.
+ * User profile API.
  */
 
-import { motion } from "framer-motion";
+import { NextResponse } from "next/server";
 
-import {
-  Calendar,
-  Mail,
-  School,
-} from "lucide-react";
+import { z } from "zod";
 
-import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 
-import {
-  useCurrentUser,
-} from "@/hooks/use-current-user";
+import { getCurrentUser } from "@/lib/current-user";
 
-import {
-  Card,
-} from "@/components/ui/Card";
+/* ===================================================== */
+/* VALIDATION */
+/* ===================================================== */
 
-export default function ProfilePage() {
-  const {
-    user,
-  } =
-    useCurrentUser();
+const profileUpdateSchema =
+  z.object({
+    name:
+      z
+        .string()
+        .trim()
+        .min(
+          2,
+          "Name must be at least 2 characters"
+        )
+        .optional(),
 
-  /**
-   * Loading.
-   */
-  if (!user) {
-    return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <p className="text-lg text-slate-500">
-          Loading profile...
-        </p>
-      </div>
+    university:
+      z
+        .string()
+        .trim()
+        .optional(),
+
+    bio:
+      z
+        .string()
+        .trim()
+        .max(
+          500,
+          "Bio must be less than 500 characters"
+        )
+        .optional(),
+  });
+
+/* ===================================================== */
+/* SAFE USER SELECT */
+/* ===================================================== */
+
+const userSelect = {
+  id: true,
+
+  name: true,
+
+  email: true,
+
+  university:
+    true,
+
+  bio:
+    true,
+
+  createdAt:
+    true,
+};
+
+/* ===================================================== */
+/* GET PROFILE */
+/* ===================================================== */
+
+export async function GET() {
+  try {
+    const currentUser =
+      await getCurrentUser();
+
+    if (
+      !currentUser
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const user =
+      await prisma.user.findUnique({
+        where: {
+          id:
+            currentUser.id,
+        },
+
+        select:
+          userSelect,
+      });
+
+    return NextResponse.json(
+      user
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Failed to fetch profile",
+      },
+      {
+        status: 500,
+      }
     );
   }
+}
 
-  return (
-    <div>
-      {/* PROFILE */}
+/* ===================================================== */
+/* UPDATE PROFILE */
+/* ===================================================== */
 
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 20,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        className="
-          overflow-hidden
-          rounded-[32px]
-          border
-          border-white/40
-          bg-white/70
-          shadow-xl
-          shadow-slate-200/30
-          backdrop-blur-xl
-        "
-      >
-        {/* Banner */}
+export async function PATCH(
+  request: Request
+) {
+  try {
+    const currentUser =
+      await getCurrentUser();
 
-        <div
-          className="
-            h-48
+    if (
+      !currentUser
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Unauthorized",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
 
-            bg-gradient-to-br
+    const body =
+      await request.json();
 
-            from-blue-500
-            via-indigo-500
-            to-cyan-500
-          "
-        />
+    const parsed =
+      profileUpdateSchema.safeParse(
+        body
+      );
 
-        <div className="relative px-10 pb-10">
-          {/* Avatar */}
+    if (
+      !parsed.success
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            parsed.error
+              .issues[0]
+              ?.message,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-          <div
-            className="
-              absolute
-              -top-16
+    const {
+      name,
+      university,
+      bio,
+    } =
+      parsed.data;
 
-              flex
-              h-32
-              w-32
+    await prisma.user.update({
+      where: {
+        id:
+          currentUser.id,
+      },
 
-              items-center
-              justify-center
+      data: {
+        ...(name !==
+          undefined && {
+          name,
+        }),
 
-              rounded-[28px]
+        ...(university !==
+          undefined && {
+          university,
+        }),
 
-              border-4
-              border-white
+        ...(bio !==
+          undefined && {
+          bio,
+        }),
+      },
+    });
 
-              bg-white
+    const updated =
+      await prisma.user.findUnique({
+        where: {
+          id:
+            currentUser.id,
+        },
 
-              text-4xl
-              font-black
+        select:
+          userSelect,
+      });
 
-              text-slate-900
+    return NextResponse.json(
+      updated
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
-              shadow-xl
-            "
-          >
-            {user.name
-              ?.charAt(0)
-              ?.toUpperCase()}
-          </div>
-
-          {/* Content */}
-
-          <div className="pt-24">
-            <div className="flex flex-col gap-10 xl:flex-row xl:justify-between">
-              <div>
-                <h1 className="text-5xl font-black">
-                  {user.name}
-                </h1>
-
-                <p className="mt-6 max-w-2xl text-lg text-slate-600">
-                  {user.bio ||
-                    "CampusX member"}
-                </p>
-
-                <div className="mt-8 flex flex-col gap-4 text-slate-500">
-                  <div className="flex items-center gap-3">
-                    <School />
-
-                    <span>
-                      {user.university ||
-                        "University not added"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Mail />
-
-                    <span>
-                      {user.email}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Calendar />
-
-                    <span>
-                      CampusX Member
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats */}
-
-              <div className="grid grid-cols-2 gap-5">
-                <Card className="border-white/40 bg-white/70 p-6 text-center backdrop-blur-xl">
-                  <div className="text-4xl font-black">
-                    —
-                  </div>
-
-                  <p className="mt-2 text-sm text-slate-500">
-                    Marketplace
-                  </p>
-                </Card>
-
-                <Card className="border-white/40 bg-white/70 p-6 text-center backdrop-blur-xl">
-                  <div className="text-4xl font-black">
-                    Active
-                  </div>
-
-                  <p className="mt-2 text-sm text-slate-500">
-                    Account
-                  </p>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* DASHBOARD */}
-
-      <div className="mt-16">
-        <Card className="border-white/40 bg-white/70 p-10 backdrop-blur-xl">
-          <h2 className="text-3xl font-black">
-            Manage Content
-          </h2>
-
-          <p className="mt-4 text-slate-600">
-            Manage listings,
-            saved items,
-            and dorms from dashboard.
-          </p>
-
-          <div className="mt-8">
-            <Link
-              href="/dashboard"
-              className="
-                inline-flex
-
-                rounded-2xl
-
-                bg-slate-900
-
-                px-6
-                py-3
-
-                text-white
-              "
-            >
-              Open Dashboard
-            </Link>
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
+    return NextResponse.json(
+      {
+        error:
+          "Failed to update profile",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
