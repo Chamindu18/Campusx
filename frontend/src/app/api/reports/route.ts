@@ -40,11 +40,15 @@ export async function POST(
     const body =
       await request.json();
 
-    const {
-      listingId,
-      reason,
-      description,
-    } = body;
+    const listingId =
+      body.listingId?.trim();
+
+    const reason =
+      body.reason?.trim();
+
+    const description =
+      body.description?.trim() ||
+      "";
 
     /**
      * Validation.
@@ -69,26 +73,58 @@ export async function POST(
      */
     const targetListing =
       await prisma.listing.findUnique({
-        where: { id: listingId },
-        select: { id: true, userId: true, title: true },
+        where: {
+          id:
+            listingId,
+        },
+
+        select: {
+          id: true,
+
+          title:
+            true,
+
+          userId:
+            true,
+        },
       });
 
     if (!targetListing) {
       return NextResponse.json(
-        { error: "Listing not found" },
-        { status: 404 }
+        {
+          error:
+            "Listing not found",
+        },
+        {
+          status: 404,
+        }
       );
     }
+
     /**
-     * Create report.
+     * Prevent self-reporting.
      */
-    const report =
-      await prisma.report.create({
-        data: {
-          reason,
+    if (
+      targetListing.userId ===
+      currentUser.id
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "You cannot report your own listing",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-          description,
-
+    /**
+     * Prevent duplicate reports.
+     */
+    const existingReport =
+      await prisma.report.findFirst({
+        where: {
           listingId,
 
           reporterId:
@@ -96,25 +132,74 @@ export async function POST(
         },
       });
 
+    if (
+      existingReport
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "You already reported this listing",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     /**
-     * Notify listing owner about the report.
+     * Create report.
+     */
+    const report =
+      await prisma.report.create({
+        data: {
+          listingId,
+
+          reason,
+
+          description,
+
+          reporterId:
+            currentUser.id,
+        },
+      });
+
+    /**
+     * Notify owner.
      */
     try {
       await prisma.notification.create({
         data: {
-          title: `Listing reported: ${targetListing.title}`,
-          message: `Your listing was reported for: ${reason}`,
-          link: `/marketplace/${targetListing.id}`,
-          userId: targetListing.userId,
+          title:
+            `Listing reported: ${targetListing.title}`,
+
+          message:
+            `Your listing was reported for: ${reason}`,
+
+          link:
+            `/marketplace/${targetListing.id}`,
+
+          userId:
+            targetListing.userId,
         },
       });
-    } catch (err) {
-      console.error("Failed to create notification", err);
+    } catch (
+      error
+    ) {
+      console.error(
+        "Notification error:",
+        error
+      );
     }
 
-    return NextResponse.json(report);
-  } catch (error) {
-    console.error(error);
+    return NextResponse.json(
+      report
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
@@ -152,7 +237,13 @@ export async function GET() {
       );
     }
 
-    if (currentUser.role !== "ADMIN") {
+    /**
+     * Admin only.
+     */
+    if (
+      currentUser.role !==
+      "ADMIN"
+    ) {
       return NextResponse.json(
         {
           error:
@@ -173,24 +264,34 @@ export async function GET() {
           reporter: {
             select: {
               id: true,
-              name: true,
-              email: true,
+
+              name:
+                true,
+
+              email:
+                true,
             },
           },
 
-          listing: true,
+          listing:
+            true,
         },
 
         orderBy: {
-          createdAt: "desc",
+          createdAt:
+            "desc",
         },
       });
 
     return NextResponse.json(
       reports
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
