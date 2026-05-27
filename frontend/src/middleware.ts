@@ -28,12 +28,6 @@ import {
 /* ROUTES */
 /* ===================================================== */
 
-/**
- * ONLY protected routes.
- *
- * Marketplace + dorm browsing
- * are now PUBLIC.
- */
 const protectedRoutes = [
   "/dashboard",
 
@@ -54,28 +48,43 @@ const protectedRoutes = [
   "/admin",
 ];
 
+const authRoutes = [
+  "/login",
+
+  "/register",
+];
+
 /* ===================================================== */
 /* HELPERS */
 /* ===================================================== */
 
-/**
- * Protected route check.
- */
 function isProtectedPath(
   pathname: string
 ) {
   return protectedRoutes.some(
-    (route) =>
-      pathname === route ||
+    (
+      route
+    ) =>
+      pathname ===
+        route ||
       pathname.startsWith(
         `${route}/`
       )
   );
 }
 
-/**
- * Build login redirect.
- */
+function isAuthPath(
+  pathname: string
+) {
+  return authRoutes.some(
+    (
+      route
+    ) =>
+      pathname ===
+      route
+  );
+}
+
 function buildLoginRedirect(
   request: NextRequest
 ) {
@@ -111,18 +120,52 @@ export async function middleware(
   if (
     !isProtectedPath(
       pathname
+    ) &&
+    !isAuthPath(
+      pathname
     )
   ) {
     return NextResponse.next();
   }
 
   /**
-   * Auth token.
+   * Read token.
    */
   const token =
     request.cookies.get(
       AUTH_COOKIE_NAME
     )?.value;
+
+  /**
+   * Auth pages.
+   */
+  if (
+    isAuthPath(
+      pathname
+    )
+  ) {
+    if (!token) {
+      return NextResponse.next();
+    }
+
+    const payload =
+      await verifyEdgeToken(
+        token
+      );
+
+    if (
+      payload
+    ) {
+      return NextResponse.redirect(
+        new URL(
+          "/dashboard",
+          request.url
+        )
+      );
+    }
+
+    return NextResponse.next();
+  }
 
   /**
    * Missing token.
@@ -142,7 +185,7 @@ export async function middleware(
     );
 
   /**
-   * Invalid/expired token.
+   * Invalid token.
    */
   if (!payload) {
     const response =
@@ -158,7 +201,7 @@ export async function middleware(
   }
 
   /**
-   * Admin-only access.
+   * Admin only.
    */
   if (
     pathname.startsWith(
@@ -184,6 +227,10 @@ export async function middleware(
 
 export const config = {
   matcher: [
+    "/login",
+
+    "/register",
+
     "/dashboard/:path*",
 
     "/messages/:path*",
