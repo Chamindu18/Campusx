@@ -58,12 +58,14 @@ export async function GET(
       (page - 1) *
       limit;
 
-    const where: any =
-      {
-        isActive:
-          true,
-      };
+    const where: Record<
+      string,
+      unknown
+    > = {};
 
+    /**
+     * Search.
+     */
     if (
       search
     ) {
@@ -91,6 +93,9 @@ export async function GET(
       ];
     }
 
+    /**
+     * Category.
+     */
     if (
       category &&
       category !==
@@ -192,6 +197,9 @@ export async function POST(
   request: Request
 ) {
   try {
+    /**
+     * Current user.
+     */
     const currentUser =
       await getCurrentUser();
 
@@ -209,6 +217,9 @@ export async function POST(
       );
     }
 
+    /**
+     * Parse body.
+     */
     const body =
       await request.json();
 
@@ -239,6 +250,9 @@ export async function POST(
     } =
       parsed.data;
 
+    /**
+     * Require images.
+     */
     if (
       imageUrls.length ===
       0
@@ -254,6 +268,9 @@ export async function POST(
       );
     }
 
+    /**
+     * Create listing.
+     */
     const listing =
       await prisma.listing.create(
         {
@@ -262,9 +279,6 @@ export async function POST(
 
             userId:
               currentUser.id,
-
-            isActive:
-              true,
           },
         }
       );

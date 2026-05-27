@@ -1,5 +1,5 @@
 /**
- * Single listing API.
+ * Single dorm API.
  */
 
 import { NextResponse } from "next/server";
@@ -9,8 +9,8 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/current-user";
 
 import {
-  listingSchema,
-} from "@/lib/validations/listing";
+  dormSchema,
+} from "@/lib/validations/dorm";
 
 interface RouteParams {
   params: Promise<{
@@ -19,7 +19,7 @@ interface RouteParams {
 }
 
 /* ===================================================== */
-/* GET SINGLE LISTING */
+/* GET SINGLE DORM */
 /* ===================================================== */
 
 export async function GET(
@@ -30,8 +30,8 @@ export async function GET(
     const { id } =
       await params;
 
-    const listing =
-      await prisma.listing.findUnique({
+    const dorm =
+      await prisma.dorm.findUnique({
         where: {
           id,
         },
@@ -41,17 +41,17 @@ export async function GET(
             select: {
               id: true,
               name: true,
-              email: true,
+              university: true,
             },
           },
         },
       });
 
-    if (!listing) {
+    if (!dorm) {
       return NextResponse.json(
         {
           error:
-            "Listing not found",
+            "Dorm not found",
         },
         {
           status: 404,
@@ -60,15 +60,19 @@ export async function GET(
     }
 
     return NextResponse.json(
-      listing
+      dorm
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
         error:
-          "Failed to fetch listing",
+          "Failed to fetch dorm",
       },
       {
         status: 500,
@@ -78,7 +82,7 @@ export async function GET(
 }
 
 /* ===================================================== */
-/* UPDATE LISTING */
+/* UPDATE DORM */
 /* ===================================================== */
 
 export async function PATCH(
@@ -86,9 +90,6 @@ export async function PATCH(
   { params }: RouteParams
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -104,29 +105,21 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Params.
-     */
     const { id } =
       await params;
 
-    /**
-     * Existing listing.
-     */
-    const existingListing =
-      await prisma.listing.findUnique(
-        {
-          where: {
-            id,
-          },
-        }
-      );
+    const existingDorm =
+      await prisma.dorm.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (!existingListing) {
+    if (!existingDorm) {
       return NextResponse.json(
         {
           error:
-            "Listing not found",
+            "Dorm not found",
         },
         {
           status: 404,
@@ -134,13 +127,13 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Ownership check.
-     */
-    if (
-      existingListing.userId !==
-      currentUser.id
-    ) {
+    const canEdit =
+      existingDorm.userId ===
+        currentUser.id ||
+      currentUser.role ===
+        "ADMIN";
+
+    if (!canEdit) {
       return NextResponse.json(
         {
           error:
@@ -152,27 +145,23 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Parse body.
-     */
     const body =
       await request.json();
 
-    /**
-     * Validate input.
-     */
     const parsed =
-      listingSchema.safeParse(
+      dormSchema.safeParse(
         body
       );
 
-    if (!parsed.success) {
+    if (
+      !parsed.success
+    ) {
       return NextResponse.json(
         {
           error:
-            parsed.error.issues[0]
-              ?.message ||
-            "Invalid listing data",
+            parsed.error
+              .issues[0]
+              ?.message,
         },
         {
           status: 400,
@@ -180,46 +169,30 @@ export async function PATCH(
       );
     }
 
-    const {
-      title,
-      description,
-      category,
-      price,
-      imageUrls = [],
-    } = parsed.data;
-
-    /**
-     * Update listing.
-     */
-    const updatedListing =
-      await prisma.listing.update({
+    const updated =
+      await prisma.dorm.update({
         where: {
           id,
         },
 
-        data: {
-          title,
-
-          description,
-
-          category,
-
-          price,
-
-          imageUrls,
-        },
+        data:
+          parsed.data,
       });
 
     return NextResponse.json(
-      updatedListing
+      updated
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
         error:
-          "Failed to update listing",
+          "Failed to update dorm",
       },
       {
         status: 500,
@@ -229,7 +202,7 @@ export async function PATCH(
 }
 
 /* ===================================================== */
-/* DELETE LISTING */
+/* DELETE DORM */
 /* ===================================================== */
 
 export async function DELETE(
@@ -237,9 +210,6 @@ export async function DELETE(
   { params }: RouteParams
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
@@ -255,29 +225,21 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Params.
-     */
     const { id } =
       await params;
 
-    /**
-     * Existing listing.
-     */
-    const listing =
-      await prisma.listing.findUnique(
-        {
-          where: {
-            id,
-          },
-        }
-      );
+    const dorm =
+      await prisma.dorm.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (!listing) {
+    if (!dorm) {
       return NextResponse.json(
         {
           error:
-            "Listing not found",
+            "Dorm not found",
         },
         {
           status: 404,
@@ -285,13 +247,13 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Ownership validation.
-     */
-    if (
-      listing.userId !==
-      currentUser.id
-    ) {
+    const canDelete =
+      dorm.userId ===
+        currentUser.id ||
+      currentUser.role ===
+        "ADMIN";
+
+    if (!canDelete) {
       return NextResponse.json(
         {
           error:
@@ -303,25 +265,27 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Delete listing.
-     */
-    await prisma.listing.delete({
+    await prisma.dorm.delete({
       where: {
         id,
       },
     });
 
     return NextResponse.json({
-      success: true,
+      success:
+        true,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
         error:
-          "Failed to delete listing",
+          "Failed to delete dorm",
       },
       {
         status: 500,
