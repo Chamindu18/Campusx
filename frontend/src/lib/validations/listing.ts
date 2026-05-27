@@ -44,6 +44,22 @@ export const listingSchema =
         "Description must be at least 20 characters"
       ),
 
+    condition: z
+      .string()
+      .trim()
+      .min(
+        1,
+        "Condition is required"
+      ),
+
+    location: z
+      .string()
+      .trim()
+      .min(
+        1,
+        "Location is required"
+      ),
+
     imageUrls: z
       .array(
         z.string().url()

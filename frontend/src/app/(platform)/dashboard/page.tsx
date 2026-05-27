@@ -84,7 +84,6 @@ export default function DashboardPage() {
     useCurrentUser();
 
   const username =
-    user?.fullName ||
     user?.name ||
     user?.email?.split(
       "@"

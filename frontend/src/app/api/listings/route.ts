@@ -245,8 +245,13 @@ export async function POST(
     }
 
     const {
-      imageUrls =
-        [],
+      title,
+      category,
+      price,
+      description,
+      condition,
+      location,
+      imageUrls = [],
     } =
       parsed.data;
 
@@ -275,7 +280,13 @@ export async function POST(
       await prisma.listing.create(
         {
           data: {
-            ...parsed.data,
+            title,
+            category,
+            price,
+            description,
+            condition,
+            location,
+            imageUrls,
 
             userId:
               currentUser.id,
