@@ -71,6 +71,8 @@ export async function GET(
               createdAt:
                 "desc",
             },
+
+            take: 6,
           },
 
           dorms: {
@@ -92,6 +94,8 @@ export async function GET(
               createdAt:
                 "desc",
             },
+
+            take: 6,
           },
 
           _count: {
