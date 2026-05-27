@@ -58,6 +58,14 @@ const links = [
     href:
       "/admin/analytics",
   },
+
+  {
+    label:
+      "Logs",
+
+    href:
+      "/admin/logs",
+  },
 ];
 
 export function AdminSidebar() {
