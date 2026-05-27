@@ -23,13 +23,25 @@ interface Report {
 
   listing: {
     id: string;
+
     title: string;
   };
 
   reporter: {
     name: string;
+
     email: string;
   };
+}
+
+interface AdminStats {
+  users: number;
+
+  listings: number;
+
+  dorms: number;
+
+  reports: number;
 }
 
 export default function AdminPage() {
@@ -40,6 +52,22 @@ export default function AdminPage() {
     useState<
       Report[]
     >([]);
+
+  const [
+    stats,
+    setStats,
+  ] =
+    useState<
+      AdminStats
+    >({
+      users: 0,
+
+      listings: 0,
+
+      dorms: 0,
+
+      reports: 0,
+    });
 
   const [
     loading,
@@ -63,32 +91,54 @@ export default function AdminPage() {
       "ALL"
     );
 
-  async function fetchReports() {
+  async function fetchDashboard() {
     try {
       setLoading(
         true
       );
 
-      const response =
-        await fetch(
-          "/api/reports"
+      const [
+        reportsRes,
+        statsRes,
+      ] =
+        await Promise.all(
+          [
+            fetch(
+              "/api/reports"
+            ),
+
+            fetch(
+              "/api/admin/stats"
+            ),
+          ]
         );
 
       if (
-        !response.ok
+        !reportsRes.ok
       ) {
         throw new Error();
       }
 
-      const data =
-        await response.json();
+      const reportsData =
+        await reportsRes.json();
 
       setReports(
-        data
+        reportsData
       );
+
+      if (
+        statsRes.ok
+      ) {
+        const statsData =
+          await statsRes.json();
+
+        setStats(
+          statsData
+        );
+      }
     } catch {
       toast.error(
-        "Failed to load reports"
+        "Failed to load admin dashboard"
       );
     } finally {
       setLoading(
@@ -120,7 +170,7 @@ export default function AdminPage() {
         "Report resolved"
       );
 
-      fetchReports();
+      fetchDashboard();
     } catch {
       toast.error(
         "Failed to resolve report"
@@ -159,7 +209,7 @@ export default function AdminPage() {
         "Listing removed"
       );
 
-      fetchReports();
+      fetchDashboard();
     } catch {
       toast.error(
         "Failed to remove listing"
@@ -168,7 +218,7 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    fetchReports();
+    fetchDashboard();
   }, []);
 
   const filtered =
@@ -178,22 +228,28 @@ export default function AdminPage() {
           (
             report
           ) => {
-            const matchesSearch =
-              report.listing.title
-                .toLowerCase()
-                .includes(
-                  query.toLowerCase()
-                );
+            const title =
+              (
+                report
+                  .listing
+                  ?.title ||
+                ""
+              ).toLowerCase();
 
-            const matchesStatus =
+            const matchSearch =
+              title.includes(
+                query.toLowerCase()
+              );
+
+            const matchStatus =
               status ===
                 "ALL" ||
               report.status ===
                 status;
 
             return (
-              matchesSearch &&
-              matchesStatus
+              matchSearch &&
+              matchStatus
             );
           }
         ),
@@ -204,29 +260,6 @@ export default function AdminPage() {
         status,
       ]
     );
-
-  const stats = {
-    total:
-      reports.length,
-
-    open:
-      reports.filter(
-        (
-          report
-        ) =>
-          report.status ===
-          "OPEN"
-      ).length,
-
-    resolved:
-      reports.filter(
-        (
-          report
-        ) =>
-          report.status ===
-          "RESOLVED"
-      ).length,
-  };
 
   if (
     loading
@@ -247,14 +280,14 @@ export default function AdminPage() {
           </h1>
 
           <p className="mt-3 text-slate-600">
-            Reports &
-            moderation
+            Platform moderation
+            and analytics
           </p>
         </div>
 
         <button
           onClick={
-            fetchReports
+            fetchDashboard
           }
           className="
             rounded-2xl
@@ -267,29 +300,36 @@ export default function AdminPage() {
         </button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      {/* STATS */}
+
+      <div className="grid gap-6 md:grid-cols-4">
         {[
           [
+            "Users",
+            stats.users,
+          ],
+
+          [
+            "Listings",
+            stats.listings,
+          ],
+
+          [
+            "Dorms",
+            stats.dorms,
+          ],
+
+          [
             "Reports",
-            stats.total,
-          ],
-
-          [
-            "Open",
-            stats.open,
-          ],
-
-          [
-            "Resolved",
-            stats.resolved,
+            stats.reports,
           ],
         ].map(
           (
-            card
+            item
           ) => (
             <div
               key={
-                card[0]
+                item[0]
               }
               className="
                 rounded-3xl
@@ -299,13 +339,13 @@ export default function AdminPage() {
             >
               <p className="text-slate-500">
                 {
-                  card[0]
+                  item[0]
                 }
               </p>
 
               <h2 className="mt-4 text-5xl font-black">
                 {
-                  card[1]
+                  item[1]
                 }
               </h2>
             </div>
@@ -313,7 +353,9 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      {/* FILTERS */}
+
+      <div className="flex gap-4">
         <input
           value={
             query
@@ -326,7 +368,7 @@ export default function AdminPage() {
                 .value
             )
           }
-          placeholder="Search..."
+          placeholder="Search reports..."
           className="
             h-12
             rounded-2xl
@@ -368,6 +410,15 @@ export default function AdminPage() {
         </select>
       </div>
 
+      {/* REPORTS */}
+
+      {filtered.length ===
+        0 && (
+        <div className="rounded-3xl bg-white/70 p-12 text-center">
+          No reports
+        </div>
+      )}
+
       <div className="space-y-6">
         {filtered.map(
           (
@@ -383,11 +434,11 @@ export default function AdminPage() {
                 p-8
               "
             >
-              <h2 className="text-2xl font-black">
+              <h2 className="text-2xl font-bold">
                 {
                   report
                     .listing
-                    .title
+                    ?.title
                 }
               </h2>
 
@@ -399,7 +450,7 @@ export default function AdminPage() {
                 }
               </p>
 
-              <p className="mt-6">
+              <p className="mt-5">
                 {
                   report.description
                 }
