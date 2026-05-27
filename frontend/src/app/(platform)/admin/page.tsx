@@ -4,7 +4,7 @@
  * Admin moderation dashboard.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import toast from "react-hot-toast";
 
@@ -19,60 +19,63 @@ interface Report {
 
   listing: {
     id: string;
-
     title: string;
-
     description: string;
   };
 
   reporter: {
     name: string;
-
     email: string;
   };
 }
 
 export default function AdminPage() {
-  /**
-   * Reports state.
-   */
   const [reports, setReports] =
     useState<Report[]>([]);
 
-  /**
-   * Loading state.
-   */
   const [loading, setLoading] =
     useState(true);
 
-  /**
-   * Fetch reports.
-   */
+  const [query, setQuery] =
+    useState("");
+
+  const [status, setStatus] =
+    useState("ALL");
+
   async function fetchReports() {
     try {
+      setLoading(
+        true
+      );
+
       const response =
         await fetch(
           "/api/reports"
         );
 
+      if (
+        !response.ok
+      ) {
+        throw new Error();
+      }
+
       const data =
         await response.json();
 
-      setReports(data);
-    } catch (error) {
-      console.error(error);
-
+      setReports(
+        data
+      );
+    } catch {
       toast.error(
-        "Failed to fetch reports"
+        "Failed to load reports"
       );
     } finally {
-      setLoading(false);
+      setLoading(
+        false
+      );
     }
   }
 
-  /**
-   * Resolve report.
-   */
   async function resolveReport(
     id: string
   ) {
@@ -81,11 +84,14 @@ export default function AdminPage() {
         await fetch(
           `/api/reports/${id}`,
           {
-            method: "PATCH",
+            method:
+              "PATCH",
           }
         );
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         throw new Error();
       }
 
@@ -94,40 +100,37 @@ export default function AdminPage() {
       );
 
       fetchReports();
-    } catch (error) {
-      console.error(error);
-
+    } catch {
       toast.error(
         "Failed to resolve report"
       );
     }
   }
 
-  /**
-   * Delete listing.
-   */
   async function removeListing(
     id: string
   ) {
-    const confirmed =
+    const ok =
       confirm(
-        "Delete this listing?"
+        "Remove listing?"
       );
 
-    if (!confirmed) {
+    if (!ok)
       return;
-    }
 
     try {
       const response =
         await fetch(
           `/api/reports/${id}`,
           {
-            method: "DELETE",
+            method:
+              "DELETE",
           }
         );
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         throw new Error();
       }
 
@@ -136,31 +139,77 @@ export default function AdminPage() {
       );
 
       fetchReports();
-    } catch (error) {
-      console.error(error);
-
+    } catch {
       toast.error(
         "Failed to remove listing"
       );
     }
   }
 
-  /**
-   * Initial fetch.
-   */
   useEffect(() => {
     fetchReports();
   }, []);
 
-  /**
-   * Loading UI.
-   */
-  if (loading) {
+  const filtered =
+    useMemo(() => {
+      return reports.filter(
+        (
+          report
+        ) => {
+          const matchQuery =
+            report.listing.title
+              .toLowerCase()
+              .includes(
+                query.toLowerCase()
+              );
+
+          const matchStatus =
+            status ===
+              "ALL" ||
+            report.status ===
+              status;
+
+          return (
+            matchQuery &&
+            matchStatus
+          );
+        }
+      );
+    }, [
+      reports,
+      query,
+      status,
+    ]);
+
+  const stats = {
+    total:
+      reports.length,
+
+    open:
+      reports.filter(
+        (
+          r
+        ) =>
+          r.status ===
+          "OPEN"
+      ).length,
+
+    resolved:
+      reports.filter(
+        (
+          r
+        ) =>
+          r.status ===
+          "RESOLVED"
+      ).length,
+  };
+
+  if (
+    loading
+  ) {
     return (
       <div className="flex h-[70vh] items-center justify-center">
-        <p className="text-slate-500">
-          Loading reports...
-        </p>
+        Loading admin dashboard...
       </div>
     );
   }
@@ -168,135 +217,191 @@ export default function AdminPage() {
   return (
     <div>
       {/* HEADER */}
-      <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
-          Admin Dashboard
-        </h1>
 
-        <p className="mt-4 text-lg text-slate-600">
-          Platform moderation and
-          safety management.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-5xl font-black">
+            Admin Dashboard
+          </h1>
+
+          <p className="mt-3 text-slate-600">
+            Moderate listings and
+            platform safety.
+          </p>
+        </div>
+
+        <button
+          onClick={
+            fetchReports
+          }
+          className="
+            rounded-2xl
+            border
+            px-5
+            py-3
+          "
+        >
+          Refresh
+        </button>
+      </div>
+
+      {/* STATS */}
+
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {[
+          [
+            "Reports",
+            stats.total,
+          ],
+
+          [
+            "Open",
+            stats.open,
+          ],
+
+          [
+            "Resolved",
+            stats.resolved,
+          ],
+        ].map(
+          (
+            item
+          ) => (
+            <div
+              key={
+                item[0]
+              }
+              className="
+                rounded-3xl
+                bg-white/70
+                p-8
+                backdrop-blur
+              "
+            >
+              <p className="text-slate-500">
+                {
+                  item[0]
+                }
+              </p>
+
+              <h2 className="mt-3 text-5xl font-black">
+                {
+                  item[1]
+                }
+              </h2>
+            </div>
+          )
+        )}
+      </div>
+
+      {/* FILTERS */}
+
+      <div className="mt-10 flex flex-wrap gap-4">
+        <input
+          value={
+            query
+          }
+          onChange={(
+            e
+          ) =>
+            setQuery(
+              e.target
+                .value
+            )
+          }
+          placeholder="Search listing..."
+          className="
+            h-12
+            rounded-2xl
+            border
+            px-5
+          "
+        />
+
+        <select
+          value={
+            status
+          }
+          onChange={(
+            e
+          ) =>
+            setStatus(
+              e.target
+                .value
+            )
+          }
+          className="
+            h-12
+            rounded-2xl
+            border
+            px-5
+          "
+        >
+          <option>
+            ALL
+          </option>
+
+          <option>
+            OPEN
+          </option>
+
+          <option>
+            RESOLVED
+          </option>
+        </select>
       </div>
 
       {/* REPORTS */}
-      <div className="mt-12 space-y-6">
-        {reports.length ===
-          0 && (
-          <div
-            className="
-              rounded-3xl
-              border
-              border-dashed
-              border-slate-300
-              bg-white/50
-              px-10
-              py-24
-              text-center
-            "
-          >
-            <h3 className="text-3xl font-bold text-slate-900">
-              No reports found
-            </h3>
-          </div>
-        )}
 
-        {reports.map(
-          (report) => (
+      <div className="mt-10 space-y-6">
+        {filtered.map(
+          (
+            report
+          ) => (
             <div
-              key={report.id}
+              key={
+                report.id
+              }
               className="
                 rounded-3xl
-                border
-                border-white/40
                 bg-white/70
                 p-8
-                backdrop-blur-xl
               "
             >
-              {/* Top */}
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex justify-between">
                 <div>
-                  <div
-                    className="
-                      inline-flex
-                      rounded-full
-                      bg-red-100
-                      px-4
-                      py-2
-                      text-sm
-                      font-semibold
-                      text-red-700
-                    "
-                  >
-                    {report.reason}
-                  </div>
-
-                  <h2 className="mt-5 text-2xl font-bold text-slate-900">
+                  <h2 className="text-2xl font-bold">
                     {
-                      report.listing
-                        ?.title
+                      report
+                        .listing
+                        .title
                     }
                   </h2>
 
-                  <p className="mt-3 text-slate-500">
-                    Reported by{" "}
+                  <p className="mt-2 text-slate-500">
                     {
-                      report.reporter
-                        ?.name
+                      report
+                        .reporter
+                        .name
                     }
                   </p>
                 </div>
 
-                <div
-                  className="
-                    rounded-full
-                    bg-yellow-100
-                    px-4
-                    py-2
-                    text-sm
-                    font-semibold
-                    text-yellow-700
-                  "
-                >
-                  {report.status}
-                </div>
-              </div>
-
-              {/* Description */}
-              {report.description && (
-                <div className="mt-8">
-                  <p className="leading-7 text-slate-600">
-                    {
-                      report.description
-                    }
-                  </p>
-                </div>
-              )}
-
-              {/* Listing */}
-              <div
-                className="
-                  mt-8
-                  rounded-2xl
-                  bg-slate-100
-                  p-5
-                "
-              >
-                <p className="text-sm text-slate-500">
-                  Listing Description
-                </p>
-
-                <p className="mt-3 leading-7 text-slate-700">
+                <div>
                   {
-                    report.listing
-                      ?.description
+                    report
+                      .status
                   }
-                </p>
+                </div>
               </div>
 
-              {/* Actions */}
-              <div className="mt-8 flex flex-wrap gap-4">
+              <p className="mt-6 text-slate-600">
+                {
+                  report.description
+                }
+              </p>
+
+              <div className="mt-8 flex gap-4">
                 <button
                   onClick={() =>
                     resolveReport(
@@ -308,14 +413,10 @@ export default function AdminPage() {
                     bg-green-600
                     px-5
                     py-3
-                    text-sm
-                    font-semibold
                     text-white
-                    transition
-                    hover:bg-green-700
                   "
                 >
-                  Resolve Report
+                  Resolve
                 </button>
 
                 <button
@@ -329,14 +430,10 @@ export default function AdminPage() {
                     bg-red-600
                     px-5
                     py-3
-                    text-sm
-                    font-semibold
                     text-white
-                    transition
-                    hover:bg-red-700
                   "
                 >
-                  Remove Listing
+                  Remove
                 </button>
               </div>
             </div>
