@@ -4,105 +4,201 @@
  * Notifications page.
  */
 
-import { useNotifications } from "@/hooks/use-notifications";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import toast from "react-hot-toast";
+
+interface Notification {
+  id: string;
+
+  title: string;
+
+  message: string;
+
+  link?: string;
+
+  createdAt: string;
+
+  read: boolean;
+}
 
 export default function NotificationsPage() {
-  const {
+  const [
     notifications,
-    isLoading,
-  } = useNotifications();
+    setNotifications,
+  ] =
+    useState<
+      Notification[]
+    >([]);
 
-  /**
-   * Loading.
-   */
-  if (isLoading) {
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(
+      true
+    );
+
+  async function load() {
+    try {
+      setLoading(
+        true
+      );
+
+      const response =
+        await fetch(
+          "/api/notifications"
+        );
+
+      if (
+        !response.ok
+      ) {
+        throw new Error();
+      }
+
+      const data =
+        await response.json();
+
+      setNotifications(
+        data
+      );
+    } catch {
+      toast.error(
+        "Failed to load notifications"
+      );
+    } finally {
+      setLoading(
+        false
+      );
+    }
+  }
+
+  async function markRead(
+    id: string
+  ) {
+    try {
+      await fetch(
+        `/api/notifications/${id}`,
+        {
+          method:
+            "PATCH",
+        }
+      );
+
+      setNotifications(
+        (
+          prev
+        ) =>
+          prev.map(
+            (
+              n
+            ) =>
+              n.id ===
+              id
+                ? {
+                    ...n,
+
+                    read:
+                      true,
+                  }
+                : n
+          )
+      );
+    } catch {
+      toast.error(
+        "Failed to update"
+      );
+    }
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  if (
+    loading
+  ) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
-        <p className="text-slate-500">
-          Loading notifications...
-        </p>
+        Loading notifications...
       </div>
     );
   }
 
   return (
-    <div>
-      {/* HEADER */}
+    <div className="space-y-8">
       <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
+        <h1 className="text-5xl font-black">
           Notifications
         </h1>
 
-        <p className="mt-4 text-lg text-slate-600">
-          Activity and updates from your
-          campus network.
+        <p className="mt-3 text-slate-600">
+          Activity updates
         </p>
       </div>
 
-      {/* LIST */}
-      <div className="mt-12 space-y-5">
-        {notifications.length ===
-          0 && (
-          <div
-            className="
-              rounded-3xl
-              border
-              border-dashed
-              border-slate-300
-              bg-white/50
-              px-10
-              py-24
-              text-center
-              backdrop-blur-xl
-            "
-          >
-            <h3 className="text-3xl font-bold text-slate-900">
-              No notifications
-            </h3>
+      {notifications.length ===
+        0 && (
+        <div className="rounded-3xl bg-white/70 p-12 text-center">
+          No notifications
+        </div>
+      )}
 
-            <p className="mt-4 text-slate-500">
-              Your activity feed will appear here.
-            </p>
-          </div>
-        )}
-
+      <div className="space-y-5">
         {notifications.map(
           (
-            notification: any
+            item
           ) => (
             <div
               key={
-                notification.id
+                item.id
               }
               className={`
                 rounded-3xl
-                border
-                p-6
-                backdrop-blur-xl
+                p-8
+
                 ${
-                  !notification.isRead
-                    ? `
-                      border-blue-200
-                      bg-blue-50/60
-                    `
-                    : `
-                      border-white/40
-                      bg-white/70
-                    `
+                  item.read
+                    ? "bg-white/60"
+                    : "bg-blue-50"
                 }
               `}
             >
-              <h3 className="text-xl font-bold text-slate-900">
+              <h2 className="text-2xl font-black">
                 {
-                  notification.title
+                  item.title
                 }
-              </h3>
+              </h2>
 
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-4 text-slate-600">
                 {
-                  notification.message
+                  item.message
                 }
               </p>
+
+              <div className="mt-8">
+                {!item.read && (
+                  <button
+                    onClick={() =>
+                      markRead(
+                        item.id
+                      )
+                    }
+                    className="
+                      rounded-2xl
+                      bg-slate-900
+                      px-5
+                      py-3
+                      text-white
+                    "
+                  >
+                    Mark Read
+                  </button>
+                )}
+              </div>
             </div>
           )
         )}
