@@ -66,6 +66,14 @@ const links = [
     href:
       "/admin/logs",
   },
+
+  {
+    label:
+      "System",
+
+    href:
+      "/admin/system",
+  },
 ];
 
 export function AdminSidebar() {
