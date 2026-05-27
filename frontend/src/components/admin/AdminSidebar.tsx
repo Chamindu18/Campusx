@@ -50,6 +50,14 @@ const links = [
     href:
       "/admin/settings",
   },
+
+  {
+    label:
+      "Analytics",
+
+    href:
+      "/admin/analytics",
+  },
 ];
 
 export function AdminSidebar() {
