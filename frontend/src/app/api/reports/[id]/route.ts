@@ -22,13 +22,11 @@ export async function PATCH(
     const currentUser =
       await getCurrentUser();
 
-    /**
-     * Unauthorized.
-     */
     if (!currentUser) {
       return NextResponse.json(
         {
-          error: "Unauthorized",
+          error:
+            "Unauthorized",
         },
         {
           status: 401,
@@ -36,16 +34,14 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Forbidden.
-     */
     if (
       currentUser.role !==
       "ADMIN"
     ) {
       return NextResponse.json(
         {
-          error: "Forbidden",
+          error:
+            "Forbidden",
         },
         {
           status: 403,
@@ -53,16 +49,42 @@ export async function PATCH(
       );
     }
 
-    const resolvedParams =
+    const {
+      id,
+    } =
       await params;
 
     /**
-     * Update report.
+     * Verify report.
+     */
+    const existing =
+      await prisma.report.findUnique({
+        where: {
+          id,
+        },
+      });
+
+    if (
+      !existing
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Report not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    /**
+     * Resolve.
      */
     const report =
       await prisma.report.update({
         where: {
-          id: resolvedParams.id,
+          id,
         },
 
         data: {
@@ -74,8 +96,12 @@ export async function PATCH(
     return NextResponse.json(
       report
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
@@ -107,13 +133,11 @@ export async function DELETE(
     const currentUser =
       await getCurrentUser();
 
-    /**
-     * Unauthorized.
-     */
     if (!currentUser) {
       return NextResponse.json(
         {
-          error: "Unauthorized",
+          error:
+            "Unauthorized",
         },
         {
           status: 401,
@@ -121,16 +145,14 @@ export async function DELETE(
       );
     }
 
-    /**
-     * Forbidden.
-     */
     if (
       currentUser.role !==
       "ADMIN"
     ) {
       return NextResponse.json(
         {
-          error: "Forbidden",
+          error:
+            "Forbidden",
         },
         {
           status: 403,
@@ -138,7 +160,9 @@ export async function DELETE(
       );
     }
 
-    const resolvedParams =
+    const {
+      id,
+    } =
       await params;
 
     /**
@@ -146,15 +170,19 @@ export async function DELETE(
      */
     const report =
       await prisma.report.findUnique({
+        include: {
+          listing:
+            true,
+        },
+
         where: {
-          id: resolvedParams.id,
+          id,
         },
       });
 
-    /**
-     * Missing report.
-     */
-    if (!report) {
+    if (
+      !report
+    ) {
       return NextResponse.json(
         {
           error:
@@ -167,7 +195,35 @@ export async function DELETE(
     }
 
     /**
-     * Delete saved listing references first.
+     * Notify owner.
+     */
+    try {
+      await prisma.notification.create({
+        data: {
+          userId:
+            report.listing
+              .userId,
+
+          title:
+            "Listing removed",
+
+          message:
+            "Your listing was removed after moderation review.",
+
+          link:
+            "/dashboard",
+        },
+      });
+    } catch (
+      error
+    ) {
+      console.error(
+        error
+      );
+    }
+
+    /**
+     * Cleanup.
      */
     await prisma.savedListing.deleteMany({
       where: {
@@ -176,9 +232,6 @@ export async function DELETE(
       },
     });
 
-    /**
-     * Delete report references.
-     */
     await prisma.report.deleteMany({
       where: {
         listingId:
@@ -186,20 +239,23 @@ export async function DELETE(
       },
     });
 
-    /**
-     * Delete listing.
-     */
     await prisma.listing.delete({
       where: {
-        id: report.listingId,
+        id:
+          report.listingId,
       },
     });
 
     return NextResponse.json({
-      success: true,
+      success:
+        true,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
