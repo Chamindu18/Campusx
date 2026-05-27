@@ -4,7 +4,11 @@
  * Admin moderation dashboard.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import toast from "react-hot-toast";
 
@@ -20,7 +24,6 @@ interface Report {
   listing: {
     id: string;
     title: string;
-    description: string;
   };
 
   reporter: {
@@ -30,17 +33,35 @@ interface Report {
 }
 
 export default function AdminPage() {
-  const [reports, setReports] =
-    useState<Report[]>([]);
+  const [
+    reports,
+    setReports,
+  ] =
+    useState<
+      Report[]
+    >([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(
+      true
+    );
 
-  const [query, setQuery] =
+  const [
+    query,
+    setQuery,
+  ] =
     useState("");
 
-  const [status, setStatus] =
-    useState("ALL");
+  const [
+    status,
+    setStatus,
+  ] =
+    useState(
+      "ALL"
+    );
 
   async function fetchReports() {
     try {
@@ -110,13 +131,13 @@ export default function AdminPage() {
   async function removeListing(
     id: string
   ) {
-    const ok =
-      confirm(
+    if (
+      !confirm(
         "Remove listing?"
-      );
-
-    if (!ok)
+      )
+    ) {
       return;
+    }
 
     try {
       const response =
@@ -151,35 +172,38 @@ export default function AdminPage() {
   }, []);
 
   const filtered =
-    useMemo(() => {
-      return reports.filter(
-        (
-          report
-        ) => {
-          const matchQuery =
-            report.listing.title
-              .toLowerCase()
-              .includes(
-                query.toLowerCase()
-              );
+    useMemo(
+      () =>
+        reports.filter(
+          (
+            report
+          ) => {
+            const matchesSearch =
+              report.listing.title
+                .toLowerCase()
+                .includes(
+                  query.toLowerCase()
+                );
 
-          const matchStatus =
-            status ===
-              "ALL" ||
-            report.status ===
-              status;
+            const matchesStatus =
+              status ===
+                "ALL" ||
+              report.status ===
+                status;
 
-          return (
-            matchQuery &&
-            matchStatus
-          );
-        }
-      );
-    }, [
-      reports,
-      query,
-      status,
-    ]);
+            return (
+              matchesSearch &&
+              matchesStatus
+            );
+          }
+        ),
+
+      [
+        reports,
+        query,
+        status,
+      ]
+    );
 
   const stats = {
     total:
@@ -188,18 +212,18 @@ export default function AdminPage() {
     open:
       reports.filter(
         (
-          r
+          report
         ) =>
-          r.status ===
+          report.status ===
           "OPEN"
       ).length,
 
     resolved:
       reports.filter(
         (
-          r
+          report
         ) =>
-          r.status ===
+          report.status ===
           "RESOLVED"
       ).length,
   };
@@ -215,9 +239,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div>
-      {/* HEADER */}
-
+    <div className="space-y-10">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-5xl font-black">
@@ -225,8 +247,8 @@ export default function AdminPage() {
           </h1>
 
           <p className="mt-3 text-slate-600">
-            Moderate listings and
-            platform safety.
+            Reports &
+            moderation
           </p>
         </div>
 
@@ -245,9 +267,7 @@ export default function AdminPage() {
         </button>
       </div>
 
-      {/* STATS */}
-
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         {[
           [
             "Reports",
@@ -265,28 +285,27 @@ export default function AdminPage() {
           ],
         ].map(
           (
-            item
+            card
           ) => (
             <div
               key={
-                item[0]
+                card[0]
               }
               className="
                 rounded-3xl
                 bg-white/70
                 p-8
-                backdrop-blur
               "
             >
               <p className="text-slate-500">
                 {
-                  item[0]
+                  card[0]
                 }
               </p>
 
-              <h2 className="mt-3 text-5xl font-black">
+              <h2 className="mt-4 text-5xl font-black">
                 {
-                  item[1]
+                  card[1]
                 }
               </h2>
             </div>
@@ -294,9 +313,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      {/* FILTERS */}
-
-      <div className="mt-10 flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4">
         <input
           value={
             query
@@ -309,7 +326,7 @@ export default function AdminPage() {
                 .value
             )
           }
-          placeholder="Search listing..."
+          placeholder="Search..."
           className="
             h-12
             rounded-2xl
@@ -351,9 +368,7 @@ export default function AdminPage() {
         </select>
       </div>
 
-      {/* REPORTS */}
-
-      <div className="mt-10 space-y-6">
+      <div className="space-y-6">
         {filtered.map(
           (
             report
@@ -368,34 +383,23 @@ export default function AdminPage() {
                 p-8
               "
             >
-              <div className="flex justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    {
-                      report
-                        .listing
-                        .title
-                    }
-                  </h2>
+              <h2 className="text-2xl font-black">
+                {
+                  report
+                    .listing
+                    .title
+                }
+              </h2>
 
-                  <p className="mt-2 text-slate-500">
-                    {
-                      report
-                        .reporter
-                        .name
-                    }
-                  </p>
-                </div>
+              <p className="mt-2 text-slate-500">
+                {
+                  report
+                    .reporter
+                    .name
+                }
+              </p>
 
-                <div>
-                  {
-                    report
-                      .status
-                  }
-                </div>
-              </div>
-
-              <p className="mt-6 text-slate-600">
+              <p className="mt-6">
                 {
                   report.description
                 }
