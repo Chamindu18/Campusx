@@ -1,12 +1,5 @@
 /**
  * Marketplace listings API.
- *
- * Features:
- * - search
- * - category filtering
- * - pagination
- * - validated creation
- * - optimized querying
  */
 
 import { NextResponse } from "next/server";
@@ -27,60 +20,53 @@ export async function GET(
   request: Request
 ) {
   try {
-    /**
-     * URL params.
-     */
     const {
       searchParams,
-    } = new URL(request.url);
+    } = new URL(
+      request.url
+    );
 
-    /**
-     * Search query.
-     */
     const search =
       searchParams
-        .get("search")
-        ?.trim() || "";
+        .get(
+          "search"
+        )
+        ?.trim() ||
+      "";
 
-    /**
-     * Category filter.
-     */
     const category =
       searchParams
-        .get("category")
-        ?.trim() || "";
-
-    /**
-     * Pagination.
-     */
-    const pageParam =
-      Number(
-        searchParams.get(
-          "page"
-        ) || "1"
-      );
+        .get(
+          "category"
+        )
+        ?.trim() ||
+      "";
 
     const page =
-      Number.isNaN(pageParam) ||
-      pageParam < 1
-        ? 1
-        : pageParam;
+      Math.max(
+        1,
+        Number(
+          searchParams.get(
+            "page"
+          ) || "1"
+        )
+      );
 
     const limit = 9;
 
     const skip =
-      (page - 1) * limit;
+      (page - 1) *
+      limit;
 
-    /* ===================================================== */
-    /* BUILD FILTERS */
-    /* ===================================================== */
+    const where: any =
+      {
+        isActive:
+          true,
+      };
 
-    const where: any = {};
-
-    /**
-     * Search filtering.
-     */
-    if (search) {
+    if (
+      search
+    ) {
       where.OR = [
         {
           title: {
@@ -93,81 +79,96 @@ export async function GET(
         },
 
         {
-          description: {
-            contains:
-              search,
+          description:
+            {
+              contains:
+                search,
 
-            mode:
-              "insensitive",
-          },
+              mode:
+                "insensitive",
+            },
         },
       ];
     }
 
-    /**
-     * Category filtering.
-     */
     if (
       category &&
-      category !== "All"
+      category !==
+        "All"
     ) {
       where.category =
         category;
     }
 
-    /* ===================================================== */
-    /* FETCH LISTINGS */
-    /* ===================================================== */
+    const [
+      listings,
+      totalListings,
+    ] =
+      await Promise.all(
+        [
+          prisma.listing.findMany(
+            {
+              where,
 
-    const listings =
-      await prisma.listing.findMany({
-        where,
+              include:
+                {
+                  user:
+                    {
+                      select:
+                        {
+                          id: true,
 
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
+                          name:
+                            true,
+                        },
+                    },
+                },
 
-        orderBy: {
-          createdAt: "desc",
-        },
+              orderBy:
+                {
+                  createdAt:
+                    "desc",
+                },
 
-        skip,
+              skip,
 
-        take: limit,
-      });
+              take:
+                limit,
+            }
+          ),
 
-    /**
-     * Total count.
-     */
-    const totalListings =
-      await prisma.listing.count({
-        where,
-      });
-
-    const totalPages =
-      Math.ceil(
-        totalListings / limit
+          prisma.listing.count(
+            {
+              where,
+            }
+          ),
+        ]
       );
 
-    return NextResponse.json({
-      listings,
+    return NextResponse.json(
+      {
+        listings,
 
-      pagination: {
-        page,
-        limit,
-        totalListings,
-        totalPages,
-      },
-    });
-  } catch (error) {
+        pagination:
+          {
+            page,
+
+            limit,
+
+            totalListings,
+
+            totalPages:
+              Math.ceil(
+                totalListings /
+                  limit
+              ),
+          },
+      }
+    );
+  } catch (
+    error
+  ) {
     console.error(
-      "GET_LISTINGS_ERROR",
       error
     );
 
@@ -191,13 +192,12 @@ export async function POST(
   request: Request
 ) {
   try {
-    /**
-     * Current authenticated user.
-     */
     const currentUser =
       await getCurrentUser();
 
-    if (!currentUser) {
+    if (
+      !currentUser
+    ) {
       return NextResponse.json(
         {
           error:
@@ -209,27 +209,23 @@ export async function POST(
       );
     }
 
-    /**
-     * Parse request body.
-     */
     const body =
       await request.json();
 
-    /**
-     * Validate with Zod.
-     */
     const parsed =
       listingSchema.safeParse(
         body
       );
 
-    if (!parsed.success) {
+    if (
+      !parsed.success
+    ) {
       return NextResponse.json(
         {
           error:
-            parsed.error.issues[0]
-              ?.message ||
-            "Invalid listing data",
+            parsed.error
+              .issues[0]
+              ?.message,
         },
         {
           status: 400,
@@ -238,57 +234,48 @@ export async function POST(
     }
 
     const {
-      title,
-      description,
-      category,
-      price,
-      imageUrls = [],
-    } = parsed.data;
+      imageUrls =
+        [],
+    } =
+      parsed.data;
 
-    /**
-     * Create listing.
-     */
+    if (
+      imageUrls.length ===
+      0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Upload at least one image",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     const listing =
-      await prisma.listing.create({
-        data: {
-          title,
+      await prisma.listing.create(
+        {
+          data: {
+            ...parsed.data,
 
-          description,
+            userId:
+              currentUser.id,
 
-          category,
-
-          price,
-
-          imageUrls,
-
-          condition:
-            "Used - Good",
-
-          location:
-            currentUser.university ||
-            "Campus Community",
-
-          userId:
-            currentUser.id,
-        },
-
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
+            isActive:
+              true,
           },
-        },
-      });
+        }
+      );
 
     return NextResponse.json(
       listing
     );
-  } catch (error) {
+  } catch (
+    error
+  ) {
     console.error(
-      "CREATE_LISTING_ERROR",
       error
     );
 
