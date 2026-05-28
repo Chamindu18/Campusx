@@ -6,9 +6,31 @@
 
 import useSWR from "swr";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Notification {
+  id: string;
+
+  title: string;
+
+  message: string;
+
+  read: boolean;
+
+  createdAt: string;
+}
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
+
 const fetcher = async (
   url: string
-) => {
+): Promise<
+  Notification[]
+> => {
   const response =
     await fetch(url);
 
@@ -21,6 +43,10 @@ const fetcher = async (
   return response.json();
 };
 
+/* ===================================================== */
+/* HOOK */
+/* ===================================================== */
+
 export function useNotifications() {
   const {
     data,
@@ -31,7 +57,8 @@ export function useNotifications() {
     "/api/notifications",
     fetcher,
     {
-      refreshInterval: 5000,
+      refreshInterval:
+        5000,
     }
   );
 
@@ -42,9 +69,9 @@ export function useNotifications() {
     unreadCount:
       data?.filter(
         (
-          notification: any
+          notification
         ) =>
-          !notification.isRead
+          !notification.read
       ).length || 0,
 
     error,

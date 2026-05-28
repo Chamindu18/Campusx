@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import {
-  ArrowRight,
   Heart,
   Home,
   MessageCircle,
@@ -11,7 +10,11 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-import { Card } from "@/components/ui/Card";
+import useSWR from "swr";
+
+import {
+  Card,
+} from "@/components/ui/Card";
 
 import {
   useSavedListings,
@@ -25,41 +28,140 @@ import {
   useCurrentUser,
 } from "@/hooks/use-current-user";
 
-import useSWR from "swr";
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Listing {
+  id: string;
+
+  title: string;
+
+  price: number;
+}
+
+interface Dorm {
+  id: string;
+
+  title: string;
+
+  university: string;
+
+  price: number;
+}
+
+interface SavedListing {
+  id: string;
+
+  listingId: string;
+
+  listing?: {
+    title: string;
+
+    category: string;
+  };
+}
+
+interface DormResponse {
+  dorms: Dorm[];
+}
+
+/* ===================================================== */
+/* QUICK ACTIONS */
+/* ===================================================== */
 
 const quickActions = [
   {
-    title: "Create Listing",
-    subtitle: "Post marketplace products",
-    href: "/create-listing",
-    icon: Plus,
-    color: "bg-blue-100 text-blue-700",
+    title:
+      "Create Listing",
+
+    subtitle:
+      "Post marketplace products",
+
+    href:
+      "/create-listing",
+
+    icon:
+      Plus,
+
+    color:
+      "bg-blue-100 text-blue-700",
   },
 
   {
-    title: "Create Dorm",
-    subtitle: "Add accommodation",
-    href: "/create-dorm",
-    icon: Home,
-    color: "bg-emerald-100 text-emerald-700",
+    title:
+      "Create Dorm",
+
+    subtitle:
+      "Add accommodation",
+
+    href:
+      "/create-dorm",
+
+    icon:
+      Home,
+
+    color:
+      "bg-emerald-100 text-emerald-700",
   },
 
   {
-    title: "Marketplace",
-    subtitle: "Continue browsing",
-    href: "/marketplace",
-    icon: ShoppingBag,
-    color: "bg-violet-100 text-violet-700",
+    title:
+      "Marketplace",
+
+    subtitle:
+      "Continue browsing",
+
+    href:
+      "/marketplace",
+
+    icon:
+      ShoppingBag,
+
+    color:
+      "bg-violet-100 text-violet-700",
   },
 
   {
-    title: "Messages",
-    subtitle: "Continue conversations",
-    href: "/messages",
-    icon: MessageCircle,
-    color: "bg-pink-100 text-pink-700",
+    title:
+      "Messages",
+
+    subtitle:
+      "Continue conversations",
+
+    href:
+      "/messages",
+
+    icon:
+      MessageCircle,
+
+    color:
+      "bg-pink-100 text-pink-700",
   },
 ];
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
+
+const fetcher = async (
+  url: string
+): Promise<DormResponse> => {
+  const response =
+    await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to fetch"
+    );
+  }
+
+  return response.json();
+};
+
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
 
 export default function DashboardPage() {
   const {
@@ -90,15 +192,6 @@ export default function DashboardPage() {
     )[0] ||
     "Student";
 
-  const fetcher = async (
-    url: string
-  ) => {
-    const response =
-      await fetch(url);
-
-    return response.json();
-  };
-
   const {
     data:
       dormData,
@@ -115,6 +208,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-14">
       {/* HERO */}
+
       <Card className="rounded-[36px] p-10">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -134,8 +228,7 @@ export default function DashboardPage() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Continue your
-              student journey.
+              Continue your student journey.
             </p>
           </div>
 
@@ -155,6 +248,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* QUICK ACTIONS */}
+
       <section>
         <h2 className="text-3xl font-black">
           Quick Actions
@@ -209,20 +303,10 @@ export default function DashboardPage() {
       </section>
 
       {/* MY LISTINGS */}
+
       <section>
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-          "
-        >
-          <h2
-            className="
-              text-3xl
-              font-black
-            "
-          >
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-black">
             My Listings
             {" "}
             (
@@ -232,31 +316,15 @@ export default function DashboardPage() {
 
           <Link
             href="/dashboard/my-listings"
-            className="
-              font-medium
-              text-blue-600
-            "
+            className="font-medium text-blue-600"
           >
             View All →
           </Link>
         </div>
 
-        <div
-          className="
-            mt-8
-
-            grid
-            gap-6
-
-            md:grid-cols-2
-          "
-        >
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {listingsLoading ? (
-            <Card
-              className="
-                p-8
-              "
-            >
+            <Card className="p-8">
               Loading...
             </Card>
           ) : listings.length ? (
@@ -267,7 +335,7 @@ export default function DashboardPage() {
               )
               .map(
                 (
-                  listing: any
+                  listing: Listing
                 ) => (
                   <Card
                     key={
@@ -275,41 +343,21 @@ export default function DashboardPage() {
                     }
                     className="
                       rounded-[30px]
-
                       p-8
-
                       transition
-
                       hover:-translate-y-1
                       hover:shadow-md
                     "
                   >
-                    <div
-                      className="
-                        flex
-                        justify-between
-                        gap-6
-                      "
-                    >
+                    <div className="flex justify-between gap-6">
                       <div>
-                        <h3
-                          className="
-                            text-xl
-                            font-bold
-                          "
-                        >
+                        <h3 className="text-xl font-bold">
                           {
                             listing.title
                           }
                         </h3>
 
-                        <p
-                          className="
-                            mt-3
-
-                            text-slate-500
-                          "
-                        >
+                        <p className="mt-3 text-slate-500">
                           Rs.
                           {
                             listing.price
@@ -320,16 +368,11 @@ export default function DashboardPage() {
                       <div
                         className="
                           rounded-full
-
                           bg-blue-50
-
                           px-4
                           py-2
-
                           text-sm
-
                           font-medium
-
                           text-blue-700
                         "
                       >
@@ -337,30 +380,18 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div
-                      className="
-                        mt-8
-
-                        flex
-                        gap-3
-                      "
-                    >
+                    <div className="mt-8 flex gap-3">
                       <Link
                         href={`/marketplace/${listing.id}`}
                       >
                         <button
                           className="
                             rounded-full
-
                             border
-
                             px-5
                             py-2
-
                             font-medium
-
                             transition
-
                             hover:bg-slate-100
                           "
                         >
@@ -374,18 +405,12 @@ export default function DashboardPage() {
                         <button
                           className="
                             rounded-full
-
                             bg-blue-600
-
                             px-5
                             py-2
-
                             font-medium
-
                             text-white
-
                             transition
-
                             hover:bg-blue-700
                           "
                         >
@@ -397,11 +422,7 @@ export default function DashboardPage() {
                 )
               )
           ) : (
-            <Card
-              className="
-                p-8
-              "
-            >
+            <Card className="p-8">
               No listings yet.
             </Card>
           )}
@@ -409,20 +430,10 @@ export default function DashboardPage() {
       </section>
 
       {/* MY DORMS */}
+
       <section>
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-          "
-        >
-          <h2
-            className="
-              text-3xl
-              font-black
-            "
-          >
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-black">
             My Dorms
             {" "}
             (
@@ -432,25 +443,13 @@ export default function DashboardPage() {
 
           <Link
             href="/dashboard/my-dorms"
-            className="
-              font-medium
-              text-blue-600
-            "
+            className="font-medium text-blue-600"
           >
             View All →
           </Link>
         </div>
 
-        <div
-          className="
-            mt-8
-
-            grid
-            gap-6
-
-            md:grid-cols-2
-          "
-        >
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {dorms
             .slice(
               0,
@@ -458,7 +457,7 @@ export default function DashboardPage() {
             )
             .map(
               (
-                dorm: any
+                dorm: Dorm
               ) => (
                 <Card
                   key={
@@ -466,37 +465,22 @@ export default function DashboardPage() {
                   }
                   className="
                     rounded-[30px]
-
                     p-8
-
                     transition
-
                     hover:-translate-y-1
                   "
                 >
-                  <div
-                    className="
-                      flex
-                      justify-between
-                      gap-4
-                    "
-                  >
+                  <div className="flex justify-between gap-4">
                     <div>
                       <div
                         className="
                           inline-flex
-
                           rounded-full
-
                           bg-blue-100
-
                           px-3
                           py-1
-
                           text-xs
-
                           font-medium
-
                           text-blue-700
                         "
                       >
@@ -513,60 +497,30 @@ export default function DashboardPage() {
                         }
                       </div>
 
-                      <h3
-                        className="
-                          mt-5
-
-                          text-2xl
-
-                          font-bold
-                        "
-                      >
+                      <h3 className="mt-5 text-2xl font-bold">
                         {
                           dorm.title
                         }
                       </h3>
 
-                      <p
-                        className="
-                          mt-3
-
-                          text-slate-500
-                        "
-                      >
-                        LKR
-                        {" "}
-
-                        {
-                          dorm.price
-                            ?.toLocaleString()
-                        }
+                      <p className="mt-3 text-slate-500">
+                        LKR{" "}
+                        {dorm.price?.toLocaleString()}
                       </p>
                     </div>
                   </div>
 
-                  <div
-                    className="
-                      mt-8
-
-                      flex
-                      gap-3
-                    "
-                  >
+                  <div className="mt-8 flex gap-3">
                     <Link
                       href={`/dorms/${dorm.id}`}
                     >
                       <button
                         className="
                           rounded-full
-
                           border
-
                           px-5
                           py-2
-
                           font-medium
-
                           hover:bg-slate-100
                         "
                       >
@@ -580,14 +534,10 @@ export default function DashboardPage() {
                       <button
                         className="
                           rounded-full
-
                           bg-blue-600
-
                           px-5
                           py-2
-
                           font-medium
-
                           text-white
                         "
                       >
@@ -602,13 +552,16 @@ export default function DashboardPage() {
       </section>
 
       {/* SAVED */}
+
       <section>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Heart className="text-red-500" />
 
             <h2 className="text-3xl font-black">
-              Saved Listings ({savedListings.length})
+              Saved Listings (
+              {savedListings.length}
+              )
             </h2>
           </div>
 
@@ -627,13 +580,18 @@ export default function DashboardPage() {
             </Card>
           ) : savedListings.length ? (
             savedListings
-              .slice(0, 4)
+              .slice(
+                0,
+                4
+              )
               .map(
                 (
-                  item: any
+                  item: SavedListing
                 ) => (
                   <Card
-                    key={item.id}
+                    key={
+                      item.id
+                    }
                     className="
                       rounded-[30px]
                       p-8
@@ -710,18 +668,12 @@ export default function DashboardPage() {
                         }}
                         className="
                           rounded-full
-
                           bg-red-50
-
                           px-5
                           py-2
-
                           font-medium
-
                           text-red-600
-
                           transition
-
                           hover:bg-red-100
                         "
                       >

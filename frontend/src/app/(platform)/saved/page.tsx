@@ -6,11 +6,45 @@
 
 import toast from "react-hot-toast";
 
-import { Trash2 } from "lucide-react";
+import {
+  Trash2,
+} from "lucide-react";
 
-import { useSavedListings } from "@/hooks/use-saved-listings";
+import {
+  useSavedListings,
+} from "@/hooks/use-saved-listings";
 
-import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
+import {
+  MarketplaceCard,
+} from "@/components/ui/MarketplaceCard";
+
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface SavedListing {
+  id: string;
+
+  listing: {
+    id: string;
+
+    title: string;
+
+    category: string;
+
+    price: number;
+
+    condition: string;
+
+    location: string;
+
+    imageUrls: string[];
+  };
+}
+
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
 
 export default function SavedPage() {
   /**
@@ -20,11 +54,13 @@ export default function SavedPage() {
     savedListings,
     mutate,
     isLoading,
-  } = useSavedListings();
+  } =
+    useSavedListings();
 
-  /**
-   * Remove saved listing.
-   */
+  /* ===================================================== */
+  /* REMOVE SAVED */
+  /* ===================================================== */
+
   async function handleRemove(
     id: string
   ) {
@@ -33,14 +69,17 @@ export default function SavedPage() {
         await fetch(
           `/api/saved-listings/${id}`,
           {
-            method: "DELETE",
+            method:
+              "DELETE",
           }
         );
 
       const result =
         await response.json();
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         toast.error(
           result.error
         );
@@ -53,8 +92,12 @@ export default function SavedPage() {
       );
 
       mutate();
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error: unknown
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Failed to remove"
@@ -62,10 +105,13 @@ export default function SavedPage() {
     }
   }
 
-  /**
-   * Loading.
-   */
-  if (isLoading) {
+  /* ===================================================== */
+  /* LOADING */
+  /* ===================================================== */
+
+  if (
+    isLoading
+  ) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
         <p className="text-slate-500">
@@ -78,6 +124,7 @@ export default function SavedPage() {
   return (
     <div>
       {/* HEADER */}
+
       <div>
         <h1 className="text-5xl font-black tracking-tight text-slate-900">
           Saved Listings
@@ -90,6 +137,7 @@ export default function SavedPage() {
       </div>
 
       {/* EMPTY */}
+
       {savedListings.length ===
         0 && (
         <div
@@ -117,14 +165,21 @@ export default function SavedPage() {
       )}
 
       {/* GRID */}
+
       <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
         {savedListings.map(
-          (saved: any) => (
+          (
+            saved:
+              SavedListing
+          ) => (
             <div
-              key={saved.id}
+              key={
+                saved.id
+              }
               className="relative"
             >
-              {/* Remove */}
+              {/* REMOVE */}
+
               <button
                 onClick={() =>
                   handleRemove(
@@ -153,25 +208,39 @@ export default function SavedPage() {
 
               <MarketplaceCard
                 id={
-                  saved.listing.id
+                  saved
+                    .listing
+                    .id
                 }
                 title={
-                  saved.listing.title
+                  saved
+                    .listing
+                    .title
                 }
                 category={
-                  saved.listing.category
+                  saved
+                    .listing
+                    .category
                 }
                 price={
-                  saved.listing.price
+                  saved
+                    .listing
+                    .price
                 }
                 condition={
-                  saved.listing.condition
+                  saved
+                    .listing
+                    .condition
                 }
                 location={
-                  saved.listing.location
+                  saved
+                    .listing
+                    .location
                 }
                 imageUrls={
-                  saved.listing.imageUrls
+                  saved
+                    .listing
+                    .imageUrls
                 }
               />
             </div>

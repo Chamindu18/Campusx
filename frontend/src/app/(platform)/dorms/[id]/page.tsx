@@ -21,6 +21,38 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Dorm {
+  id: string;
+
+  title: string;
+
+  city: string;
+
+  university: string;
+
+  gender: string;
+
+  roomType: string;
+
+  description: string;
+
+  contactNumber: string;
+
+  price: number;
+
+  imageUrls?: string[];
+
+  facilities?: string[];
+}
+
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
+
 export default function DormDetailPage() {
   const params =
     useParams();
@@ -32,7 +64,7 @@ export default function DormDetailPage() {
     dorm,
     setDorm,
   ] =
-    useState<any>(
+    useState<Dorm | null>(
       null
     );
 
@@ -44,6 +76,10 @@ export default function DormDetailPage() {
       true
     );
 
+  /* ===================================================== */
+  /* FETCH DORM */
+  /* ===================================================== */
+
   useEffect(() => {
     async function fetchDorm() {
       try {
@@ -52,14 +88,14 @@ export default function DormDetailPage() {
             `/api/dorms/${dormId}`
           );
 
-        const data =
+        const data: Dorm =
           await response.json();
 
         setDorm(
           data
         );
       } catch (
-        error
+        error: unknown
       ) {
         console.error(
           error
@@ -78,6 +114,10 @@ export default function DormDetailPage() {
     }
   }, [dormId]);
 
+  /* ===================================================== */
+  /* LOADING */
+  /* ===================================================== */
+
   if (
     loading
   ) {
@@ -87,6 +127,10 @@ export default function DormDetailPage() {
       </div>
     );
   }
+
+  /* ===================================================== */
+  /* NOT FOUND */
+  /* ===================================================== */
 
   if (!dorm) {
     return (
@@ -104,10 +148,12 @@ export default function DormDetailPage() {
         <div className="space-y-4">
           {dorm.imageUrls?.map(
             (
-              image: string
+              image
             ) => (
               <div
-                key={image}
+                key={
+                  image
+                }
                 className="
                   relative
                   h-[260px]
@@ -135,18 +181,24 @@ export default function DormDetailPage() {
           <div className="flex flex-col gap-6">
             <div>
               <h1 className="text-5xl font-black">
-                {dorm.title}
+                {
+                  dorm.title
+                }
               </h1>
 
               <div className="mt-5 flex items-center gap-2 text-slate-500">
                 <MapPin />
 
-                {dorm.city}
+                {
+                  dorm.city
+                }
               </div>
             </div>
 
-            <div className="rounded-full bg-blue-100 px-5 py-3 w-fit text-blue-700 font-semibold">
-              {dorm.gender}
+            <div className="w-fit rounded-full bg-blue-100 px-5 py-3 font-semibold text-blue-700">
+              {
+                dorm.gender
+              }
             </div>
 
             <div>
@@ -194,7 +246,8 @@ export default function DormDetailPage() {
               </p>
             </div>
 
-            {!!dorm.facilities
+            {!!dorm
+              .facilities
               ?.length && (
               <div>
                 <h2 className="mb-5 text-2xl font-black">
@@ -204,7 +257,7 @@ export default function DormDetailPage() {
                 <div className="flex flex-wrap gap-3">
                   {dorm.facilities.map(
                     (
-                      facility: string
+                      facility
                     ) => (
                       <div
                         key={
@@ -226,6 +279,8 @@ export default function DormDetailPage() {
                 </div>
               </div>
             )}
+
+            {/* ACTIONS */}
 
             <div className="flex flex-wrap gap-4">
               <Link

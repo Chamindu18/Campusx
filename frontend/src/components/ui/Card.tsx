@@ -8,12 +8,24 @@
  * - forms
  */
 
-import { HTMLAttributes } from "react";
+import type {
+  HTMLAttributes,
+} from "react";
 
-import { cn } from "@/lib/utils";
+import {
+  cn,
+} from "@/lib/utils";
 
-interface CardProps
-  extends HTMLAttributes<HTMLDivElement> {}
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+type CardProps =
+  HTMLAttributes<HTMLDivElement>;
+
+/* ===================================================== */
+/* COMPONENT */
+/* ===================================================== */
 
 export function Card({
   children,

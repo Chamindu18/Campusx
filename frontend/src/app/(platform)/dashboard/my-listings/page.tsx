@@ -15,11 +15,31 @@ import {
 
 import toast from "react-hot-toast";
 
-import { useRouter } from "next/navigation";
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Listing {
+  id: string;
+
+  title: string;
+
+  category: string;
+
+  price: number;
+}
+
+interface ListingsResponse {
+  listings: Listing[];
+}
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
 
 const fetcher = async (
   url: string
-) => {
+): Promise<ListingsResponse> => {
   const response =
     await fetch(url);
 
@@ -32,9 +52,11 @@ const fetcher = async (
   return response.json();
 };
 
-export default function MyListingsPage() {
-  const router = useRouter();
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
 
+export default function MyListingsPage() {
   /**
    * Listings.
    */
@@ -49,9 +71,10 @@ export default function MyListingsPage() {
   const listings =
     data?.listings || [];
 
-  /**
-   * Delete listing.
-   */
+  /* ===================================================== */
+  /* DELETE LISTING */
+  /* ===================================================== */
+
   async function handleDelete(
     id: string
   ) {
@@ -69,14 +92,17 @@ export default function MyListingsPage() {
         await fetch(
           `/api/listings/${id}`,
           {
-            method: "DELETE",
+            method:
+              "DELETE",
           }
         );
 
       const result =
         await response.json();
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         toast.error(
           result.error
         );
@@ -89,8 +115,12 @@ export default function MyListingsPage() {
       );
 
       mutate();
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error: unknown
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Failed to delete listing"
@@ -100,7 +130,8 @@ export default function MyListingsPage() {
 
   return (
     <div>
-      {/* Header */}
+      {/* HEADER */}
+
       <div className="flex items-center justify-between gap-6">
         <div>
           <h1 className="text-5xl font-black tracking-tight text-slate-900">
@@ -128,12 +159,17 @@ export default function MyListingsPage() {
         </Link>
       </div>
 
-      {/* Listings */}
+      {/* LISTINGS */}
+
       <div className="mt-12 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
         {listings.map(
-          (listing: any) => (
+          (
+            listing
+          ) => (
             <div
-              key={listing.id}
+              key={
+                listing.id
+              }
               className="
                 rounded-3xl
                 border

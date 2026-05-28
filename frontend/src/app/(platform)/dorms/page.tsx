@@ -17,6 +17,32 @@ import {
   DormCardSkeleton,
 } from "@/components/ui/DormCardSkeleton";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Dorm {
+  id: string;
+
+  title: string;
+
+  university: string;
+
+  city: string;
+
+  gender: string;
+
+  roomType: string;
+
+  price: number;
+
+  imageUrls?: string[];
+}
+
+/* ===================================================== */
+/* CONSTANTS */
+/* ===================================================== */
+
 const DEFAULT_UNIVERSITIES = [
   "All",
 ];
@@ -27,12 +53,16 @@ const roomTypes = [
   "Shared",
 ];
 
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
+
 export default function DormsPage() {
   const [
     dorms,
     setDorms,
   ] =
-    useState<any[]>(
+    useState<Dorm[]>(
       []
     );
 
@@ -84,9 +114,13 @@ export default function DormsPage() {
     universities,
     setUniversities,
   ] =
-  useState<string[]>(
-    DEFAULT_UNIVERSITIES
-  );
+    useState<string[]>(
+      DEFAULT_UNIVERSITIES
+    );
+
+  /* ===================================================== */
+  /* FETCH DORMS */
+  /* ===================================================== */
 
   useEffect(() => {
     async function fetchDorms() {
@@ -98,60 +132,67 @@ export default function DormsPage() {
         const params =
           new URLSearchParams();
 
-        if (search)
+        if (search) {
           params.append(
             "search",
             search
           );
+        }
 
         if (
           university !==
           "All"
-        )
+        ) {
           params.append(
             "university",
             university
           );
+        }
 
-        if (city)
+        if (city) {
           params.append(
             "city",
             city
           );
+        }
 
-        if (gender)
+        if (gender) {
           params.append(
             "gender",
             gender
           );
+        }
 
         if (
           roomType
-        )
+        ) {
           params.append(
             "roomType",
             roomType
           );
+        }
 
         if (
           maxPrice
-        )
+        ) {
           params.append(
             "maxPrice",
             maxPrice
           );
+        }
 
         const response =
           await fetch(
-            `/api/dorms?${params}`
+            `/api/dorms?${params.toString()}`
           );
 
         const data =
           await response.json();
 
-        const dormList =
-          data.dorms ||
-          [];
+        const dormList:
+          Dorm[] =
+            data.dorms ||
+            [];
 
         setDorms(
           dormList
@@ -172,7 +213,7 @@ export default function DormsPage() {
                 dormList
                   .map(
                     (
-                      dorm: any
+                      dorm
                     ) =>
                       dorm.university
                   )
@@ -186,6 +227,12 @@ export default function DormsPage() {
             dynamicUniversities
           );
         }
+      } catch (
+        error: unknown
+      ) {
+        console.error(
+          error
+        );
       } finally {
         setLoading(
           false
@@ -206,6 +253,7 @@ export default function DormsPage() {
   return (
     <div>
       {/* HEADER */}
+
       <h1
         className="
           text-5xl
@@ -216,6 +264,7 @@ export default function DormsPage() {
       </h1>
 
       {/* SEARCH */}
+
       <div className="mt-10">
         <div
           className="
@@ -258,6 +307,7 @@ export default function DormsPage() {
       </div>
 
       {/* FILTERS */}
+
       <div
         className="
           mt-8
@@ -266,14 +316,6 @@ export default function DormsPage() {
           flex-wrap
 
           gap-4
-
-          rounded-3xl
-
-          border
-
-          bg-white
-
-          p-6
         "
       >
         <select
@@ -289,28 +331,27 @@ export default function DormsPage() {
             )
           }
           className="
-            h-12
-            min-w-[180px]
             rounded-2xl
             border
-            px-4
+            border-slate-200
+            bg-white
+            px-5
+            py-3
           "
         >
           {universities.map(
             (
-              item
+              uni
             ) => (
               <option
                 key={
-                  item
+                  uni
                 }
                 value={
-                  item
+                  uni
                 }
               >
-                {
-                  item
-                }
+                {uni}
               </option>
             )
           )}
@@ -328,11 +369,12 @@ export default function DormsPage() {
           }
           placeholder="City"
           className="
-            h-12
-            min-w-[180px]
             rounded-2xl
             border
-            px-4
+            border-slate-200
+            bg-white
+            px-5
+            py-3
           "
         />
 
@@ -349,27 +391,24 @@ export default function DormsPage() {
             )
           }
           className="
-            h-12
-            min-w-[180px]
             rounded-2xl
             border
-            px-4
+            border-slate-200
+            bg-white
+            px-5
+            py-3
           "
         >
           <option value="">
-            Gender
+            All Genders
           </option>
 
-          <option>
-            Boys
+          <option value="Male">
+            Male
           </option>
 
-          <option>
-            Girls
-          </option>
-
-          <option>
-            Mixed
+          <option value="Female">
+            Female
           </option>
         </select>
 
@@ -386,32 +425,30 @@ export default function DormsPage() {
             )
           }
           className="
-            h-12
-            min-w-[180px]
             rounded-2xl
             border
-            px-4
+            border-slate-200
+            bg-white
+            px-5
+            py-3
           "
         >
-          <option value="">
-            Room Type
-          </option>
-
           {roomTypes.map(
             (
               type
-            ) =>
-              type ? (
-                <option
-                  key={
-                    type
-                  }
-                >
-                  {
-                    type
-                  }
-                </option>
-              ) : null
+            ) => (
+              <option
+                key={
+                  type
+                }
+                value={
+                  type
+                }
+              >
+                {type ||
+                  "All Rooms"}
+              </option>
+            )
           )}
         </select>
 
@@ -430,22 +467,23 @@ export default function DormsPage() {
           }
           placeholder="Max Price"
           className="
-            h-12
-            w-[180px]
             rounded-2xl
             border
-            px-4
+            border-slate-200
+            bg-white
+            px-5
+            py-3
           "
         />
       </div>
 
-      {/* CARDS */}
+      {/* DORMS */}
+
       <div
         className="
-          mt-10
+          mt-12
 
           grid
-
           gap-8
 
           md:grid-cols-2
@@ -458,11 +496,11 @@ export default function DormsPage() {
             }).map(
               (
                 _,
-                i
+                index
               ) => (
                 <DormCardSkeleton
                   key={
-                    i
+                    index
                   }
                 />
               )
@@ -475,7 +513,9 @@ export default function DormsPage() {
                   key={
                     dorm.id
                   }
-                  {...dorm}
+                  dorm={
+                    dorm
+                  }
                 />
               )
             )}

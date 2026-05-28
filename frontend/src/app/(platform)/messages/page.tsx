@@ -22,13 +22,53 @@ import {
 
 import toast from "react-hot-toast";
 
-import { useCurrentUser } from "@/hooks/use-current-user";
+import {
+  useCurrentUser,
+} from "@/hooks/use-current-user";
 
-import { MessageSkeleton } from "@/components/ui/MessageSkeleton";
+import {
+  MessageSkeleton,
+} from "@/components/ui/MessageSkeleton";
+
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface User {
+  id: string;
+
+  name: string;
+}
+
+interface Participant {
+  user: User;
+}
+
+interface ChatMessage {
+  id: string;
+
+  content: string;
+
+  user: User;
+}
+
+interface Conversation {
+  id: string;
+
+  participants: Participant[];
+
+  messages: ChatMessage[];
+}
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
 
 const fetcher = async (
   url: string
-) => {
+): Promise<
+  Conversation[] | ChatMessage[]
+> => {
   const response =
     await fetch(url);
 
@@ -40,6 +80,10 @@ const fetcher = async (
 
   return response.json();
 };
+
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
 
 export default function MessagesPage() {
   /**
@@ -65,7 +109,10 @@ export default function MessagesPage() {
   const [
     mobileChatOpen,
     setMobileChatOpen,
-  ] = useState(false);
+  ] =
+    useState(
+      false
+    );
 
   /**
    * Active conversation.
@@ -73,34 +120,44 @@ export default function MessagesPage() {
   const [
     activeConversation,
     setActiveConversation,
-  ] = useState<string | null>(
-    null
-  );
+  ] =
+    useState<string | null>(
+      null
+    );
 
   /**
    * Input state.
    */
-  const [content, setContent] =
+  const [
+    content,
+    setContent,
+  ] =
     useState("");
 
-  /**
-   * Conversations.
-   */
+  /* ===================================================== */
+  /* CONVERSATIONS */
+  /* ===================================================== */
+
   const {
-    data: conversations = [],
+    data:
+      conversations = [],
     mutate:
       mutateConversations,
-  } = useSWR(
+  } = useSWR<
+    Conversation[]
+  >(
     "/api/conversations",
     fetcher,
     {
-      refreshInterval: 4000,
+      refreshInterval:
+        4000,
     }
   );
 
-  /**
-   * Auto-select conversation.
-   */
+  /* ===================================================== */
+  /* AUTO SELECT */
+  /* ===================================================== */
+
   useEffect(() => {
     if (
       conversationParam
@@ -117,11 +174,13 @@ export default function MessagesPage() {
     }
 
     if (
-      conversations.length > 0 &&
+      conversations.length >
+        0 &&
       !activeConversation
     ) {
       setActiveConversation(
-        conversations[0].id
+        conversations[0]
+          .id
       );
     }
   }, [
@@ -130,27 +189,33 @@ export default function MessagesPage() {
     conversationParam,
   ]);
 
-  /**
-   * Messages.
-   */
+  /* ===================================================== */
+  /* MESSAGES */
+  /* ===================================================== */
+
   const {
-    data: messages,
+    data:
+      messages,
     mutate,
     isLoading:
       messagesLoading,
-  } = useSWR(
+  } = useSWR<
+    ChatMessage[]
+  >(
     activeConversation
       ? `/api/messages?conversationId=${activeConversation}`
       : null,
     fetcher,
     {
-      refreshInterval: 2000,
+      refreshInterval:
+        2000,
     }
   );
 
-  /**
-   * Send message.
-   */
+  /* ===================================================== */
+  /* SEND MESSAGE */
+  /* ===================================================== */
+
   async function handleSend() {
     if (
       !content.trim() ||
@@ -164,26 +229,32 @@ export default function MessagesPage() {
         await fetch(
           "/api/messages",
           {
-            method: "POST",
+            method:
+              "POST",
 
             headers: {
               "Content-Type":
                 "application/json",
             },
 
-            body: JSON.stringify({
-              content,
+            body:
+              JSON.stringify(
+                {
+                  content,
 
-              conversationId:
-                activeConversation,
-            }),
+                  conversationId:
+                    activeConversation,
+                }
+              ),
           }
         );
 
       const result =
         await response.json();
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         toast.error(
           result.error ||
             "Failed to send"
@@ -197,8 +268,12 @@ export default function MessagesPage() {
       mutate();
 
       mutateConversations();
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error: unknown
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Failed to send message"
@@ -206,32 +281,39 @@ export default function MessagesPage() {
     }
   }
 
-  /**
-   * Get conversation name.
-   */
+  /* ===================================================== */
+  /* CONVERSATION NAME */
+  /* ===================================================== */
+
   function getConversationName(
-    conversation: any
+    conversation: Conversation
   ) {
     const otherParticipant =
       conversation?.participants?.find(
-        (participant: any) =>
-          participant.user.id !==
+        (
+          participant
+        ) =>
+          participant.user
+            .id !==
           user?.id
       );
 
     return (
-      otherParticipant?.user
-        ?.name ||
+      otherParticipant
+        ?.user?.name ||
       "Unknown User"
     );
   }
 
-  /**
-   * Active conversation object.
-   */
+  /* ===================================================== */
+  /* ACTIVE CONVERSATION */
+  /* ===================================================== */
+
   const currentConversation =
     conversations.find(
-      (conversation: any) =>
+      (
+        conversation
+      ) =>
         conversation.id ===
         activeConversation
     );
@@ -250,6 +332,7 @@ export default function MessagesPage() {
       "
     >
       {/* SIDEBAR */}
+
       <div
         className={`
           ${
@@ -267,7 +350,8 @@ export default function MessagesPage() {
           lg:w-[340px]
         `}
       >
-        {/* Header */}
+        {/* HEADER */}
+
         <div className="border-b border-slate-200 px-6 py-6">
           <h1 className="text-3xl font-black text-slate-900">
             Messages
@@ -278,7 +362,8 @@ export default function MessagesPage() {
           </p>
         </div>
 
-        {/* Conversations */}
+        {/* CONVERSATIONS */}
+
         <div className="flex-1 space-y-2 overflow-y-auto p-4">
           {conversations.length ===
             0 && (
@@ -291,7 +376,7 @@ export default function MessagesPage() {
 
           {conversations.map(
             (
-              conversation: any
+              conversation
             ) => (
               <button
                 key={
@@ -354,6 +439,7 @@ export default function MessagesPage() {
       </div>
 
       {/* CHAT AREA */}
+
       <div
         className={`
           ${
@@ -366,7 +452,8 @@ export default function MessagesPage() {
           flex-col
         `}
       >
-        {/* Header */}
+        {/* HEADER */}
+
         <div
           className="
             flex
@@ -380,7 +467,8 @@ export default function MessagesPage() {
             lg:py-6
           "
         >
-          {/* Mobile back */}
+          {/* MOBILE BACK */}
+
           <button
             onClick={() =>
               setMobileChatOpen(
@@ -411,7 +499,8 @@ export default function MessagesPage() {
           </h2>
         </div>
 
-        {/* Messages */}
+        {/* MESSAGES */}
+
         <div
           className="
             flex-1
@@ -449,7 +538,7 @@ export default function MessagesPage() {
           ) : (
             messages?.map(
               (
-                message: any
+                message
               ) => {
                 const isCurrentUser =
                   user?.id ===
@@ -501,18 +590,26 @@ export default function MessagesPage() {
           )}
         </div>
 
-        {/* Input */}
+        {/* INPUT */}
+
         {activeConversation && (
           <div className="border-t border-slate-200 p-4 lg:p-6">
             <div className="flex items-center gap-3 lg:gap-4">
               <input
-                value={content}
-                onChange={(e) =>
+                value={
+                  content
+                }
+                onChange={(
+                  e
+                ) =>
                   setContent(
-                    e.target.value
+                    e.target
+                      .value
                   )
                 }
-                onKeyDown={(e) => {
+                onKeyDown={(
+                  e
+                ) => {
                   if (
                     e.key ===
                     "Enter"

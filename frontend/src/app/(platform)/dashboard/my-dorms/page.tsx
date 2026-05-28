@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * User dorm management page.
+ */
+
 import Link from "next/link";
 
 import useSWR from "swr";
@@ -12,9 +16,31 @@ import {
 
 import toast from "react-hot-toast";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+interface Dorm {
+  id: string;
+
+  title: string;
+
+  university: string;
+
+  price: number;
+}
+
+interface DormsResponse {
+  dorms: Dorm[];
+}
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
+
 const fetcher = async (
   url: string
-) => {
+): Promise<DormsResponse> => {
   const response =
     await fetch(url);
 
@@ -26,6 +52,10 @@ const fetcher = async (
 
   return response.json();
 };
+
+/* ===================================================== */
+/* PAGE */
+/* ===================================================== */
 
 export default function MyDormsPage() {
   /**
@@ -42,9 +72,10 @@ export default function MyDormsPage() {
   const dorms =
     data?.dorms || [];
 
-  /**
-   * Delete dorm.
-   */
+  /* ===================================================== */
+  /* DELETE DORM */
+  /* ===================================================== */
+
   async function handleDelete(
     id: string
   ) {
@@ -62,14 +93,17 @@ export default function MyDormsPage() {
         await fetch(
           `/api/dorms/${id}`,
           {
-            method: "DELETE",
+            method:
+              "DELETE",
           }
         );
 
       const result =
         await response.json();
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         toast.error(
           result.error
         );
@@ -82,8 +116,12 @@ export default function MyDormsPage() {
       );
 
       mutate();
-    } catch (error) {
-      console.error(error);
+    } catch (
+      error: unknown
+    ) {
+      console.error(
+        error
+      );
 
       toast.error(
         "Failed to delete dorm"
@@ -94,6 +132,7 @@ export default function MyDormsPage() {
   return (
     <div>
       {/* HEADER */}
+
       <div className="flex items-center justify-between gap-6">
         <div>
           <h1 className="text-5xl font-black tracking-tight text-slate-900">
@@ -122,11 +161,16 @@ export default function MyDormsPage() {
       </div>
 
       {/* DORMS */}
+
       <div className="mt-12 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
         {dorms.map(
-          (dorm: any) => (
+          (
+            dorm
+          ) => (
             <div
-              key={dorm.id}
+              key={
+                dorm.id
+              }
               className="
                 rounded-3xl
                 border
@@ -172,7 +216,8 @@ export default function MyDormsPage() {
                 </div>
               </div>
 
-              {/* Actions */}
+              {/* ACTIONS */}
+
               <div className="mt-8 flex gap-3">
                 <Link
                   href={`/dorms/edit/${dorm.id}`}

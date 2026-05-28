@@ -7,12 +7,24 @@
  * - responsive
  */
 
-import { HTMLAttributes } from "react";
+import type {
+  HTMLAttributes,
+} from "react";
 
-import { cn } from "@/lib/utils";
+import {
+  cn,
+} from "@/lib/utils";
 
-interface ContainerProps
-  extends HTMLAttributes<HTMLDivElement> {}
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+type ContainerProps =
+  HTMLAttributes<HTMLDivElement>;
+
+/* ===================================================== */
+/* COMPONENT */
+/* ===================================================== */
 
 export function Container({
   children,
