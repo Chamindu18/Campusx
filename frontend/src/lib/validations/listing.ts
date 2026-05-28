@@ -72,6 +72,6 @@ export const listingSchema =
   });
 
 export type ListingFormValues =
-  z.infer<
+  z.input<
     typeof listingSchema
   >;

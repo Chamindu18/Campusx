@@ -37,6 +37,11 @@ interface Dorm {
   price: number;
 
   imageUrls?: string[];
+
+  /**
+   * Optional distance label.
+   */
+  distanceFromUniversity?: string;
 }
 
 /* ===================================================== */
@@ -513,8 +518,34 @@ export default function DormsPage() {
                   key={
                     dorm.id
                   }
-                  dorm={
-                    dorm
+                  id={
+                    dorm.id
+                  }
+                  title={
+                    dorm.title
+                  }
+                  university={
+                    dorm.university
+                  }
+                  city={
+                    dorm.city
+                  }
+                  gender={
+                    dorm.gender
+                  }
+                  roomType={
+                    dorm.roomType
+                  }
+                  price={
+                    dorm.price
+                  }
+                  imageUrls={
+                    dorm.imageUrls ||
+                    []
+                  }
+                  distanceFromUniversity={
+                    dorm.distanceFromUniversity ||
+                    "Near university"
                   }
                 />
               )

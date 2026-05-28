@@ -10,6 +10,10 @@ import {
   BedDouble,
 } from "lucide-react";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
 interface DormCardProps {
   id: string;
 
@@ -30,6 +34,10 @@ interface DormCardProps {
   distanceFromUniversity: string;
 }
 
+/* ===================================================== */
+/* COMPONENT */
+/* ===================================================== */
+
 export function DormCard({
   id,
   title,
@@ -41,6 +49,13 @@ export function DormCard({
   imageUrls,
   distanceFromUniversity,
 }: DormCardProps) {
+  /**
+   * Safe image fallback.
+   */
+  const image =
+    imageUrls?.[0] ||
+    "/placeholder.jpg";
+
   return (
     <Link
       href={`/dorms/${id}`}
@@ -60,9 +75,10 @@ export function DormCard({
       "
     >
       {/* IMAGE */}
+
       <div className="relative h-64 overflow-hidden">
         <Image
-          src={imageUrls[0]}
+          src={image}
           alt={title}
           fill
           className="
@@ -75,8 +91,10 @@ export function DormCard({
       </div>
 
       {/* CONTENT */}
+
       <div className="p-6">
-        {/* Top */}
+        {/* TOP */}
+
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">
@@ -107,7 +125,8 @@ export function DormCard({
           </div>
         </div>
 
-        {/* University */}
+        {/* UNIVERSITY */}
+
         <div className="mt-5 flex items-center gap-2 text-sm text-slate-600">
           <GraduationCap className="h-4 w-4" />
 
@@ -116,7 +135,8 @@ export function DormCard({
           </span>
         </div>
 
-        {/* Room Type */}
+        {/* ROOM TYPE */}
+
         <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
           <BedDouble className="h-4 w-4" />
 
@@ -125,14 +145,18 @@ export function DormCard({
           </span>
         </div>
 
-        {/* Distance */}
+        {/* DISTANCE */}
+
         <div className="mt-4">
           <p className="text-sm text-slate-500">
-            {distanceFromUniversity}
+            {
+              distanceFromUniversity
+            }
           </p>
         </div>
 
-        {/* Price */}
+        {/* PRICE */}
+
         <div className="mt-6 flex items-center justify-between">
           <p className="text-3xl font-black text-slate-900">
             LKR{" "}
