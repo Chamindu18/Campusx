@@ -1,148 +1,279 @@
+"use client";
+
 /**
- * Public user profile API.
+ * Public user profile page.
  */
 
-import { NextResponse } from "next/server";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import { prisma } from "@/lib/prisma";
+import {
+  useParams,
+} from "next/navigation";
 
-interface RouteParams {
-  params: Promise<{
-    id: string;
-  }>;
+import Link from "next/link";
+
+interface Listing {
+  id: string;
+
+  title: string;
+
+  price: number;
 }
 
-export async function GET(
-  request: Request,
-  { params }: RouteParams
-) {
-  try {
-    /**
-     * Route params.
-     */
-    const {
-      id,
-    } =
-      await params;
+interface Dorm {
+  id: string;
 
-    /**
-     * Find public user.
-     */
-    const user =
-      await prisma.user.findUnique({
-        where: {
-          id,
-        },
+  title: string;
+}
 
-        select: {
-          id: true,
+interface UserProfile {
+  id: string;
 
-          name:
-            true,
+  name: string;
 
-          university:
-            true,
+  university:
+    string | null;
 
-          bio:
-            true,
+  bio:
+    string | null;
 
-          createdAt:
-            true,
+  createdAt: string;
 
-          listings: {
-            select: {
-              id:
-                true,
+  listings:
+    Listing[];
 
-              title:
-                true,
+  dorms:
+    Dorm[];
 
-              price:
-                true,
+  _count: {
+    listings: number;
 
-              imageUrls:
-                true,
+    dorms: number;
+  };
+}
 
-              createdAt:
-                true,
-            },
+export default function UserProfilePage() {
+  const params =
+    useParams();
 
-            orderBy: {
-              createdAt:
-                "desc",
-            },
+  const userId =
+    params.id as string;
 
-            take: 6,
-          },
+  const [
+    user,
+    setUser,
+  ] =
+    useState<UserProfile | null>(
+      null
+    );
 
-          dorms: {
-            select: {
-              id:
-                true,
+  const [
+    loading,
+    setLoading,
+  ] =
+    useState(true);
 
-              title:
-                true,
+  /* ===================================================== */
+  /* FETCH USER */
+  /* ===================================================== */
 
-              imageUrls:
-                true,
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response =
+          await fetch(
+            `/api/users/${userId}`
+          );
 
-              createdAt:
-                true,
-            },
+        const data =
+          await response.json();
 
-            orderBy: {
-              createdAt:
-                "desc",
-            },
-
-            take: 6,
-          },
-
-          _count: {
-            select: {
-              listings:
-                true,
-
-              dorms:
-                true,
-            },
-          },
-        },
-      });
-
-    /**
-     * Missing user.
-     */
-    if (!user) {
-      return NextResponse.json(
-        {
-          error:
-            "User not found",
-        },
-        {
-          status: 404,
-        }
-      );
+        setUser(
+          data
+        );
+      } catch (
+        error
+      ) {
+        console.error(
+          error
+        );
+      } finally {
+        setLoading(
+          false
+        );
+      }
     }
 
-    return NextResponse.json(
-      user
-    );
-  } catch (
-    error
-  ) {
-    console.error(
-      error
-    );
+    if (
+      userId
+    ) {
+      fetchUser();
+    }
+  }, [userId]);
 
-    return NextResponse.json(
-      {
-        error:
-          "Failed to fetch user",
-      },
-      {
-        status: 500,
-      }
+  /* ===================================================== */
+  /* LOADING */
+  /* ===================================================== */
+
+  if (
+    loading
+  ) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        Loading profile...
+      </div>
     );
   }
+
+  /* ===================================================== */
+  /* NOT FOUND */
+  /* ===================================================== */
+
+  if (!user) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        User not found
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      {/* PROFILE */}
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
+        <h1 className="text-5xl font-black text-slate-900">
+          {user.name}
+        </h1>
+
+        {user.university && (
+          <p className="mt-4 text-lg text-slate-500">
+            {
+              user.university
+            }
+          </p>
+        )}
+
+        {user.bio && (
+          <p className="mt-6 leading-8 text-slate-600">
+            {user.bio}
+          </p>
+        )}
+
+        <div className="mt-8 flex gap-8">
+          <div>
+            <p className="text-3xl font-black">
+              {
+                user._count
+                  .listings
+              }
+            </p>
+
+            <p className="text-slate-500">
+              Listings
+            </p>
+          </div>
+
+          <div>
+            <p className="text-3xl font-black">
+              {
+                user._count
+                  .dorms
+              }
+            </p>
+
+            <p className="text-slate-500">
+              Dorms
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* LISTINGS */}
+
+      <div className="mt-14">
+        <h2 className="text-3xl font-black">
+          Listings
+        </h2>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {user.listings.map(
+            (
+              listing
+            ) => (
+              <Link
+                key={
+                  listing.id
+                }
+                href={`/marketplace/${listing.id}`}
+                className="
+                  rounded-3xl
+                  border
+                  border-slate-200
+                  bg-white
+                  p-6
+                  transition
+                  hover:shadow-md
+                "
+              >
+                <h3 className="text-xl font-bold">
+                  {
+                    listing.title
+                  }
+                </h3>
+
+                <p className="mt-3 text-slate-500">
+                  Rs.
+                  {
+                    listing.price
+                  }
+                </p>
+              </Link>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* DORMS */}
+
+      <div className="mt-14">
+        <h2 className="text-3xl font-black">
+          Dorms
+        </h2>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {user.dorms.map(
+            (
+              dorm
+            ) => (
+              <Link
+                key={
+                  dorm.id
+                }
+                href={`/dorms/${dorm.id}`}
+                className="
+                  rounded-3xl
+                  border
+                  border-slate-200
+                  bg-white
+                  p-6
+                  transition
+                  hover:shadow-md
+                "
+              >
+                <h3 className="text-xl font-bold">
+                  {
+                    dorm.title
+                  }
+                </h3>
+              </Link>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
