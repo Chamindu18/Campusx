@@ -47,17 +47,17 @@ export const dormSchema =
         "Room type is required"
       ),
 
+    /**
+     * IMPORTANT:
+     * HTML inputs return strings.
+     * z.coerce.number() converts safely.
+     */
     price: z.coerce
       .number()
       .positive(
         "Price must be positive"
       ),
 
-    /**
-     * IMPORTANT:
-     * facilities + imageUrls
-     * are managed outside RHF.
-     */
     facilities:
       z.array(
         z.string()
@@ -84,7 +84,11 @@ export const dormSchema =
         ),
   });
 
+/**
+ * IMPORTANT:
+ * Use INPUT type for RHF compatibility.
+ */
 export type DormFormValues =
-  z.infer<
+  z.input<
     typeof dormSchema
   >;
