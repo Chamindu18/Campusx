@@ -2,7 +2,7 @@
 
 import {
   UploadButton,
-} from "@uploadthing/react";
+} from "@/lib/uploadthing";
 
 export default function TestUploadPage() {
   return (
