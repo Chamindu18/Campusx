@@ -4,7 +4,11 @@ import Image from "next/image";
 
 import {
   UploadButton,
-} from "@uploadthing/react";
+} from "@/lib/uploadthing";
+
+interface UploadedFile {
+  url: string;
+}
 
 interface ImageUploadProps {
   value: string[];
@@ -29,47 +33,58 @@ export function ImageUpload({
   return (
     <div className="space-y-6">
       {/* Preview Images */}
-      {value.length > 0 && (
+
+      {value.length >
+        0 && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {value.map((url) => (
-            <div
-              key={url}
-              className="
-                relative
-                h-40
-                overflow-hidden
-                rounded-2xl
-                border
-                border-slate-200
-              "
-            >
-              <Image
-                src={url}
-                alt="Listing image"
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
+          {value.map(
+            (
+              url
+            ) => (
+              <div
+                key={
+                  url
+                }
+                className="
+                  relative
+                  h-40
+                  overflow-hidden
+                  rounded-2xl
+                  border
+                  border-slate-200
+                "
+              >
+                <Image
+                  src={url}
+                  alt="Listing image"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )
+          )}
         </div>
       )}
 
       {/* Upload Button */}
+
       <UploadButton
         endpoint="listingImageUploader"
         onBeforeUploadBegin={(
-          files
+          files: File[]
         ) => {
           onUploadStart?.();
 
           return files;
         }}
         onClientUploadComplete={(
-          res
+          res: UploadedFile[]
         ) => {
           const urls =
             res.map(
-              (file) =>
+              (
+                file
+              ) =>
                 file.url
             );
 
@@ -81,7 +96,7 @@ export function ImageUpload({
           onUploadComplete?.();
         }}
         onUploadError={(
-          error
+          error: Error
         ) => {
           console.error(
             error
