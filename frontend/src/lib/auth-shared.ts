@@ -1,4 +1,6 @@
-import type { UserRole } from "@prisma/client";
+export type UserRole =
+  | "USER"
+  | "ADMIN";
 
 export const AUTH_COOKIE_NAME = "campusx_token";
 
