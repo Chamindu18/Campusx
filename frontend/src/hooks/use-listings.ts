@@ -6,9 +6,59 @@
 
 import useSWR from "swr";
 
+/* ===================================================== */
+/* TYPES */
+/* ===================================================== */
+
+export interface Listing {
+  id: string;
+
+  title: string;
+
+  category: string;
+
+  price: number;
+
+  description: string;
+
+  condition: string;
+
+  location: string;
+
+  imageUrls: string[];
+
+  createdAt?: string;
+}
+
+interface ListingsResponse {
+  listings: Listing[];
+
+  pagination: {
+    page: number;
+
+    limit: number;
+
+    totalListings: number;
+
+    totalPages: number;
+  };
+}
+
+interface UseListingsProps {
+  search?: string;
+
+  category?: string;
+
+  page?: number;
+}
+
+/* ===================================================== */
+/* FETCHER */
+/* ===================================================== */
+
 const fetcher = async (
   url: string
-) => {
+): Promise<ListingsResponse> => {
   const response =
     await fetch(url);
 
@@ -21,22 +71,15 @@ const fetcher = async (
   return response.json();
 };
 
-interface UseListingsProps {
-  search?: string;
-
-  category?: string;
-
-  page?: number;
-}
+/* ===================================================== */
+/* HOOK */
+/* ===================================================== */
 
 export function useListings({
   search = "",
   category = "",
   page = 1,
 }: UseListingsProps) {
-  /**
-   * Query params.
-   */
   const params =
     new URLSearchParams({
       search,
@@ -46,22 +89,20 @@ export function useListings({
       page: String(page),
     });
 
-  /**
-   * Fetch listings.
-   */
   const {
     data,
     error,
     isLoading,
     mutate,
-  } = useSWR(
+  } = useSWR<ListingsResponse>(
     `/api/listings?${params.toString()}`,
     fetcher
   );
 
   return {
     listings:
-      data?.listings || [],
+      data?.listings ??
+      [],
 
     pagination:
       data?.pagination,

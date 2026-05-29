@@ -22,6 +22,10 @@ import {
   MARKETPLACE_CATEGORIES,
 } from "@/constants/listing-categories";
 
+import type {
+  Listing,
+} from "@/hooks/use-listings";
+
 export default function MarketplacePage() {
   const [search, setSearch] =
     useState("");
@@ -280,7 +284,7 @@ export default function MarketplacePage() {
           >
             {listings.map(
               (
-                listing
+                listing: Listing
               ) => (
                 <MarketplaceCard
                   key={
