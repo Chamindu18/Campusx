@@ -19,6 +19,8 @@ interface Notification {
 
   isRead: boolean;
 
+  link?: string | null;
+
   createdAt: string;
 }
 
