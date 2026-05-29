@@ -1,4 +1,6 @@
-import type { UserRole } from "@prisma/client";
+type UserRole =
+  | "USER"
+  | "ADMIN";
 
 interface EdgeTokenPayload {
   userId: string;
