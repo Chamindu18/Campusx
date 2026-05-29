@@ -61,25 +61,48 @@ interface Conversation {
 }
 
 /* ===================================================== */
-/* FETCHER */
+/* FETCHERS */
 /* ===================================================== */
 
-const fetcher = async (
-  url: string
-): Promise<
-  Conversation[] | ChatMessage[]
-> => {
-  const response =
-    await fetch(url);
+const conversationsFetcher =
+  async (
+    url: string
+  ): Promise<
+    Conversation[]
+  > => {
+    const response =
+      await fetch(url);
 
-  if (!response.ok) {
-    throw new Error(
-      "Failed to fetch"
-    );
-  }
+    if (
+      !response.ok
+    ) {
+      throw new Error(
+        "Failed to fetch conversations"
+      );
+    }
 
-  return response.json();
-};
+    return response.json();
+  };
+
+const messagesFetcher =
+  async (
+    url: string
+  ): Promise<
+    ChatMessage[]
+  > => {
+    const response =
+      await fetch(url);
+
+    if (
+      !response.ok
+    ) {
+      throw new Error(
+        "Failed to fetch messages"
+      );
+    }
+
+    return response.json();
+  };
 
 /* ===================================================== */
 /* PAGE */
@@ -147,7 +170,7 @@ export default function MessagesPage() {
     Conversation[]
   >(
     "/api/conversations",
-    fetcher,
+    conversationsFetcher,
     {
       refreshInterval:
         4000,
@@ -205,7 +228,7 @@ export default function MessagesPage() {
     activeConversation
       ? `/api/messages?conversationId=${activeConversation}`
       : null,
-    fetcher,
+    messagesFetcher,
     {
       refreshInterval:
         2000,

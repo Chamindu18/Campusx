@@ -91,7 +91,7 @@ export async function PATCH(
           },
 
           data: {
-            read:
+            isRead:
               true,
           },
         }
