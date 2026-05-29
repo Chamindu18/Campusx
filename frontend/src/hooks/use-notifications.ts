@@ -17,7 +17,7 @@ interface Notification {
 
   message: string;
 
-  read: boolean;
+  isRead: boolean;
 
   createdAt: string;
 }
@@ -53,7 +53,9 @@ export function useNotifications() {
     error,
     isLoading,
     mutate,
-  } = useSWR(
+  } = useSWR<
+    Notification[]
+  >(
     "/api/notifications",
     fetcher,
     {
@@ -64,15 +66,15 @@ export function useNotifications() {
 
   return {
     notifications:
-      data || [],
+      data ?? [],
 
     unreadCount:
       data?.filter(
         (
           notification
         ) =>
-          !notification.read
-      ).length || 0,
+          !notification.isRead
+      ).length ?? 0,
 
     error,
 
