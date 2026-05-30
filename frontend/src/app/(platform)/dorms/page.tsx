@@ -261,8 +261,10 @@ export default function DormsPage() {
 
       <h1
         className="
-          text-5xl
+          text-3xl
           font-black
+          sm:text-4xl
+          md:text-5xl
         "
       >
         Student Dorms

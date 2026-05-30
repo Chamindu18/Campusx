@@ -36,7 +36,7 @@ export default function AdminSettingsPage() {
       {/* HEADER */}
 
       <div>
-        <h1 className="text-5xl font-black">
+        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
           Settings
         </h1>
 
@@ -110,7 +110,7 @@ export default function AdminSettingsPage() {
           Platform
         </h2>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="rounded-2xl bg-slate-50 p-6">
             <h3 className="font-bold">
               Marketplace

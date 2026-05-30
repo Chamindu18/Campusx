@@ -185,13 +185,14 @@ export function CategoriesSection() {
                         border
                         border-slate-200
                         bg-white
-                        p-10
+                        p-4
                         shadow-sm
                         transition-all
                         duration-300
                         hover:-translate-y-1
                         hover:border-blue-200
                         hover:shadow-xl
+                        md:p-10
                       "
                     >
                       <div

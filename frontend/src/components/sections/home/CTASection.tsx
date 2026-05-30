@@ -110,13 +110,15 @@ export function CTASection() {
           className="
             mt-8
 
-            text-5xl
+            text-3xl
             font-black
 
             leading-tight
 
             text-white
 
+            sm:text-4xl
+            md:text-5xl
             md:text-6xl
           "
         >

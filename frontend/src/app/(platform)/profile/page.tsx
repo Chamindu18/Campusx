@@ -186,7 +186,7 @@ export default function ProfilePage() {
               {initials}
             </div>
 
-            <h1 className="mt-6 text-4xl font-black">
+            <h1 className="mt-6 text-3xl font-black sm:text-4xl">
               {profile?.name}
             </h1>
 

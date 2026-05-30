@@ -110,9 +110,11 @@ export function ShowcaseSection() {
           <h2
             className="
               mt-6
-              text-5xl
+              text-3xl
               font-black
               text-white
+              sm:text-4xl
+              md:text-5xl
             "
           >
             Imagine using it.
@@ -225,7 +227,8 @@ export function ShowcaseSection() {
                     {/* CONTENT */}
                     <div
                       className="
-                        p-10
+                        p-4
+                        md:p-10
                       "
                     >
                       <div

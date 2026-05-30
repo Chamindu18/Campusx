@@ -162,7 +162,7 @@ export default function MyDormsPage() {
 
       {/* DORMS */}
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-12 grid gap-8 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {dorms.map(
           (
             dorm

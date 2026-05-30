@@ -93,9 +93,11 @@ export function SafetySection() {
           <h2
             className="
               mt-6
-              text-5xl
+              text-3xl
               font-black
               text-slate-900
+              sm:text-4xl
+              md:text-5xl
             "
           >
             Designed to feel
@@ -153,9 +155,10 @@ export function SafetySection() {
                     group
                     rounded-[30px]
                     bg-slate-50
-                    p-10
+                    p-4
                     transition-all
                     duration-300
+                    md:p-10
                     hover:-translate-y-1
                     hover:bg-white
                     hover:shadow-lg
