@@ -20,7 +20,9 @@ export async function GET(
     /**
      * Route params.
      */
-    const { id } =
+    const {
+      id,
+    } =
       await params;
 
     /**
@@ -34,15 +36,62 @@ export async function GET(
 
         select: {
           id: true,
+
           name: true,
+
           university: true,
+
           bio: true,
+
           createdAt: true,
 
           listings: {
+            select: {
+              id: true,
+
+              title: true,
+
+              price: true,
+
+              imageUrls: true,
+
+              createdAt: true,
+            },
+
             orderBy: {
               createdAt:
                 "desc",
+            },
+
+            take: 6,
+          },
+
+          dorms: {
+            select: {
+              id: true,
+
+              title: true,
+
+              imageUrls: true,
+
+              createdAt: true,
+            },
+
+            orderBy: {
+              createdAt:
+                "desc",
+            },
+
+            take: 6,
+          },
+
+          _count: {
+            select: {
+              listings:
+                true,
+
+              dorms:
+                true,
             },
           },
         },
@@ -66,8 +115,12 @@ export async function GET(
     return NextResponse.json(
       user
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
