@@ -318,7 +318,7 @@ export default function ListingPage({
             </div>
 
             {/* Thumbnails */}
-            <div className="mt-4 grid grid-cols-4 gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {listing.imageUrls.map(
                 (image) => (
                   <button
@@ -513,9 +513,10 @@ export default function ListingPage({
                   mt-8
                   flex
                   flex-col
-                  gap-4
+                  gap-3
                   sm:flex-row
                   sm:flex-wrap
+                  sm:gap-4
                 "
               >
                 {/* Message */}

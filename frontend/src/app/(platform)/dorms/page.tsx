@@ -344,6 +344,8 @@ export default function DormsPage() {
             bg-white
             px-5
             py-3
+            w-full
+            sm:w-auto
           "
         >
           {universities.map(
@@ -382,6 +384,8 @@ export default function DormsPage() {
             bg-white
             px-5
             py-3
+            w-full
+            sm:w-auto
           "
         />
 
@@ -404,6 +408,8 @@ export default function DormsPage() {
             bg-white
             px-5
             py-3
+            w-full
+            sm:w-auto
           "
         >
           <option value="">
@@ -438,6 +444,8 @@ export default function DormsPage() {
             bg-white
             px-5
             py-3
+            w-full
+            sm:w-auto
           "
         >
           {roomTypes.map(
@@ -480,6 +488,8 @@ export default function DormsPage() {
             bg-white
             px-5
             py-3
+            w-full
+            sm:w-auto
           "
         />
       </div>

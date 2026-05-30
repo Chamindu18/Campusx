@@ -345,7 +345,7 @@ export default function MessagesPage() {
     <div
       className="
         flex
-        h-[calc(100vh-140px)]
+        min-h-[calc(100vh-140px)]
         overflow-hidden
         rounded-[32px]
         border

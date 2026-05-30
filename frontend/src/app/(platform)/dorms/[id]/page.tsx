@@ -180,7 +180,7 @@ export default function DormDetailPage() {
         <div>
           <div className="flex flex-col gap-6">
             <div>
-              <h1 className="text-5xl font-black">
+              <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
                 {
                   dorm.title
                 }
