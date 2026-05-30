@@ -164,7 +164,7 @@ export default function AdminSystemPage() {
                 }
               </p>
 
-              <h2 className="mt-4 text-4xl font-black">
+              <h2 className="mt-4 text-3xl font-black sm:text-4xl">
                 {
                   item[1]
                 }

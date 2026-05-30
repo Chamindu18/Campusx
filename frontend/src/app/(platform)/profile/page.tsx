@@ -221,7 +221,7 @@ export default function ProfilePage() {
             Profile Completion
           </h3>
 
-          <p className="mt-3 text-4xl font-black text-blue-600">
+          <p className="mt-3 text-3xl font-black text-blue-600 sm:text-4xl">
             {profileCompletion}%
           </p>
         </Card>

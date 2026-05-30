@@ -242,7 +242,7 @@ export default function UserProfilePage() {
             Marketplace Listings
           </h3>
 
-          <p className="mt-3 text-4xl font-black text-blue-600">
+          <p className="mt-3 text-3xl font-black text-blue-600 sm:text-4xl">
             {
               user._count
                 .listings
@@ -255,7 +255,7 @@ export default function UserProfilePage() {
             Dorm Listings
           </h3>
 
-          <p className="mt-3 text-4xl font-black text-indigo-600">
+          <p className="mt-3 text-3xl font-black text-indigo-600 sm:text-4xl">
             {
               user._count
                 .dorms
