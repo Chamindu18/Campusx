@@ -76,7 +76,7 @@ export function DormCard({
     >
       {/* IMAGE */}
 
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-48 overflow-hidden sm:h-56 md:h-64">
         <Image
           src={image}
           alt={title}

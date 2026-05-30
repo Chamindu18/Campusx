@@ -12,7 +12,7 @@ export function MarketplaceCardSkeleton() {
       "
     >
       {/* IMAGE */}
-      <div className="h-64 bg-slate-200" />
+      <div className="h-48 bg-slate-200 sm:h-56 md:h-64" />
 
       {/* CONTENT */}
       <div className="p-6">

@@ -166,7 +166,7 @@ export default function SavedPage() {
 
       {/* GRID */}
 
-      <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
         {savedListings.map(
           (
             saved:

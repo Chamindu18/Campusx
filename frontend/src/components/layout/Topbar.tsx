@@ -73,7 +73,7 @@ export function Topbar({
         top-0
         z-30
         flex
-        h-24
+        h-20
         items-center
         justify-between
         border-b
@@ -81,6 +81,7 @@ export function Topbar({
         bg-white/50
         px-4
         backdrop-blur-xl
+        md:h-24
         md:px-10
       "
     >

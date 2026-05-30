@@ -254,7 +254,7 @@ export default function DashboardPage() {
           Quick Actions
         </h2>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           {quickActions.map(
             (
               action

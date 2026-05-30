@@ -32,10 +32,11 @@ export function StepCard({
         border
         border-white/40
         bg-white/70
-        p-10
+        p-4
         shadow-xl
         shadow-slate-200/40
         backdrop-blur-xl
+        md:p-10
       "
     >
       {/* Step Number */}

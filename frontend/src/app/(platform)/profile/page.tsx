@@ -215,7 +215,7 @@ export default function ProfilePage() {
 
       {/* STATS */}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card className="p-6 text-center">
           <h3 className="text-sm font-semibold text-slate-500">
             Profile Completion
