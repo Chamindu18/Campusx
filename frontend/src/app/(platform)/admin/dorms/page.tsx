@@ -165,7 +165,7 @@ export default function AdminDormsPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-5xl font-black">
+        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
           Dorms
         </h1>
 

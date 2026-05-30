@@ -275,7 +275,7 @@ export default function AdminPage() {
     <div className="space-y-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-5xl font-black">
+          <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
             Admin Dashboard
           </h1>
 
@@ -302,7 +302,7 @@ export default function AdminPage() {
 
       {/* STATS */}
 
-      <div className="grid gap-6 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         {[
           [
             "Users",

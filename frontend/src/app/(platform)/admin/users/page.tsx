@@ -135,7 +135,7 @@ export default function AdminUsersPage() {
       {/* HEADER */}
 
       <div>
-        <h1 className="text-5xl font-black">
+        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
           Users
         </h1>
 
@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
 
       {/* USERS */}
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map(
           (
             user

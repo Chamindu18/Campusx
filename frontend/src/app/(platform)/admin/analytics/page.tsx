@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-5xl font-black">
+        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
           Analytics
         </h1>
 
@@ -138,7 +138,7 @@ export default function AnalyticsPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {cards.map(
           (
             card
