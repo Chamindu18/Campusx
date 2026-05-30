@@ -180,9 +180,11 @@ export default function CreateListingPage() {
       <div>
         <h1
           className="
-            text-5xl
+            text-3xl
             font-black
             tracking-tight
+            sm:text-4xl
+            md:text-5xl
           "
         >
           Create

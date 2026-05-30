@@ -274,7 +274,7 @@ const [
     <div className="mx-auto max-w-5xl">
       {/* HEADER */}
       <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
           Create Dorm Listing
         </h1>
 

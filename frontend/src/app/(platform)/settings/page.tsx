@@ -137,7 +137,7 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-4xl">
       {/* HEADER */}
       <div>
-        <h1 className="text-5xl font-black tracking-tight text-slate-900">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
           Account Settings
         </h1>
 
