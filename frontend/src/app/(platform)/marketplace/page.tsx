@@ -175,8 +175,10 @@ export default function MarketplacePage() {
                     ? `
                       rounded-2xl
                       bg-blue-600
-                      px-5
-                      py-3
+                      px-3
+                      py-2
+                      sm:px-5
+                      sm:py-3
                       text-white
                     `
                     : `
@@ -187,8 +189,10 @@ export default function MarketplacePage() {
 
                       bg-white/70
 
-                      px-5
-                      py-3
+                      px-3
+                      py-2
+                      sm:px-5
+                      sm:py-3
                     `
                 }
               >
