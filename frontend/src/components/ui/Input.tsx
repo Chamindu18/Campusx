@@ -34,7 +34,9 @@ export const Input =
         ref={ref}
         className={cn(
           `
-            h-14
+            h-12
+            md:h-14
+
             w-full
 
             rounded-2xl
@@ -57,12 +59,20 @@ export const Input =
             transition-all
             duration-300
 
-            focus:bg-white
+            focus-visible:bg-white
 
-            focus:border-blue-400
+            focus-visible:border-blue-400
 
-            focus:ring-4
-            focus:ring-blue-400/20
+            focus-visible:ring-4
+            focus-visible:ring-blue-400/20
+
+            disabled:cursor-not-allowed
+            disabled:opacity-60
+
+            read-only:bg-slate-50
+            read-only:text-slate-500
+
+            autofill:bg-white
           `,
           className
         )}

@@ -27,88 +27,99 @@ interface ImageUploadProps {
 export function ImageUpload({
   value,
   onChange,
+  disabled = false,
   onUploadStart,
   onUploadComplete,
 }: ImageUploadProps) {
   return (
     <div className="space-y-6">
-      {/* Preview Images */}
+      {/* PREVIEW IMAGES */}
 
-      {value.length >
-        0 && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {value.map(
-            (
-              url
-            ) => (
-              <div
-                key={
-                  url
-                }
-                className="
-                  relative
-                  h-40
-                  overflow-hidden
-                  rounded-2xl
-                  border
-                  border-slate-200
-                "
-              >
-                <Image
-                  src={url}
-                  alt="Listing image"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )
-          )}
+      {value.length > 0 && (
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-4
+
+            sm:grid-cols-2
+            lg:grid-cols-3
+          "
+        >
+          {value.map((url) => (
+            <div
+              key={url}
+              className="
+                relative
+
+                h-48
+                md:h-40
+
+                overflow-hidden
+
+                rounded-2xl
+
+                border
+                border-slate-200
+              "
+            >
+              <Image
+                src={url}
+                alt="Listing image"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Upload Button */}
+      {/* UPLOAD BUTTON */}
 
-      <UploadButton
-        endpoint="listingImageUploader"
-        onBeforeUploadBegin={(
-          files: File[]
-        ) => {
-          onUploadStart?.();
+      {!disabled && (
+        <UploadButton
+          endpoint="listingImageUploader"
+          onBeforeUploadBegin={(
+            files: File[]
+          ) => {
+            onUploadStart?.();
 
-          return files;
-        }}
-        onClientUploadComplete={(
-          res: UploadedFile[]
-        ) => {
-          const urls =
-            res.map(
-              (
-                file
-              ) =>
-                file.url
+            return files;
+          }}
+          onClientUploadComplete={(
+            res: UploadedFile[]
+          ) => {
+            const urls = res.map(
+              (file) => file.url
             );
 
-          onChange([
-            ...value,
-            ...urls,
-          ]);
+            const uniqueUrls =
+              Array.from(
+                new Set([
+                  ...value,
+                  ...urls,
+                ])
+              );
 
-          onUploadComplete?.();
-        }}
-        onUploadError={(
-          error: Error
-        ) => {
-          console.error(
-            error
-          );
+            onChange(
+              uniqueUrls
+            );
 
-          alert(
-            error.message
-          );
+            onUploadComplete?.();
+          }}
+          onUploadError={(
+            error: Error
+          ) => {
+            console.error(
+              "Upload failed:",
+              error
+            );
 
-          onUploadComplete?.();
-        }}
-      />
+            onUploadComplete?.();
+          }}
+        />
+      )}
     </div>
   );
 }

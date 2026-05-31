@@ -24,7 +24,19 @@ export function Label({
   return (
     <label
       className={cn(
-        "text-sm font-medium text-slate-700",
+        `
+          text-sm
+          font-medium
+
+          leading-none
+
+          text-slate-700
+
+          cursor-pointer
+
+          peer-disabled:cursor-not-allowed
+          peer-disabled:opacity-70
+        `,
         className
       )}
       {...props}
