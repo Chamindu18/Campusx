@@ -9,6 +9,7 @@ import Image from "next/image";
 import {
   AnimatePresence,
   motion,
+  useReducedMotion,
 } from "framer-motion";
 
 import {
@@ -24,6 +25,9 @@ export function AuthLayoutShell({
 }: AuthLayoutShellProps) {
   const pathname =
     usePathname();
+
+  const shouldReduceMotion =
+    useReducedMotion();
 
   const background =
     pathname.includes(
@@ -41,30 +45,28 @@ export function AuthLayoutShell({
       "
     >
       {/* BACKGROUND */}
+
       <Image
-        src={
-          background
-        }
+        src={background}
         alt="Campus background"
         fill
         priority
         sizes="100vw"
-        className="
-          object-cover
-        "
+        className="object-cover"
       />
 
       {/* DARK OVERLAY */}
+
       <div
         className="
           absolute
           inset-0
-
           bg-black/40
         "
       />
 
-      {/* SOFT CENTER LIGHT */}
+      {/* CENTER LIGHT */}
+
       <div
         className="
           absolute
@@ -75,6 +77,7 @@ export function AuthLayoutShell({
       />
 
       {/* CONTENT */}
+
       <div
         className="
           relative
@@ -86,29 +89,42 @@ export function AuthLayoutShell({
           items-center
           justify-center
 
-          px-6
-          py-12
+          px-4
+          sm:px-6
+
+          py-8
+          sm:py-12
         "
       >
         <AnimatePresence
           mode="wait"
         >
           <motion.div
-            key={
-              pathname
+            key={pathname}
+            initial={
+              shouldReduceMotion
+                ? {
+                    opacity: 1,
+                  }
+                : {
+                    opacity: 0,
+                    y: 20,
+                  }
             }
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
             animate={{
               opacity: 1,
               y: 0,
             }}
-            exit={{
-              opacity: 0,
-              y: -12,
-            }}
+            exit={
+              shouldReduceMotion
+                ? {
+                    opacity: 0,
+                  }
+                : {
+                    opacity: 0,
+                    y: -12,
+                  }
+            }
             transition={{
               duration: 0.4,
             }}
@@ -120,35 +136,46 @@ export function AuthLayoutShell({
             "
           >
             {/* OUTER GLOW */}
+
             <div
               className="
                 absolute
                 inset-0
 
-                rounded-[36px]
+                rounded-[28px]
+                md:rounded-[36px]
 
                 bg-white/5
 
-                blur-2xl
+                blur-xl
+                md:blur-2xl
               "
             />
 
-            {/* GLASS */}
+            {/* GLASS PANEL */}
+
             <div
               className="
                 relative
 
                 overflow-hidden
 
-                rounded-[36px]
+                rounded-[28px]
+                md:rounded-[36px]
 
                 border
                 border-white/10
 
                 bg-black/15
 
-                px-10
-                py-10
+                px-5
+                py-6
+
+                sm:px-8
+                sm:py-8
+
+                md:px-10
+                md:py-10
 
                 shadow-[0_30px_90px_rgba(0,0,0,0.35)]
 
@@ -156,6 +183,7 @@ export function AuthLayoutShell({
               "
             >
               {/* TOP HIGHLIGHT */}
+
               <div
                 className="
                   absolute

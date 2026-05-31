@@ -34,43 +34,36 @@ const navigationItems = [
     href: "/dashboard",
     icon: LayoutDashboard,
   },
-
   {
     title: "Marketplace",
     href: "/marketplace",
     icon: Store,
   },
-
   {
     title: "Dorms",
     href: "/dorms",
     icon: Home,
   },
-
   {
     title: "Create Dorm",
     href: "/create-dorm",
     icon: PlusSquare,
   },
-
   {
     title: "Create Listing",
     href: "/create-listing",
     icon: PlusSquare,
   },
-
   {
     title: "Messages",
     href: "/messages",
     icon: MessageSquare,
   },
-
   {
     title: "Profile",
     href: "/profile",
     icon: User,
   },
-
   {
     title: "Settings",
     href: "/settings",
@@ -81,9 +74,6 @@ const navigationItems = [
 export function Sidebar({
   onClose,
 }: SidebarProps) {
-  /**
-   * Current active pathname.
-   */
   const pathname =
     usePathname();
 
@@ -91,33 +81,59 @@ export function Sidebar({
     <aside
       className="
         relative
+
         flex
-        h-screen
-        w-[280px]
+
+        min-h-screen
+
+        w-full
+        max-w-[280px]
+
         flex-col
+
         border-r
         border-white/20
+
         bg-white/70
-        px-6
+
+        px-5
+        md:px-6
+
         py-8
+
         backdrop-blur-xl
       "
     >
       {/* MOBILE CLOSE BUTTON */}
+
       <button
+        type="button"
+        aria-label="Close sidebar"
         onClick={onClose}
         className="
           absolute
+
           right-5
           top-5
+
           flex
+
           h-10
           w-10
+
           items-center
           justify-center
+
           rounded-xl
+
           bg-white/70
+
           text-slate-700
+
+          transition
+
+          hover:bg-white
+
           lg:hidden
         "
       >
@@ -125,13 +141,18 @@ export function Sidebar({
       </button>
 
       {/* BRAND */}
+
       <div>
         <Link
           href="/"
           className="
-            text-4xl
+            text-3xl
+            md:text-4xl
+
             font-black
+
             tracking-tight
+
             text-slate-900
           "
         >
@@ -144,19 +165,19 @@ export function Sidebar({
       </div>
 
       {/* NAVIGATION */}
+
       <nav className="mt-12 flex flex-1 flex-col gap-2 overflow-y-auto">
         {navigationItems.map(
           (item) => {
-            /**
-             * Active route.
-             */
             const isActive =
-              pathname ===
-              item.href;
+              item.href ===
+              "/dashboard"
+                ? pathname ===
+                  "/dashboard"
+                : pathname.startsWith(
+                    item.href
+                  );
 
-            /**
-             * Dynamic icon.
-             */
             const Icon =
               item.icon;
 
@@ -174,14 +195,21 @@ export function Sidebar({
                 className={cn(
                   `
                     group
+
                     flex
+
                     items-center
+
                     gap-4
+
                     rounded-2xl
+
                     px-5
                     py-4
+
                     text-sm
                     font-medium
+
                     transition-all
                     duration-200
                   `,
@@ -200,14 +228,15 @@ export function Sidebar({
                     `
                 )}
               >
-                {/* Icon */}
                 <Icon
                   className={cn(
                     `
                       h-5
                       w-5
+
                       transition-transform
                       duration-200
+
                       group-hover:scale-110
                     `,
                     isActive
@@ -216,11 +245,8 @@ export function Sidebar({
                   )}
                 />
 
-                {/* Title */}
                 <span>
-                  {
-                    item.title
-                  }
+                  {item.title}
                 </span>
               </Link>
             );
@@ -229,14 +255,20 @@ export function Sidebar({
       </nav>
 
       {/* FOOTER */}
+
       <div
         className="
           mt-6
+
           rounded-3xl
+
           border
           border-white/30
+
           bg-white/60
+
           p-5
+
           shadow-lg
           shadow-slate-200/20
         "

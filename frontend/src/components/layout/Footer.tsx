@@ -9,22 +9,18 @@ const footerLinks = [
     label: "Marketplace",
     href: "/marketplace",
   },
-
   {
     label: "Dorms",
     href: "/dorms",
   },
-
   {
     label: "Features",
     href: "#features",
   },
-
   {
     label: "Safety",
     href: "#safety",
   },
-
   {
     label: "How It Works",
     href: "#how-it-works",
@@ -46,17 +42,17 @@ export function Footer() {
       <Container>
         <div
           className="
-            py-24
+            py-16
+            md:py-24
           "
         >
-          <div
-            className="
-              text-center
-            "
-          >
+          {/* HEADER */}
+
+          <div className="text-center">
             <p
               className="
                 text-blue-300
+                font-medium
               "
             >
               CampusX
@@ -64,10 +60,15 @@ export function Footer() {
 
             <h2
               className="
-                mt-5
+                mt-4
 
-                text-5xl
+                text-3xl
+                sm:text-4xl
+                md:text-5xl
+
                 font-black
+
+                tracking-tight
               "
             >
               Student life,
@@ -76,7 +77,11 @@ export function Footer() {
 
             <p
               className="
-                mt-8
+                mx-auto
+
+                mt-6
+
+                max-w-xl
 
                 text-white/70
               "
@@ -86,22 +91,24 @@ export function Footer() {
             </p>
           </div>
 
+          {/* NAVIGATION */}
+
           <div
             className="
-              mt-20
+              mt-12
+              md:mt-20
 
               flex
               flex-wrap
 
               justify-center
 
-              gap-10
+              gap-5
+              md:gap-10
             "
           >
             {footerLinks.map(
-              (
-                item
-              ) => (
+              (item) => (
                 <Link
                   key={
                     item.href
@@ -113,20 +120,24 @@ export function Footer() {
                   className="
                     text-white/70
 
+                    transition-colors
+                    duration-200
+
                     hover:text-white
                   "
                 >
-                  {
-                    item.label
-                  }
+                  {item.label}
                 </Link>
               )
             )}
           </div>
 
+          {/* COPYRIGHT */}
+
           <div
             className="
-              mt-16
+              mt-12
+              md:mt-16
 
               border-t
               border-white/10
@@ -134,6 +145,8 @@ export function Footer() {
               pt-8
 
               text-center
+
+              text-sm
 
               text-white/40
             "
