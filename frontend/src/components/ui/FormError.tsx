@@ -10,7 +10,19 @@ export function FormError({
   }
 
   return (
-    <p className="mt-2 text-sm text-red-500">
+    <p
+      role="alert"
+      className="
+        mt-2
+
+        break-words
+
+        text-sm
+        font-medium
+
+        text-red-600
+      "
+    >
       {message}
     </p>
   );
