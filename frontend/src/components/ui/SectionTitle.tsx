@@ -12,15 +12,50 @@ export function SectionTitle({
   subtitle,
 }: SectionTitleProps) {
   return (
-    <div className="mx-auto max-w-3xl text-center">
+    <div
+      className="
+        mx-auto
+        max-w-3xl
+        text-center
+      "
+    >
       {/* Title */}
-      <h2 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+
+      <h2
+        className="
+          break-words
+
+          text-3xl
+          sm:text-4xl
+          md:text-5xl
+
+          font-bold
+
+          tracking-tight
+
+          text-slate-900
+        "
+      >
         {title}
       </h2>
 
       {/* Subtitle */}
+
       {subtitle && (
-        <p className="mt-6 text-lg leading-8 text-slate-600">
+        <p
+          className="
+            mt-4
+            md:mt-6
+
+            text-base
+            md:text-lg
+
+            leading-7
+            md:leading-8
+
+            text-slate-600
+          "
+        >
           {subtitle}
         </p>
       )}

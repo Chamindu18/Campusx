@@ -4,6 +4,8 @@
  * User-owned listing card.
  */
 
+import { useState } from "react";
+
 import Link from "next/link";
 
 import {
@@ -20,13 +22,9 @@ import toast from "react-hot-toast";
 
 interface ProfileListingCardProps {
   id: string;
-
   title: string;
-
   price: number;
-
   category: string;
-
   onDelete: (
     id: string
   ) => void;
@@ -42,11 +40,27 @@ export function ProfileListingCard({
   const shouldReduceMotion =
     useReducedMotion();
 
+  const [
+    isDeleting,
+    setIsDeleting,
+  ] = useState(false);
+
   /**
    * Delete listing handler.
    */
   async function handleDelete() {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this listing?"
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
+      setIsDeleting(true);
+
       const response =
         await fetch(
           `/api/listings/${id}`,
@@ -78,6 +92,8 @@ export function ProfileListingCard({
       toast.error(
         "Delete failed"
       );
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -110,7 +126,7 @@ export function ProfileListingCard({
       {/* TOP */}
 
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           {/* CATEGORY */}
 
           <div
@@ -140,6 +156,8 @@ export function ProfileListingCard({
               mt-4
 
               line-clamp-2
+
+              break-words
 
               text-xl
               md:text-2xl
@@ -209,6 +227,7 @@ export function ProfileListingCard({
         <button
           type="button"
           aria-label="Delete listing"
+          disabled={isDeleting}
           onClick={
             handleDelete
           }
@@ -230,6 +249,9 @@ export function ProfileListingCard({
             transition
 
             hover:bg-red-200
+
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
           <Trash2 className="h-5 w-5" />

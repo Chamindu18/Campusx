@@ -9,21 +9,47 @@
  * - cinematic scrolling experience
  */
 
-import { motion } from "framer-motion";
+import type {
+  ReactNode,
+} from "react";
+
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 interface RevealProps {
-  children: React.ReactNode;
+  children: ReactNode;
+
+  className?: string;
+
+  delay?: number;
+
+  distance?: number;
 }
 
 export function Reveal({
   children,
+  className,
+  delay = 0,
+  distance = 60,
 }: RevealProps) {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 60,
-      }}
+      className={className}
+      initial={
+        shouldReduceMotion
+          ? {
+              opacity: 1,
+            }
+          : {
+              opacity: 0,
+              y: distance,
+            }
+      }
       whileInView={{
         opacity: 1,
         y: 0,
@@ -34,6 +60,7 @@ export function Reveal({
       }}
       transition={{
         duration: 0.8,
+        delay,
         ease: "easeOut",
       }}
     >
