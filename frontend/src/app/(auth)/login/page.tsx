@@ -6,11 +6,15 @@
 
 import Link from "next/link";
 
-import { useRouter } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
-import { useSearchParams } from "next/navigation";
-
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 import { useForm } from "react-hook-form";
 
@@ -35,15 +39,15 @@ import {
 } from "@/lib/auth";
 
 export default function LoginPage() {
-  /**
-   * Next.js router.
-   */
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router =
+    useRouter();
 
-  /**
-   * React Hook Form setup.
-   */
+  const searchParams =
+    useSearchParams();
+
+  const shouldReduceMotion =
+    useReducedMotion();
+
   const {
     register,
     handleSubmit,
@@ -57,16 +61,10 @@ export default function LoginPage() {
     ),
   });
 
-  /**
-   * Form submit handler.
-   */
   async function onSubmit(
     data: LoginFormValues
   ) {
     try {
-      /**
-       * Send login request.
-       */
       const response =
         await fetch(
           "/api/auth/login",
@@ -84,15 +82,9 @@ export default function LoginPage() {
           }
         );
 
-      /**
-       * Parse backend response.
-       */
       const result =
         await response.json();
 
-      /**
-       * Handle backend errors.
-       */
       if (!response.ok) {
         toast.error(
           result.error ||
@@ -102,16 +94,15 @@ export default function LoginPage() {
         return;
       }
 
-      /**
-       * Success state.
-       */
       toast.success(
         "Login successful"
       );
 
       router.replace(
         getSafeRedirectPath(
-          searchParams.get("next"),
+          searchParams.get(
+            "next"
+          ),
           getLandingPathForRole(
             result.user?.role
           )
@@ -130,10 +121,14 @@ export default function LoginPage() {
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 40,
-      }}
+      initial={
+        shouldReduceMotion
+          ? false
+          : {
+              opacity: 0,
+              y: 40,
+            }
+      }
       animate={{
         opacity: 1,
         y: 0,
@@ -144,20 +139,18 @@ export default function LoginPage() {
     >
       <AuthCard
         title="Welcome back"
-        description="
-          Login to continue your CampusX
-          marketplace experience.
-        "
+        description="Login to continue your CampusX marketplace experience."
       >
         <form
           onSubmit={handleSubmit(
             onSubmit
           )}
-          className="space-y-6"
+          className="
+            space-y-5
+            md:space-y-6
+          "
         >
-          {/* ========================= */}
           {/* EMAIL */}
-          {/* ========================= */}
 
           <div>
             <Label htmlFor="email">
@@ -167,6 +160,7 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
+              autoComplete="email"
               placeholder="you@university.edu"
               className="mt-2"
               {...register("email")}
@@ -179,9 +173,7 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* ========================= */}
           {/* PASSWORD */}
-          {/* ========================= */}
 
           <div>
             <Label htmlFor="password">
@@ -191,6 +183,7 @@ export default function LoginPage() {
             <Input
               id="password"
               type="password"
+              autoComplete="current-password"
               placeholder="Enter your password"
               className="mt-2"
               {...register(
@@ -206,9 +199,7 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* ========================= */}
-          {/* SUBMIT BUTTON */}
-          {/* ========================= */}
+          {/* SUBMIT */}
 
           <Button
             type="submit"
@@ -224,19 +215,28 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* ========================= */}
         {/* FOOTER */}
-        {/* ========================= */}
 
-        <p className="mt-8 text-center text-sm text-slate-600">
+        <p
+          className="
+            mt-8
+
+            text-center
+            text-sm
+
+            text-slate-600
+          "
+        >
           Don&apos;t have an account?{" "}
-
           <Link
             href="/signup"
             className="
               font-medium
+
               text-blue-600
+
               transition
+
               hover:text-blue-700
             "
           >

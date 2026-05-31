@@ -6,11 +6,15 @@
 
 import Link from "next/link";
 
-import { useRouter } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
-import { useSearchParams } from "next/navigation";
-
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 import { useForm } from "react-hook-form";
 
@@ -35,15 +39,15 @@ import {
 } from "@/lib/auth";
 
 export default function SignupPage() {
-  /**
-   * Next.js router.
-   */
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router =
+    useRouter();
 
-  /**
-   * React Hook Form setup.
-   */
+  const searchParams =
+    useSearchParams();
+
+  const shouldReduceMotion =
+    useReducedMotion();
+
   const {
     register,
     handleSubmit,
@@ -57,16 +61,10 @@ export default function SignupPage() {
     ),
   });
 
-  /**
-   * Form submit handler.
-   */
   async function onSubmit(
     data: SignupFormValues
   ) {
     try {
-      /**
-       * Send signup request.
-       */
       const response =
         await fetch(
           "/api/auth/signup",
@@ -84,15 +82,9 @@ export default function SignupPage() {
           }
         );
 
-      /**
-       * Parse response.
-       */
       const result =
         await response.json();
 
-      /**
-       * Handle backend errors.
-       */
       if (!response.ok) {
         toast.error(
           result.error ||
@@ -102,16 +94,15 @@ export default function SignupPage() {
         return;
       }
 
-      /**
-       * Success state.
-       */
       toast.success(
         "Account created successfully"
       );
 
       router.replace(
         getSafeRedirectPath(
-          searchParams.get("next"),
+          searchParams.get(
+            "next"
+          ),
           getLandingPathForRole(
             result.user?.role
           )
@@ -130,10 +121,14 @@ export default function SignupPage() {
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 40,
-      }}
+      initial={
+        shouldReduceMotion
+          ? false
+          : {
+              opacity: 0,
+              y: 40,
+            }
+      }
       animate={{
         opacity: 1,
         y: 0,
@@ -144,20 +139,18 @@ export default function SignupPage() {
     >
       <AuthCard
         title="Create account"
-        description="
-          Join CampusX and connect with your
-          campus marketplace community.
-        "
+        description="Join CampusX and connect with your campus marketplace community."
       >
         <form
           onSubmit={handleSubmit(
             onSubmit
           )}
-          className="space-y-6"
+          className="
+            space-y-5
+            md:space-y-6
+          "
         >
-          {/* ========================= */}
           {/* FULL NAME */}
-          {/* ========================= */}
 
           <div>
             <Label htmlFor="name">
@@ -167,6 +160,7 @@ export default function SignupPage() {
             <Input
               id="name"
               type="text"
+              autoComplete="name"
               placeholder="Your full name"
               className="mt-2"
               {...register("name")}
@@ -179,9 +173,7 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* ========================= */}
           {/* EMAIL */}
-          {/* ========================= */}
 
           <div>
             <Label htmlFor="email">
@@ -191,6 +183,7 @@ export default function SignupPage() {
             <Input
               id="email"
               type="email"
+              autoComplete="email"
               placeholder="you@university.edu"
               className="mt-2"
               {...register("email")}
@@ -203,9 +196,7 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* ========================= */}
           {/* PASSWORD */}
-          {/* ========================= */}
 
           <div>
             <Label htmlFor="password">
@@ -215,6 +206,7 @@ export default function SignupPage() {
             <Input
               id="password"
               type="password"
+              autoComplete="new-password"
               placeholder="Create a password"
               className="mt-2"
               {...register(
@@ -230,9 +222,7 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* ========================= */}
-          {/* SUBMIT BUTTON */}
-          {/* ========================= */}
+          {/* SUBMIT */}
 
           <Button
             type="submit"
@@ -248,19 +238,28 @@ export default function SignupPage() {
           </Button>
         </form>
 
-        {/* ========================= */}
         {/* FOOTER */}
-        {/* ========================= */}
 
-        <p className="mt-8 text-center text-sm text-slate-600">
+        <p
+          className="
+            mt-8
+
+            text-center
+            text-sm
+
+            text-slate-600
+          "
+        >
           Already have an account?{" "}
-
           <Link
             href="/login"
             className="
               font-medium
+
               text-blue-600
+
               transition
+
               hover:text-blue-700
             "
           >

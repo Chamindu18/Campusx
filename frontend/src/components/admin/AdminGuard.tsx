@@ -3,22 +3,28 @@
 /**
  * Admin UI wrapper.
  *
- * Route protection is handled
- * by middleware + server.
+ * Route protection is enforced
+ * by middleware and server-side checks.
+ *
+ * This component exists purely as a
+ * future extension point for:
+ *
+ * - client-side permission checks
+ * - admin analytics
+ * - feature flags
+ * - admin onboarding flows
  */
 
 import type {
   ReactNode,
 } from "react";
 
+interface AdminGuardProps {
+  children: ReactNode;
+}
+
 export function AdminGuard({
   children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <>
-      {children}
-    </>
-  );
+}: AdminGuardProps) {
+  return <>{children}</>;
 }

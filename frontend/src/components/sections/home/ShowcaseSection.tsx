@@ -9,6 +9,7 @@ import {
 
 import {
   motion,
+  useReducedMotion,
 } from "framer-motion";
 
 const items = [
@@ -67,12 +68,18 @@ const reveal = {
 };
 
 export function ShowcaseSection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       className="
         relative
+
         bg-slate-950
-        py-40
+
+        py-20
+        md:py-40
       "
     >
       <div
@@ -83,14 +90,27 @@ export function ShowcaseSection() {
         "
       >
         {/* HEADER */}
+
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={
+            shouldReduceMotion
+              ? false
+              : "hidden"
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : "visible"
+          }
           viewport={{
             once: true,
             amount: 0.3,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0}
           className="
             text-center
@@ -110,11 +130,14 @@ export function ShowcaseSection() {
           <h2
             className="
               mt-6
+
               text-3xl
-              font-black
-              text-white
               sm:text-4xl
               md:text-5xl
+
+              font-black
+
+              text-white
             "
           >
             Imagine using it.
@@ -123,10 +146,18 @@ export function ShowcaseSection() {
           <p
             className="
               mx-auto
-              mt-8
+
+              mt-6
+              md:mt-8
+
               max-w-2xl
-              text-lg
-              leading-9
+
+              text-base
+              md:text-lg
+
+              leading-7
+              md:leading-9
+
               text-white/65
             "
           >
@@ -136,11 +167,18 @@ export function ShowcaseSection() {
         </motion.div>
 
         {/* CARDS */}
+
         <div
           className="
-            mt-24
+            mt-12
+            md:mt-24
+
             grid
-            gap-8
+            grid-cols-1
+
+            gap-6
+            md:gap-8
+
             lg:grid-cols-2
           "
         >
@@ -153,45 +191,67 @@ export function ShowcaseSection() {
                 key={
                   item.title
                 }
-                initial="hidden"
-                whileInView="visible"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : "hidden"
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? undefined
+                    : "visible"
+                }
                 viewport={{
                   once: true,
                   amount: 0.15,
                 }}
-                variants={reveal}
+                variants={
+                  shouldReduceMotion
+                    ? undefined
+                    : reveal
+                }
                 custom={
-                  index *
-                  0.12
+                  index * 0.12
                 }
               >
                 <Link
                   href={
                     item.href
                   }
-                  className="
-                    block
-                  "
+                  className="block h-full"
                 >
                   <div
                     className="
                       group
+
+                      h-full
+
                       overflow-hidden
+
                       rounded-[36px]
+
                       border
                       border-white/10
+
                       bg-white/5
+
                       transition-all
                       duration-300
+
                       hover:-translate-y-1
                       hover:bg-white/[0.08]
                     "
                   >
                     {/* IMAGE */}
+
                     <div
                       className="
                         relative
-                        h-[320px]
+
+                        h-56
+                        sm:h-72
+                        md:h-[320px]
+
                         overflow-hidden
                       "
                     >
@@ -203,11 +263,13 @@ export function ShowcaseSection() {
                           item.title
                         }
                         fill
-                        sizes="50vw"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         className="
                           object-cover
+
                           transition-transform
                           duration-700
+
                           group-hover:scale-105
                         "
                       />
@@ -216,6 +278,7 @@ export function ShowcaseSection() {
                         className="
                           absolute
                           inset-0
+
                           bg-gradient-to-t
                           from-black/75
                           via-black/10
@@ -225,9 +288,10 @@ export function ShowcaseSection() {
                     </div>
 
                     {/* CONTENT */}
+
                     <div
                       className="
-                        p-4
+                        p-5
                         md:p-10
                       "
                     >
@@ -243,8 +307,12 @@ export function ShowcaseSection() {
                       <h3
                         className="
                           mt-5
-                          text-4xl
+
+                          text-2xl
+                          md:text-4xl
+
                           font-black
+
                           text-white
                         "
                       >
@@ -253,8 +321,11 @@ export function ShowcaseSection() {
 
                       <p
                         className="
-                          mt-6
-                          leading-8
+                          mt-5
+
+                          leading-7
+                          md:leading-8
+
                           text-white/65
                         "
                       >
@@ -263,17 +334,27 @@ export function ShowcaseSection() {
 
                       <div
                         className="
-                          mt-10
+                          mt-8
+                          md:mt-10
+
                           inline-flex
+
                           items-center
                           gap-3
+
                           rounded-full
+
                           bg-blue-500/10
+
                           px-5
                           py-3
+
                           font-medium
+
                           text-blue-300
+
                           transition
+
                           group-hover:bg-blue-500/20
                         "
                       >
@@ -283,8 +364,10 @@ export function ShowcaseSection() {
                           className="
                             h-4
                             w-4
+
                             transition-transform
                             duration-300
+
                             group-hover:translate-x-1
                           "
                         />

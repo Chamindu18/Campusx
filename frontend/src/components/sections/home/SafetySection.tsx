@@ -1,6 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 const principles = [
   {
@@ -48,12 +51,17 @@ const reveal = {
 };
 
 export function SafetySection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       id="safety"
       className="
         bg-white
-        py-40
+
+        py-20
+        md:py-40
       "
     >
       <div
@@ -64,14 +72,27 @@ export function SafetySection() {
         "
       >
         {/* HEADER */}
+
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={
+            shouldReduceMotion
+              ? false
+              : "hidden"
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : "visible"
+          }
           viewport={{
             once: true,
             amount: 0.3,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0}
           className="
             mx-auto
@@ -93,11 +114,14 @@ export function SafetySection() {
           <h2
             className="
               mt-6
+
               text-3xl
-              font-black
-              text-slate-900
               sm:text-4xl
               md:text-5xl
+
+              font-black
+
+              text-slate-900
             "
           >
             Designed to feel
@@ -107,10 +131,18 @@ export function SafetySection() {
           <p
             className="
               mx-auto
-              mt-8
+
+              mt-6
+              md:mt-8
+
               max-w-2xl
-              text-lg
-              leading-9
+
+              text-base
+              md:text-lg
+
+              leading-7
+              md:leading-9
+
               text-slate-600
             "
           >
@@ -121,11 +153,18 @@ export function SafetySection() {
         </motion.div>
 
         {/* GRID */}
+
         <div
           className="
-            mt-24
+            mt-12
+            md:mt-24
+
             grid
-            gap-8
+            grid-cols-1
+
+            gap-6
+            md:gap-8
+
             md:grid-cols-3
           "
         >
@@ -138,27 +177,43 @@ export function SafetySection() {
                 key={
                   item.title
                 }
-                initial="hidden"
-                whileInView="visible"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : "hidden"
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? undefined
+                    : "visible"
+                }
                 viewport={{
                   once: true,
                   amount: 0.15,
                 }}
-                variants={reveal}
+                variants={
+                  shouldReduceMotion
+                    ? undefined
+                    : reveal
+                }
                 custom={
-                  index *
-                  0.08
+                  index * 0.08
                 }
               >
                 <div
                   className="
                     group
+
                     rounded-[30px]
+
                     bg-slate-50
-                    p-4
+
+                    p-5
+                    md:p-10
+
                     transition-all
                     duration-300
-                    md:p-10
+
                     hover:-translate-y-1
                     hover:bg-white
                     hover:shadow-lg
@@ -166,8 +221,11 @@ export function SafetySection() {
                 >
                   <h3
                     className="
-                      text-2xl
+                      text-xl
+                      md:text-2xl
+
                       font-bold
+
                       text-slate-900
                     "
                   >
@@ -177,7 +235,10 @@ export function SafetySection() {
                   <p
                     className="
                       mt-5
-                      leading-8
+
+                      leading-7
+                      md:leading-8
+
                       text-slate-600
                     "
                   >
