@@ -4,8 +4,9 @@
  * Platform topbar.
  */
 
+import { useState } from "react";
+
 import {
-  Bell,
   LogOut,
   Menu,
   Search,
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -30,8 +32,19 @@ export function Topbar({
   const router =
     useRouter();
 
+  const [
+    isLoggingOut,
+    setIsLoggingOut,
+  ] = useState(false);
+
   async function handleLogout() {
+    if (isLoggingOut) {
+      return;
+    }
+
     try {
+      setIsLoggingOut(true);
+
       await fetch(
         "/api/auth/logout",
         {
@@ -57,6 +70,8 @@ export function Topbar({
       toast.error(
         "Logout failed"
       );
+    } finally {
+      setIsLoggingOut(false);
     }
   }
 
@@ -89,14 +104,10 @@ export function Topbar({
       {/* LEFT */}
 
       <div className="flex items-center gap-4">
-        {/* MOBILE MENU */}
-
         <button
           type="button"
           aria-label="Open menu"
-          onClick={
-            onMenuClick
-          }
+          onClick={onMenuClick}
           className="
             flex
 
@@ -130,7 +141,7 @@ export function Topbar({
 
             h-14
             w-full
-            max-w-md
+            max-w-lg
 
             items-center
             gap-3
@@ -150,6 +161,7 @@ export function Topbar({
           <Search className="h-5 w-5 text-slate-500" />
 
           <input
+            aria-label="Search"
             placeholder="Search..."
             className="
               w-full
@@ -169,35 +181,7 @@ export function Topbar({
       {/* RIGHT */}
 
       <div className="flex items-center gap-3 md:gap-5">
-        {/* NOTIFICATIONS */}
-
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="
-            flex
-
-            h-12
-            w-12
-
-            items-center
-            justify-center
-
-            rounded-2xl
-
-            bg-white/70
-
-            text-slate-700
-
-            transition
-
-            hover:bg-white
-          "
-        >
-          <Bell className="h-5 w-5" />
-        </button>
-
-        {/* USER */}
+        <NotificationBell />
 
         <div className="flex items-center gap-3 md:gap-4">
           <div className="hidden text-right md:block">
@@ -225,8 +209,6 @@ export function Topbar({
               {user?.email}
             </p>
           </div>
-
-          {/* AVATAR */}
 
           <div
             className="
@@ -256,14 +238,11 @@ export function Topbar({
               "U"}
           </div>
 
-          {/* LOGOUT */}
-
           <button
             type="button"
             aria-label="Logout"
-            onClick={
-              handleLogout
-            }
+            disabled={isLoggingOut}
+            onClick={handleLogout}
             className="
               flex
 
@@ -282,6 +261,9 @@ export function Topbar({
               transition
 
               hover:bg-red-200
+
+              disabled:cursor-not-allowed
+              disabled:opacity-50
 
               md:h-12
               md:w-12

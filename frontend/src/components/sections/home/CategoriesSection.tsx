@@ -10,7 +10,10 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 const categories = [
   {
@@ -20,7 +23,6 @@ const categories = [
     icon: Home,
     href: "/dorms",
   },
-
   {
     title: "Marketplace",
     description:
@@ -28,7 +30,6 @@ const categories = [
     icon: Laptop,
     href: "/marketplace",
   },
-
   {
     title: "Study Essentials",
     description:
@@ -36,7 +37,6 @@ const categories = [
     icon: BookOpen,
     href: "/marketplace",
   },
-
   {
     title: "Connect",
     description:
@@ -46,33 +46,18 @@ const categories = [
   },
 ];
 
-const reveal = {
-  hidden: {
-    opacity: 0,
-    y: 24,
-  },
-
-  visible: (
-    delay: number
-  ) => ({
-    opacity: 1,
-    y: 0,
-
-    transition: {
-      duration: 0.6,
-      delay,
-    },
-  }),
-};
-
 export function CategoriesSection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       id="categories"
       className="
         relative
         bg-white
-        py-40
+        py-20
+        md:py-40
       "
     >
       <div
@@ -83,15 +68,27 @@ export function CategoriesSection() {
         "
       >
         {/* HEADER */}
+
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 24,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
           viewport={{
             once: true,
             amount: 0.3,
           }}
-          variants={reveal}
-          custom={0}
+          transition={{
+            duration: 0.6,
+          }}
           className="
             mx-auto
             max-w-3xl
@@ -112,10 +109,14 @@ export function CategoriesSection() {
           <h2
             className="
               mt-6
-              text-4xl
-              font-black
-              text-slate-900
+
+              text-3xl
+              sm:text-4xl
               md:text-5xl
+
+              font-black
+
+              text-slate-900
             "
           >
             Start where
@@ -125,10 +126,18 @@ export function CategoriesSection() {
           <p
             className="
               mx-auto
-              mt-8
+
+              mt-6
+              md:mt-8
+
               max-w-2xl
-              text-lg
-              leading-9
+
+              text-base
+              md:text-lg
+
+              leading-7
+              md:leading-9
+
               text-slate-600
             "
           >
@@ -139,12 +148,18 @@ export function CategoriesSection() {
         </motion.div>
 
         {/* GRID */}
+
         <div
           className="
-            mt-24
+            mt-12
+            md:mt-24
+
             grid
-            gap-8
+            grid-cols-1
+
+            gap-6
             md:grid-cols-2
+            md:gap-8
           "
         >
           {categories.map(
@@ -160,59 +175,89 @@ export function CategoriesSection() {
                   key={
                     category.title
                   }
-                  initial="hidden"
-                  whileInView="visible"
+                  initial={
+                    shouldReduceMotion
+                      ? false
+                      : {
+                          opacity: 0,
+                          y: 24,
+                        }
+                  }
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
                   viewport={{
                     once: true,
                     amount: 0.15,
                   }}
-                  variants={reveal}
-                  custom={
-                    index * 0.08
-                  }
+                  transition={{
+                    duration: 0.6,
+                    delay:
+                      index * 0.08,
+                  }}
                 >
                   <Link
                     href={
                       category.href
                     }
-                    className="block"
+                    className="block h-full"
                   >
                     <div
                       className="
                         group
+
                         h-full
+
                         rounded-[32px]
+
                         border
                         border-slate-200
+
                         bg-white
-                        p-4
+
+                        p-5
+                        md:p-10
+
                         shadow-sm
+
                         transition-all
                         duration-300
+
                         hover:-translate-y-1
                         hover:border-blue-200
                         hover:shadow-xl
-                        md:p-10
                       "
                     >
                       <div
                         className="
                           flex
-                          h-16
-                          w-16
+
+                          h-14
+                          w-14
+                          md:h-16
+                          md:w-16
+
                           items-center
                           justify-center
+
                           rounded-2xl
+
                           bg-blue-50
+
                           transition
                           duration-300
+
                           group-hover:scale-105
                         "
                       >
                         <Icon
                           className="
-                            h-8
-                            w-8
+                            h-7
+                            w-7
+                            md:h-8
+                            md:w-8
+
                             text-blue-600
                           "
                         />
@@ -220,9 +265,14 @@ export function CategoriesSection() {
 
                       <h3
                         className="
-                          mt-8
-                          text-3xl
+                          mt-6
+                          md:mt-8
+
+                          text-2xl
+                          md:text-3xl
+
                           font-bold
+
                           text-slate-900
                         "
                       >
@@ -231,23 +281,29 @@ export function CategoriesSection() {
 
                       <p
                         className="
-                          mt-5
-                          leading-8
+                          mt-4
+                          md:mt-5
+
+                          leading-7
+                          md:leading-8
+
                           text-slate-600
                         "
                       >
-                        {
-                          category.description
-                        }
+                        {category.description}
                       </p>
 
                       <div
                         className="
-                          mt-10
+                          mt-8
+                          md:mt-10
+
                           flex
                           items-center
                           gap-3
+
                           font-semibold
+
                           text-blue-600
                         "
                       >
@@ -257,8 +313,10 @@ export function CategoriesSection() {
                           className="
                             h-4
                             w-4
+
                             transition-transform
                             duration-300
+
                             group-hover:translate-x-1
                           "
                         />

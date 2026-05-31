@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 const reveal = {
   hidden: {
@@ -24,20 +27,30 @@ const reveal = {
 };
 
 export function CTASection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       className="
         relative
         overflow-hidden
-        py-40
+
+        py-20
+        md:py-40
       "
     >
       {/* BACKGROUND */}
+
       <motion.div
-        initial={{
-          scale: 1.06,
-          opacity: 0,
-        }}
+        initial={
+          shouldReduceMotion
+            ? false
+            : {
+                scale: 1.03,
+                opacity: 0,
+              }
+        }
         whileInView={{
           scale: 1,
           opacity: 1,
@@ -51,6 +64,7 @@ export function CTASection() {
         className="
           absolute
           inset-0
+
           bg-[url('/images/hero/campus-life.jpg')]
           bg-cover
           bg-center
@@ -58,15 +72,18 @@ export function CTASection() {
       />
 
       {/* OVERLAY */}
+
       <div
         className="
           absolute
           inset-0
+
           bg-black/70
         "
       />
 
       {/* CONTENT */}
+
       <div
         className="
           relative
@@ -86,11 +103,17 @@ export function CTASection() {
           viewport={{
             once: true,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0}
           className="
             text-sm
+
             uppercase
+
             tracking-[0.35em]
 
             text-blue-300
@@ -105,27 +128,30 @@ export function CTASection() {
           viewport={{
             once: true,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0.15}
           className="
-            mt-8
+            mt-6
+            md:mt-8
 
             text-3xl
+            sm:text-4xl
+            md:text-5xl
+            lg:text-6xl
+
             font-black
 
             leading-tight
 
             text-white
-
-            sm:text-4xl
-            md:text-5xl
-            md:text-6xl
           "
         >
           Start somewhere.
-
           <br />
-
           Campus life will
           figure out the rest.
         </motion.h2>
@@ -136,16 +162,25 @@ export function CTASection() {
           viewport={{
             once: true,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0.3}
           className="
             mx-auto
-            mt-10
+
+            mt-8
+            md:mt-10
 
             max-w-2xl
 
-            text-lg
-            leading-9
+            text-base
+            md:text-lg
+
+            leading-7
+            md:leading-9
 
             text-white/70
           "
@@ -162,24 +197,29 @@ export function CTASection() {
           viewport={{
             once: true,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0.45}
           className="
-            mt-14
+            mt-10
+            md:mt-14
 
             flex
-            flex-wrap
+            flex-col
 
             justify-center
 
-            gap-5
+            gap-4
+            sm:flex-row
+            sm:gap-5
           "
         >
           <Link
             href="/marketplace"
             className="
-              hover-scale
-
               rounded-2xl
 
               bg-white
@@ -187,9 +227,15 @@ export function CTASection() {
               px-8
               py-4
 
+              text-center
+
               font-semibold
 
               text-slate-900
+
+              transition
+
+              hover:bg-slate-100
             "
           >
             Explore Marketplace
@@ -198,8 +244,6 @@ export function CTASection() {
           <Link
             href="/dorms"
             className="
-              hover-scale
-
               rounded-2xl
 
               border
@@ -208,9 +252,13 @@ export function CTASection() {
               px-8
               py-4
 
+              text-center
+
               font-semibold
 
               text-white
+
+              transition
 
               hover:bg-white/10
             "

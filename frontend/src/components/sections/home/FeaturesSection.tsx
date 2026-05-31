@@ -2,10 +2,12 @@
 
 /**
  * Homepage features section.
- * Animation polish only.
  */
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 import { features } from "@/constants/home";
 
@@ -34,20 +36,27 @@ const reveal = {
 };
 
 export function FeaturesSection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       id="features"
       className="
         relative
         overflow-hidden
-        py-40
+
+        py-20
+        md:py-40
       "
     >
       {/* SOFT BACKGROUND */}
+
       <div
         className="
           absolute
           inset-0
+
           bg-gradient-to-b
           from-transparent
           via-slate-50
@@ -56,16 +65,27 @@ export function FeaturesSection() {
       />
 
       {/* LIGHT GLOW */}
+
       <div
         className="
           absolute
+
           left-1/2
-          top-40
-          h-[420px]
-          w-[420px]
+          top-32
+          md:top-40
+
+          h-[300px]
+          w-[300px]
+
+          md:h-[420px]
+          md:w-[420px]
+
           -translate-x-1/2
+
           rounded-full
+
           bg-blue-100/40
+
           blur-3xl
         "
       />
@@ -77,6 +97,7 @@ export function FeaturesSection() {
         "
       >
         {/* HEADER */}
+
         <Reveal>
           <SectionTitle
             title="Designed for safer campus trading"
@@ -85,11 +106,18 @@ export function FeaturesSection() {
         </Reveal>
 
         {/* GRID */}
+
         <div
           className="
-            mt-24
+            mt-12
+            md:mt-24
+
             grid
-            gap-8
+            grid-cols-1
+
+            gap-6
+            md:gap-8
+
             lg:grid-cols-2
           "
         >
@@ -102,18 +130,27 @@ export function FeaturesSection() {
                 key={
                   feature.title
                 }
-                initial="hidden"
-                whileInView="visible"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : "hidden"
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? undefined
+                    : "visible"
+                }
                 viewport={{
                   once: true,
                   amount: 0.15,
                 }}
                 variants={
-                  reveal
+                  shouldReduceMotion
+                    ? undefined
+                    : reveal
                 }
                 custom={
-                  index *
-                  0.08
+                  index * 0.08
                 }
                 className="
                   hover-lift
