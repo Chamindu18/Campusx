@@ -35,10 +35,19 @@ export function Card({
   return (
     <div
       className={cn(
-        /**
-         * Modern subtle card styling.
-         */
-        "rounded-3xl border border-slate-200 bg-white shadow-sm",
+        `
+          rounded-2xl
+
+          border
+          border-slate-100
+
+          bg-white
+
+          shadow-sm
+
+          transition-all
+          duration-200
+        `,
         className
       )}
       {...props}
