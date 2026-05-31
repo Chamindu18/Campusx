@@ -7,12 +7,11 @@ import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 
-import {
-  Search,
-} from "lucide-react";
+import { Search } from "lucide-react";
 
 import {
   motion,
+  useReducedMotion,
 } from "framer-motion";
 
 const dormKeywords = [
@@ -65,18 +64,21 @@ export function HeroSection() {
   const router =
     useRouter();
 
+  const shouldReduceMotion =
+    useReducedMotion();
+
   const [
     search,
     setSearch,
-  ] =
-    useState("");
+  ] = useState("");
 
   function handleSearch() {
     const value =
       search.trim();
 
-    if (!value)
+    if (!value) {
       return;
+    }
 
     const encoded =
       encodeURIComponent(
@@ -110,17 +112,22 @@ export function HeroSection() {
       "
     >
       {/* BACKGROUND */}
+
       <motion.div
-        initial={{
-          scale: 1.06,
-          opacity: 0,
-        }}
+        initial={
+          shouldReduceMotion
+            ? false
+            : {
+                scale: 1.04,
+                opacity: 0,
+              }
+        }
         animate={{
           scale: 1,
           opacity: 1,
         }}
         transition={{
-          duration: 1.1,
+          duration: 1,
         }}
         className="
           absolute
@@ -130,12 +137,10 @@ export function HeroSection() {
         <Image
           src="/images/hero/campus-life.jpg"
           alt="Campus life"
-
           fill
           priority
           quality={90}
           sizes="100vw"
-
           className="
             object-cover
           "
@@ -143,6 +148,7 @@ export function HeroSection() {
       </motion.div>
 
       {/* OVERLAYS */}
+
       <div
         className="
           absolute
@@ -164,6 +170,7 @@ export function HeroSection() {
       />
 
       {/* CONTENT */}
+
       <div
         className="
           relative
@@ -192,7 +199,11 @@ export function HeroSection() {
           "
         >
           <motion.h1
-            initial="hidden"
+            initial={
+              shouldReduceMotion
+                ? false
+                : "hidden"
+            }
             animate="visible"
             variants={fadeUp}
             custom={0.1}
@@ -222,18 +233,26 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p
-            initial="hidden"
+            initial={
+              shouldReduceMotion
+                ? false
+                : "hidden"
+            }
             animate="visible"
             variants={fadeUp}
             custom={0.25}
             className="
               mx-auto
+
               mt-8
 
               max-w-2xl
 
-              text-lg
-              leading-9
+              text-base
+              md:text-lg
+
+              leading-7
+              md:leading-9
 
               text-white/85
             "
@@ -246,14 +265,21 @@ export function HeroSection() {
           </motion.p>
 
           {/* SEARCH */}
+
           <motion.div
-            initial="hidden"
+            initial={
+              shouldReduceMotion
+                ? false
+                : "hidden"
+            }
             animate="visible"
             variants={fadeUp}
             custom={0.4}
             className="
               mx-auto
-              mt-14
+
+              mt-10
+              md:mt-14
 
               max-w-3xl
             "
@@ -306,18 +332,14 @@ export function HeroSection() {
                   />
 
                   <input
-                    value={
-                      search
-                    }
+                    aria-label="Search listings or dorms"
+                    value={search}
                     onChange={(e) =>
                       setSearch(
-                        e.target
-                          .value
+                        e.target.value
                       )
                     }
-                    onKeyDown={(
-                      e
-                    ) => {
+                    onKeyDown={(e) => {
                       if (
                         e.key ===
                         "Enter"
@@ -341,15 +363,20 @@ export function HeroSection() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={
                     handleSearch
                   }
                   className="
+                    h-16
+
                     rounded-2xl
 
                     bg-blue-600
 
                     px-10
+
+                    font-medium
 
                     text-white
 
@@ -365,8 +392,13 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTA */}
+
           <motion.div
-            initial="hidden"
+            initial={
+              shouldReduceMotion
+                ? false
+                : "hidden"
+            }
             animate="visible"
             variants={fadeUp}
             custom={0.55}
@@ -374,11 +406,14 @@ export function HeroSection() {
               mt-10
 
               flex
-              flex-wrap
+              flex-col
 
               justify-center
 
-              gap-5
+              gap-4
+
+              sm:flex-row
+              sm:gap-5
             "
           >
             <Link
@@ -413,6 +448,8 @@ export function HeroSection() {
                 font-semibold
 
                 text-white
+
+                transition
 
                 hover:bg-white/10
               "

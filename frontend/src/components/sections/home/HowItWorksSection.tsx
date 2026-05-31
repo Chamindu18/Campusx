@@ -1,6 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 const steps = [
   {
@@ -9,14 +12,12 @@ const steps = [
     description:
       "Browse categories, discover listings and find places that fit student life.",
   },
-
   {
     number: "02",
     title: "Find",
     description:
       "Compare options and discover what works for your needs.",
   },
-
   {
     number: "03",
     title: "Connect",
@@ -45,13 +46,18 @@ const reveal = {
 };
 
 export function HowItWorksSection() {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <section
       id="how-it-works"
       className="
         relative
         bg-white
-        py-40
+
+        py-20
+        md:py-40
       "
     >
       <div
@@ -62,18 +68,29 @@ export function HowItWorksSection() {
         "
       >
         {/* HEADER */}
+
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={
+            shouldReduceMotion
+              ? false
+              : "hidden"
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : "visible"
+          }
           viewport={{
             once: true,
             amount: 0.3,
           }}
-          variants={reveal}
+          variants={
+            shouldReduceMotion
+              ? undefined
+              : reveal
+          }
           custom={0}
-          className="
-            text-center
-          "
+          className="text-center"
         >
           <p
             className="
@@ -89,11 +106,14 @@ export function HowItWorksSection() {
           <h2
             className="
               mt-6
+
               text-3xl
-              font-black
-              text-slate-900
               sm:text-4xl
               md:text-5xl
+
+              font-black
+
+              text-slate-900
             "
           >
             Three steps.
@@ -103,10 +123,18 @@ export function HowItWorksSection() {
           <p
             className="
               mx-auto
-              mt-8
+
+              mt-6
+              md:mt-8
+
               max-w-2xl
-              text-lg
-              leading-9
+
+              text-base
+              md:text-lg
+
+              leading-7
+              md:leading-9
+
               text-slate-600
             "
           >
@@ -116,11 +144,18 @@ export function HowItWorksSection() {
         </motion.div>
 
         {/* STEPS */}
+
         <div
           className="
-            mt-28
+            mt-12
+            md:mt-28
+
             grid
-            gap-10
+            grid-cols-1
+
+            gap-6
+            md:gap-10
+
             md:grid-cols-3
           "
         >
@@ -133,29 +168,45 @@ export function HowItWorksSection() {
                 key={
                   step.number
                 }
-                initial="hidden"
-                whileInView="visible"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : "hidden"
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? undefined
+                    : "visible"
+                }
                 viewport={{
                   once: true,
                   amount: 0.15,
                 }}
-                variants={reveal}
+                variants={
+                  shouldReduceMotion
+                    ? undefined
+                    : reveal
+                }
                 custom={
-                  index *
-                  0.08
+                  index * 0.08
                 }
               >
                 <div
                   className="
                     group
+
                     rounded-[32px]
+
                     bg-slate-50
-                    p-4
+
+                    p-5
+                    md:p-10
+
                     transition-all
                     duration-300
+
                     hover:-translate-y-1
                     hover:shadow-lg
-                    md:p-10
                   "
                 >
                   <div
@@ -171,8 +222,12 @@ export function HowItWorksSection() {
                   <h3
                     className="
                       mt-6
-                      text-3xl
+
+                      text-2xl
+                      md:text-3xl
+
                       font-bold
+
                       text-slate-900
                     "
                   >
@@ -181,8 +236,11 @@ export function HowItWorksSection() {
 
                   <p
                     className="
-                      mt-6
-                      leading-8
+                      mt-5
+
+                      leading-7
+                      md:leading-8
+
                       text-slate-600
                     "
                   >
