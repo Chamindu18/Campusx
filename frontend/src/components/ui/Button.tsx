@@ -15,18 +15,12 @@ import { cn } from "@/lib/utils";
 /* TYPES */
 /* ===================================================== */
 
-/**
- * Button style variants.
- */
 type ButtonVariant =
   | "primary"
   | "secondary"
   | "outline"
   | "destructive";
 
-/**
- * Button sizes.
- */
 type ButtonSize =
   | "sm"
   | "md"
@@ -35,7 +29,6 @@ type ButtonSize =
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-
   size?: ButtonSize;
 }
 
@@ -52,16 +45,13 @@ export const Button =
       {
         children,
         className,
-        variant =
-          "primary",
+        variant = "primary",
         size = "md",
+        type,
         ...props
       },
       ref
     ) => {
-      /**
-       * Shared styles.
-       */
       const baseStyles =
         `
           inline-flex
@@ -75,15 +65,16 @@ export const Button =
           transition-all
           duration-200
 
-          focus:outline-none
+          active:scale-[0.98]
+
+          focus-visible:outline-none
+          focus-visible:ring-4
+          focus-visible:ring-blue-400/20
 
           disabled:pointer-events-none
           disabled:opacity-50
         `;
 
-      /**
-       * Variant styles.
-       */
       const variantStyles: Record<
         ButtonVariant,
         string
@@ -127,18 +118,15 @@ export const Button =
           `,
       };
 
-      /**
-       * Size styles.
-       */
       const sizeStyles: Record<
         ButtonSize,
         string
       > = {
         sm:
-          "h-10 px-4 text-sm",
+          "h-11 px-4 text-sm",
 
         md:
-          "h-11 px-5 text-sm",
+          "h-12 px-5 text-sm",
 
         lg:
           "h-14 px-8 text-base",
@@ -147,6 +135,10 @@ export const Button =
       return (
         <button
           ref={ref}
+          type={
+            type ??
+            "button"
+          }
           className={cn(
             baseStyles,
             variantStyles[
