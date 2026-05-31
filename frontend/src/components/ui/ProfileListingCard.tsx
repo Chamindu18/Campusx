@@ -6,7 +6,10 @@
 
 import Link from "next/link";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 import {
   Edit,
@@ -36,14 +39,14 @@ export function ProfileListingCard({
   category,
   onDelete,
 }: ProfileListingCardProps) {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   /**
    * Delete listing handler.
    */
   async function handleDelete() {
     try {
-      /**
-       * Delete request.
-       */
       const response =
         await fetch(
           `/api/listings/${id}`,
@@ -55,27 +58,19 @@ export function ProfileListingCard({
       const result =
         await response.json();
 
-      /**
-       * Handle errors.
-       */
       if (!response.ok) {
         toast.error(
-          result.error
+          result.error ??
+            "Delete failed"
         );
 
         return;
       }
 
-      /**
-       * Success state.
-       */
       toast.success(
         "Listing deleted"
       );
 
-      /**
-       * Refresh parent state.
-       */
       onDelete(id);
     } catch (error) {
       console.error(error);
@@ -88,86 +83,152 @@ export function ProfileListingCard({
 
   return (
     <motion.div
-      whileHover={{
-        y: -4,
-      }}
+      whileHover={
+        shouldReduceMotion
+          ? undefined
+          : {
+              y: -4,
+            }
+      }
       className="
         rounded-3xl
+
         border
         border-white/40
+
         bg-white/70
-        p-6
+
+        p-5
+        md:p-6
+
         shadow-lg
         shadow-slate-200/30
+
         backdrop-blur-xl
       "
     >
-      {/* Top */}
+      {/* TOP */}
+
       <div className="flex items-start justify-between gap-4">
-        {/* Left */}
-        <div>
+        <div className="min-w-0">
+          {/* CATEGORY */}
+
           <div
             className="
               inline-flex
+
               rounded-full
+
               bg-blue-100
+
               px-3
               py-1
+
               text-xs
               font-semibold
+
               text-blue-700
             "
           >
             {category}
           </div>
 
-          <h3 className="mt-4 text-2xl font-bold text-slate-900">
+          {/* TITLE */}
+
+          <h3
+            className="
+              mt-4
+
+              line-clamp-2
+
+              text-xl
+              md:text-2xl
+
+              font-bold
+
+              text-slate-900
+            "
+          >
             {title}
           </h3>
 
-          <p className="mt-3 text-lg font-semibold text-blue-600">
+          {/* PRICE */}
+
+          <p
+            className="
+              mt-3
+
+              whitespace-nowrap
+
+              text-lg
+
+              font-semibold
+
+              text-blue-600
+            "
+          >
             LKR{" "}
             {price.toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Footer */}
+      {/* FOOTER */}
+
       <div className="mt-8 flex items-center justify-end gap-3">
-        {/* Edit */}
+        {/* EDIT */}
+
         <Link
           href={`/marketplace/edit/${id}`}
+          aria-label="Edit listing"
           className="
             flex
+
             h-11
             w-11
+
             items-center
             justify-center
+
             rounded-2xl
+
             bg-blue-100
+
             text-blue-700
+
             transition
+
             hover:bg-blue-200
           "
         >
           <Edit className="h-5 w-5" />
         </Link>
 
-        {/* Delete */}
+        {/* DELETE */}
+
         <button
+          type="button"
+          aria-label="Delete listing"
           onClick={
             handleDelete
           }
           className="
             flex
+
             h-11
             w-11
+
             items-center
             justify-center
+
             rounded-2xl
+
             bg-red-100
+
             text-red-600
+
             transition
+
             hover:bg-red-200
           "
         >

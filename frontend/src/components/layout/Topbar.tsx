@@ -24,18 +24,12 @@ interface TopbarProps {
 export function Topbar({
   onMenuClick,
 }: TopbarProps) {
-  /**
-   * Current authenticated user.
-   */
   const { user, mutate } =
     useCurrentUser();
 
   const router =
     useRouter();
 
-  /**
-   * Logout handler.
-   */
   async function handleLogout() {
     try {
       await fetch(
@@ -72,35 +66,56 @@ export function Topbar({
         sticky
         top-0
         z-30
+
         flex
+
         h-20
+        md:h-24
+
         items-center
         justify-between
+
         border-b
         border-white/20
+
         bg-white/50
+
         px-4
-        backdrop-blur-xl
-        md:h-24
         md:px-10
+
+        backdrop-blur-xl
       "
     >
       {/* LEFT */}
+
       <div className="flex items-center gap-4">
         {/* MOBILE MENU */}
+
         <button
+          type="button"
+          aria-label="Open menu"
           onClick={
             onMenuClick
           }
           className="
             flex
+
             h-12
             w-12
+
             items-center
             justify-center
+
             rounded-2xl
+
             bg-white/70
+
             text-slate-700
+
+            transition
+
+            hover:bg-white
+
             lg:hidden
           "
         >
@@ -108,19 +123,27 @@ export function Topbar({
         </button>
 
         {/* SEARCH */}
+
         <div
           className="
             hidden
+
             h-14
             w-full
             max-w-md
+
             items-center
             gap-3
+
             rounded-2xl
+
             border
             border-slate-200
+
             bg-white/70
+
             px-5
+
             md:flex
           "
         >
@@ -130,9 +153,13 @@ export function Topbar({
             placeholder="Search..."
             className="
               w-full
+
               bg-transparent
+
               text-sm
+
               outline-none
+
               placeholder:text-slate-400
             "
           />
@@ -140,19 +167,30 @@ export function Topbar({
       </div>
 
       {/* RIGHT */}
+
       <div className="flex items-center gap-3 md:gap-5">
-        {/* Notifications */}
+        {/* NOTIFICATIONS */}
+
         <button
+          type="button"
+          aria-label="Notifications"
           className="
             flex
+
             h-12
             w-12
+
             items-center
             justify-center
+
             rounded-2xl
+
             bg-white/70
+
             text-slate-700
+
             transition
+
             hover:bg-white
           "
         >
@@ -160,32 +198,54 @@ export function Topbar({
         </button>
 
         {/* USER */}
+
         <div className="flex items-center gap-3 md:gap-4">
-          {/* User Info */}
           <div className="hidden text-right md:block">
-            <p className="text-sm font-semibold text-slate-900">
+            <p
+              className="
+                text-sm
+                font-semibold
+                text-slate-900
+              "
+            >
               {user?.name ||
                 "Loading..."}
             </p>
 
-            <p className="text-xs text-slate-500">
+            <p
+              className="
+                max-w-[180px]
+                truncate
+
+                text-xs
+
+                text-slate-500
+              "
+            >
               {user?.email}
             </p>
           </div>
 
-          {/* Avatar */}
+          {/* AVATAR */}
+
           <div
             className="
               flex
+
               h-11
               w-11
+
               items-center
               justify-center
+
               rounded-2xl
+
               bg-blue-600
+
               text-sm
               font-bold
               text-white
+
               md:h-12
               md:w-12
             "
@@ -196,22 +256,33 @@ export function Topbar({
               "U"}
           </div>
 
-          {/* Logout */}
+          {/* LOGOUT */}
+
           <button
+            type="button"
+            aria-label="Logout"
             onClick={
               handleLogout
             }
             className="
               flex
+
               h-11
               w-11
+
               items-center
               justify-center
+
               rounded-2xl
+
               bg-red-100
+
               text-red-600
+
               transition
+
               hover:bg-red-200
+
               md:h-12
               md:w-12
             "

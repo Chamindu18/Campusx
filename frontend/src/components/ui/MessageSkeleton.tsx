@@ -1,15 +1,23 @@
 export function MessageSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="animate-pulse space-y-6">
       {/* LEFT MESSAGE */}
+
       <div className="flex justify-start">
         <div
           className="
-            w-[75%]
-            rounded-3xl
+            max-w-[85%]
+            md:max-w-[75%]
+
+            rounded-2xl
+
             bg-slate-200
-            px-5
-            py-6
+
+            px-4
+            md:px-5
+
+            py-3
+            md:py-4
           "
         >
           <div className="h-3 w-24 rounded bg-slate-300" />
@@ -21,14 +29,22 @@ export function MessageSkeleton() {
       </div>
 
       {/* RIGHT MESSAGE */}
+
       <div className="flex justify-end">
         <div
           className="
-            w-[65%]
-            rounded-3xl
+            max-w-[80%]
+            md:max-w-[70%]
+
+            rounded-2xl
+
             bg-slate-200
-            px-5
-            py-6
+
+            px-4
+            md:px-5
+
+            py-3
+            md:py-4
           "
         >
           <div className="h-3 w-20 rounded bg-slate-300" />
@@ -40,14 +56,22 @@ export function MessageSkeleton() {
       </div>
 
       {/* LEFT MESSAGE */}
+
       <div className="flex justify-start">
         <div
           className="
-            w-[70%]
-            rounded-3xl
+            max-w-[82%]
+            md:max-w-[72%]
+
+            rounded-2xl
+
             bg-slate-200
-            px-5
-            py-6
+
+            px-4
+            md:px-5
+
+            py-3
+            md:py-4
           "
         >
           <div className="h-3 w-24 rounded bg-slate-300" />

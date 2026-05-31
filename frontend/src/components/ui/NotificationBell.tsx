@@ -7,6 +7,12 @@
 import Link from "next/link";
 
 import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
   Bell,
   CheckCheck,
 } from "lucide-react";
@@ -16,9 +22,14 @@ import toast from "react-hot-toast";
 import { useNotifications } from "@/hooks/use-notifications";
 
 export function NotificationBell() {
-  /**
-   * Notification state.
-   */
+  const [isOpen, setIsOpen] =
+    useState(false);
+
+  const dropdownRef =
+    useRef<HTMLDivElement | null>(
+      null
+    );
+
   const {
     notifications,
     unreadCount,
@@ -44,12 +55,12 @@ export function NotificationBell() {
         throw new Error();
       }
 
-      mutate();
+      await mutate();
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to update"
+        "Failed to update notification"
       );
     }
   }
@@ -71,24 +82,104 @@ export function NotificationBell() {
         throw new Error();
       }
 
+      await mutate();
+
       toast.success(
         "Notifications updated"
       );
-
-      mutate();
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to update"
+        "Failed to update notifications"
       );
     }
   }
 
+  /**
+   * Close when clicking outside.
+   */
+  useEffect(() => {
+    function handleOutsideClick(
+      event: MouseEvent
+    ) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(
+          event.target as Node
+        )
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener(
+      "mousedown",
+      handleOutsideClick
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
+    };
+  }, []);
+
+  /**
+   * Close with Escape key.
+   */
+  useEffect(() => {
+    function handleKeyDown(
+      event: KeyboardEvent
+    ) {
+      if (
+        event.key === "Escape"
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, []);
+
+  const dropdownId =
+    "notification-dropdown";
+
+  function formatUnreadCount(
+    count: number
+  ) {
+    return count > 99
+      ? "99+"
+      : String(count);
+  }
+
   return (
-    <div className="relative group">
+    <div
+      className="relative"
+      ref={dropdownRef}
+    >
       {/* BUTTON */}
       <button
+        type="button"
+        aria-label="Toggle notifications"
+        aria-expanded={isOpen}
+        aria-controls={dropdownId}
+        onClick={() =>
+          setIsOpen(
+            (previous) => !previous
+          )
+        }
         className="
           relative
           flex
@@ -106,7 +197,6 @@ export function NotificationBell() {
       >
         <Bell className="h-5 w-5" />
 
-        {/* Badge */}
         {unreadCount > 0 && (
           <div
             className="
@@ -126,74 +216,130 @@ export function NotificationBell() {
               text-white
             "
           >
-            {unreadCount}
+            {formatUnreadCount(
+              unreadCount
+            )}
           </div>
         )}
       </button>
 
       {/* DROPDOWN */}
       <div
-        className="
-          invisible
+        id={dropdownId}
+        className={`
           absolute
-          right-0
+          left-1/2
           top-16
           z-50
-          w-[380px]
-          translate-y-3
+
+          w-[95vw]
+          max-w-md
+
+          -translate-x-1/2
+
           rounded-3xl
           border
           border-white/40
+
           bg-white/90
-          opacity-0
+
           shadow-2xl
           shadow-slate-200/30
+
           backdrop-blur-2xl
+
           transition-all
           duration-200
-          group-hover:visible
-          group-hover:translate-y-0
-          group-hover:opacity-100
-        "
+
+          ${
+            isOpen
+              ? "visible translate-y-0 opacity-100"
+              : "invisible translate-y-3 opacity-0"
+          }
+
+          md:left-auto
+          md:right-0
+          md:translate-x-0
+        `}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+        {/* HEADER */}
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+
+            border-b
+            border-slate-200
+
+            px-6
+            py-5
+          "
+        >
           <div>
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3
+              className="
+                text-lg
+                font-bold
+                text-slate-900
+              "
+            >
               Notifications
             </h3>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p
+              className="
+                mt-1
+                text-sm
+                text-slate-500
+              "
+            >
               Recent platform activity
             </p>
           </div>
 
           <button
+            type="button"
+            aria-label="Mark all notifications as read"
+            disabled={
+              notifications.length ===
+              0
+            }
             onClick={
               markAllAsRead
             }
             className="
               flex
+              min-h-[44px]
               items-center
               gap-2
+
               rounded-xl
+
               bg-slate-100
+
               px-3
               py-2
+
               text-xs
               font-semibold
+
               text-slate-600
+
               transition
+
               hover:bg-slate-200
+
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
           >
             <CheckCheck className="h-4 w-4" />
-
             Mark all
           </button>
         </div>
 
-        {/* Notifications */}
+        {/* CONTENT */}
         <div className="max-h-[450px] overflow-y-auto">
           {notifications.length ===
             0 && (
@@ -205,77 +351,142 @@ export function NotificationBell() {
           )}
 
           {notifications.map(
-            (notification) => (
-              <button
-                key={notification.id}
-                onClick={() =>
-                  handleRead(
+            (notification) =>
+              notification.link ? (
+                <Link
+                  key={
                     notification.id
-                  )
-                }
-                className={`
-                  block
-                  w-full
-                  border-b
-                  border-slate-100
-                  px-6
-                  py-5
-                  text-left
-                  transition
-                  hover:bg-slate-50
-                  ${
-                    !notification.isRead
-                      ? "bg-blue-50/60"
-                      : ""
                   }
-                `}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900">
-                      {
-                        notification.title
-                      }
-                    </h4>
+                  href={
+                    notification.link
+                  }
+                  aria-label={`Open ${notification.title}`}
+                  onClick={() => {
+                    handleRead(
+                      notification.id
+                    );
 
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {
-                        notification.message
-                      }
-                    </p>
-                  </div>
+                    setIsOpen(
+                      false
+                    );
+                  }}
+                  className={`
+                    block
+                    min-h-[44px]
+                    w-full
 
-                  {!notification.isRead && (
-                    <div
-                      className="
-                        mt-2
-                        h-3
-                        w-3
-                        rounded-full
-                        bg-blue-500
-                      "
-                    />
-                  )}
-                </div>
+                    border-b
+                    border-slate-100
 
-                {notification.link && (
-                  <Link
-                    href={
-                      notification.link
+                    px-6
+                    py-5
+
+                    text-left
+
+                    transition
+
+                    hover:bg-slate-50
+
+                    ${
+                      !notification.isRead
+                        ? "bg-blue-50/60"
+                        : ""
                     }
-                    className="
-                      mt-4
-                      inline-block
-                      text-xs
-                      font-semibold
-                      text-blue-600
-                    "
-                  >
-                    View →
-                  </Link>
-                )}
-              </button>
-            )
+                  `}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-900">
+                        {
+                          notification.title
+                        }
+                      </h4>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {
+                          notification.message
+                        }
+                      </p>
+                    </div>
+
+                    {!notification.isRead && (
+                      <div
+                        className="
+                          mt-2
+                          h-3
+                          w-3
+                          rounded-full
+                          bg-blue-500
+                        "
+                      />
+                    )}
+                  </div>
+                </Link>
+              ) : (
+                <button
+                  key={
+                    notification.id
+                  }
+                  type="button"
+                  aria-label={`Mark ${notification.title} as read`}
+                  onClick={() =>
+                    handleRead(
+                      notification.id
+                    )
+                  }
+                  className={`
+                    block
+                    min-h-[44px]
+                    w-full
+
+                    border-b
+                    border-slate-100
+
+                    px-6
+                    py-5
+
+                    text-left
+
+                    transition
+
+                    hover:bg-slate-50
+
+                    ${
+                      !notification.isRead
+                        ? "bg-blue-50/60"
+                        : ""
+                    }
+                  `}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-900">
+                        {
+                          notification.title
+                        }
+                      </h4>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {
+                          notification.message
+                        }
+                      </p>
+                    </div>
+
+                    {!notification.isRead && (
+                      <div
+                        className="
+                          mt-2
+                          h-3
+                          w-3
+                          rounded-full
+                          bg-blue-500
+                        "
+                      />
+                    )}
+                  </div>
+                </button>
+              )
           )}
         </div>
       </div>

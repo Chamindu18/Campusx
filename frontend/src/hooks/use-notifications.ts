@@ -10,14 +10,14 @@ import useSWR from "swr";
 /* TYPES */
 /* ===================================================== */
 
-interface Notification {
+export interface Notification {
   id: string;
 
   title: string;
 
   message: string;
 
-  isRead: boolean;
+  read: boolean;
 
   link?: string | null;
 
@@ -30,9 +30,7 @@ interface Notification {
 
 const fetcher = async (
   url: string
-): Promise<
-  Notification[]
-> => {
+): Promise<Notification[]> => {
   const response =
     await fetch(url);
 
@@ -63,20 +61,26 @@ export function useNotifications() {
     {
       refreshInterval:
         5000,
+      revalidateOnFocus:
+        true,
     }
   );
 
-  return {
-    notifications:
-      data ?? [],
+  const notifications =
+    data ?? [];
 
-    unreadCount:
-      data?.filter(
-        (
-          notification
-        ) =>
-          !notification.isRead
-      ).length ?? 0,
+  const unreadCount =
+    notifications.filter(
+      (
+        notification
+      ) =>
+        !notification.read
+    ).length;
+
+  return {
+    notifications,
+
+    unreadCount,
 
     error,
 
