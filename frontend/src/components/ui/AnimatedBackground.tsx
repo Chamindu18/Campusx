@@ -1,64 +1,67 @@
 "use client";
 
-/**
- * Global cinematic atmospheric background.
- *
- * Features:
- * - scroll-reactive atmosphere
- * - animated gradient mesh
- * - floating particles
- * - layered lighting system
- */
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+const PARTICLES = Array.from(
+  { length: 20 },
+  (_, i) => i
+);
 
 export function AnimatedBackground() {
-  /**
-   * Scroll progress.
-   */
-  const { scrollYProgress } = useScroll();
+  const shouldReduceMotion =
+    useReducedMotion();
 
-  /**
-   * Dynamic atmosphere transforms.
-   */
-  const backgroundY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, -250]
-  );
+  const { scrollYProgress } =
+    useScroll();
 
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [1, 0.65]
-  );
+  const backgroundY =
+    useTransform(
+      scrollYProgress,
+      [0, 1],
+      [0, -250]
+    );
 
-  /**
-   * Floating particles.
-   */
-  const particles = Array.from(
-    { length: 30 },
-    (_, i) => i
-  );
+  const opacity =
+    useTransform(
+      scrollYProgress,
+      [0, 1],
+      [1, 0.65]
+    );
 
   return (
     <motion.div
       style={{
-        y: backgroundY,
+        y: shouldReduceMotion
+          ? 0
+          : backgroundY,
         opacity,
       }}
-      className="absolute inset-0 overflow-hidden"
+      className="
+        pointer-events-none
+        absolute
+        inset-0
+        overflow-hidden
+      "
     >
       {/* Base Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50" />
 
       {/* ORB 1 */}
       <motion.div
-        animate={{
-          x: [0, 120, 0],
-          y: [0, -80, 0],
-          scale: [1, 1.15, 1],
-        }}
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                x: [0, 120, 0],
+                y: [0, -80, 0],
+                scale: [1, 1.15, 1],
+              }
+        }
         transition={{
           duration: 14,
           repeat: Infinity,
@@ -66,10 +69,15 @@ export function AnimatedBackground() {
         }}
         className="
           absolute
-          left-[-220px]
-          top-[-220px]
-          h-[700px]
-          w-[700px]
+          left-[-150px]
+          top-[-150px]
+
+          h-[450px]
+          w-[450px]
+
+          md:h-[700px]
+          md:w-[700px]
+
           rounded-full
           bg-blue-400/40
           blur-3xl
@@ -78,11 +86,15 @@ export function AnimatedBackground() {
 
       {/* ORB 2 */}
       <motion.div
-        animate={{
-          x: [0, -120, 0],
-          y: [0, 90, 0],
-          scale: [1, 1.12, 1],
-        }}
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                x: [0, -120, 0],
+                y: [0, 90, 0],
+                scale: [1, 1.12, 1],
+              }
+        }
         transition={{
           duration: 18,
           repeat: Infinity,
@@ -90,10 +102,15 @@ export function AnimatedBackground() {
         }}
         className="
           absolute
-          right-[-180px]
+          right-[-120px]
           top-[200px]
-          h-[650px]
-          w-[650px]
+
+          h-[420px]
+          w-[420px]
+
+          md:h-[650px]
+          md:w-[650px]
+
           rounded-full
           bg-indigo-400/30
           blur-3xl
@@ -102,11 +119,15 @@ export function AnimatedBackground() {
 
       {/* ORB 3 */}
       <motion.div
-        animate={{
-          x: [0, 80, 0],
-          y: [0, -70, 0],
-          scale: [1, 1.08, 1],
-        }}
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                x: [0, 80, 0],
+                y: [0, -70, 0],
+                scale: [1, 1.08, 1],
+              }
+        }
         transition={{
           duration: 16,
           repeat: Infinity,
@@ -114,50 +135,79 @@ export function AnimatedBackground() {
         }}
         className="
           absolute
-          bottom-[-250px]
+          bottom-[-180px]
           left-[25%]
-          h-[600px]
-          w-[600px]
+
+          h-[380px]
+          w-[380px]
+
+          md:h-[600px]
+          md:w-[600px]
+
           rounded-full
           bg-cyan-300/30
           blur-3xl
         "
       />
 
-      {/* FLOATING PARTICLES */}
-      {particles.map((particle) => (
-        <motion.div
-          key={particle}
-          animate={{
-            y: [0, -40, 0],
-            x: [0, 10, 0],
-            opacity: [0.2, 0.8, 0.2],
-          }}
-          transition={{
-            duration: 3 + (particle % 5),
-            repeat: Infinity,
-            delay: particle * 0.25,
-          }}
-          className="absolute rounded-full bg-blue-500/40"
-          style={{
-            width: `${4 + (particle % 5) * 3}px`,
-            height: `${4 + (particle % 5) * 3}px`,
-            left: `${(particle * 11) % 100}%`,
-            top: `${(particle * 19) % 100}%`,
-          }}
-        />
-      ))}
+      {/* PARTICLES */}
+      {!shouldReduceMotion &&
+        PARTICLES.map((particle) => (
+          <motion.div
+            key={particle}
+            animate={{
+              y: [0, -40, 0],
+              x: [0, 10, 0],
+              opacity: [
+                0.2,
+                0.8,
+                0.2,
+              ],
+            }}
+            transition={{
+              duration:
+                3 +
+                (particle % 5),
+              repeat:
+                Infinity,
+              delay:
+                particle * 0.25,
+            }}
+            className="absolute rounded-full bg-blue-500/40"
+            style={{
+              width: `${
+                4 +
+                (particle % 5) * 3
+              }px`,
+              height: `${
+                4 +
+                (particle % 5) * 3
+              }px`,
+              left: `${
+                (particle * 11) %
+                100
+              }%`,
+              top: `${
+                (particle * 19) %
+                100
+              }%`,
+            }}
+          />
+        ))}
 
       {/* GRID */}
       <div
         className="
-          absolute inset-0
+          absolute
+          inset-0
+
           bg-[linear-gradient(to_right,#94a3b810_1px,transparent_1px),linear-gradient(to_bottom,#94a3b810_1px,transparent_1px)]
+
           bg-[size:64px_64px]
         "
       />
 
-      {/* LIGHT OVERLAY */}
+      {/* OVERLAY */}
       <div className="absolute inset-0 bg-white/20" />
     </motion.div>
   );
