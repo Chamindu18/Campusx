@@ -4,7 +4,10 @@
  * Sidebar conversation item.
  */
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 
 interface ConversationItemProps {
   user: string;
@@ -17,23 +20,40 @@ export function ConversationItem({
   user,
   lastMessage,
   time,
-  active,
+  active = false,
 }: ConversationItemProps) {
+  const shouldReduceMotion =
+    useReducedMotion();
+
   return (
     <motion.button
-      whileHover={{
-        x: 4,
-      }}
+      type="button"
+      whileHover={
+        shouldReduceMotion
+          ? undefined
+          : {
+              x: 4,
+            }
+      }
       className={`
         flex
         w-full
+
         items-start
         gap-4
+
         rounded-2xl
+
         p-4
+
         text-left
+
         transition-all
         duration-200
+
+        focus-visible:outline-none
+        focus-visible:ring-4
+        focus-visible:ring-blue-400/20
 
         ${
           active
@@ -52,12 +72,17 @@ export function ConversationItem({
       {/* Avatar */}
       <div
         className={`
+          shrink-0
+
           flex
           h-12
           w-12
+
           items-center
           justify-center
+
           rounded-2xl
+
           font-bold
 
           ${
@@ -73,18 +98,22 @@ export function ConversationItem({
           }
         `}
       >
-        {user.charAt(0)}
+        {user
+          .charAt(0)
+          .toUpperCase()}
       </div>
 
       {/* Content */}
       <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-2">
           <h3 className="truncate font-semibold">
             {user}
           </h3>
 
           <span
             className={`
+              shrink-0
+
               text-xs
 
               ${
@@ -101,7 +130,9 @@ export function ConversationItem({
         <p
           className={`
             mt-1
+
             truncate
+
             text-sm
 
             ${
