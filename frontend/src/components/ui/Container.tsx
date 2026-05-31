@@ -34,14 +34,17 @@ export function Container({
   return (
     <div
       className={cn(
-        /**
-         * max-w-7xl
-         * prevents stretched layouts
-         *
-         * px-6 lg:px-8
-         * responsive spacing
-         */
-        "mx-auto w-full max-w-7xl px-6 lg:px-8",
+        `
+          mx-auto
+          w-full
+          max-w-7xl
+
+          px-4
+          sm:px-6
+          lg:px-8
+
+          box-border
+        `,
         className
       )}
       {...props}
