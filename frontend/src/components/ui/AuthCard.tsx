@@ -14,16 +14,15 @@ export function AuthCard({
   children,
 }: Props) {
   return (
-    <div>
+    <div className="px-4">
       {/* HEADER */}
-      <div
-        className="
-          text-center
-        "
-      >
+      <div className="text-center">
         <h1
           className="
-            text-5xl
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
+
             font-black
             tracking-tight
 
@@ -42,8 +41,11 @@ export function AuthCard({
 
             max-w-md
 
-            text-lg
-            leading-8
+            text-base
+            md:text-lg
+
+            leading-7
+            md:leading-8
 
             text-white/90
           "
@@ -53,11 +55,7 @@ export function AuthCard({
       </div>
 
       {/* FORM */}
-      <div
-        className="
-          mt-10
-        "
-      >
+      <div className="mt-10">
         {children}
       </div>
     </div>
