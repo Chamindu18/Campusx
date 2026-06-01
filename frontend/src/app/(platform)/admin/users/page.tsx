@@ -16,20 +16,14 @@ import toast from "react-hot-toast";
 
 interface User {
   id: string;
-
   name: string;
-
   email: string;
-
   university?: string;
-
   role: string;
-
   createdAt: string;
 
   _count?: {
     listings: number;
-
     dorms: number;
   };
 }
@@ -38,56 +32,49 @@ export default function AdminUsersPage() {
   const [
     users,
     setUsers,
-  ] =
-    useState<
-      User[]
-    >([]);
+  ] = useState<User[]>([]);
 
   const [
     loading,
     setLoading,
-  ] =
-    useState(
-      true
-    );
+  ] = useState(true);
+
+  const [
+    error,
+    setError,
+  ] = useState(false);
 
   const [
     search,
     setSearch,
-  ] =
-    useState("");
+  ] = useState("");
 
   async function fetchUsers() {
     try {
-      setLoading(
-        true
-      );
+      setLoading(true);
+      setError(false);
 
       const response =
         await fetch(
           "/api/admin/users"
         );
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
         throw new Error();
       }
 
       const data =
         await response.json();
 
-      setUsers(
-        data
-      );
+      setUsers(data);
     } catch {
+      setError(true);
+
       toast.error(
         "Failed to load users"
       );
     } finally {
-      setLoading(
-        false
-      );
+      setLoading(false);
     }
   }
 
@@ -99,9 +86,7 @@ export default function AdminUsersPage() {
     useMemo(
       () =>
         users.filter(
-          (
-            user
-          ) =>
+          (user) =>
             user.name
               ?.toLowerCase()
               .includes(
@@ -113,91 +98,166 @@ export default function AdminUsersPage() {
                 search.toLowerCase()
               )
         ),
-
-      [
-        users,
-        search,
-      ]
+      [users, search]
     );
 
-  if (
-    loading
-  ) {
+  if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        Loading users...
+      <div
+        className="
+          grid
+          grid-cols-1
+          gap-6
+          md:grid-cols-2
+          xl:grid-cols-3
+        "
+      >
+        {Array.from({
+          length: 6,
+        }).map((_, i) => (
+          <div
+            key={i}
+            className="
+              h-72
+              animate-pulse
+              rounded-3xl
+              bg-white/70
+            "
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="
+          rounded-3xl
+          bg-white/70
+          p-6
+        "
+      >
+        <h2
+          className="
+            text-xl
+            font-bold
+            text-red-600
+          "
+        >
+          Failed to load users
+        </h2>
+
+        <button
+          type="button"
+          onClick={fetchUsers}
+          className="
+            mt-4
+            rounded-2xl
+            bg-blue-600
+            px-5
+            py-3
+            text-white
+          "
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div
+      className="
+        space-y-8
+        md:space-y-10
+      "
+    >
       {/* HEADER */}
 
       <div>
-        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
+        <h1
+          className="
+            text-3xl
+            font-black
+            sm:text-4xl
+            md:text-5xl
+          "
+        >
           Users
         </h1>
 
-        <p className="mt-3 text-slate-600">
+        <p
+          className="
+            mt-3
+            text-slate-600
+          "
+        >
           View platform users
         </p>
       </div>
 
       {/* SEARCH */}
 
-      <div>
-        <input
-          value={
-            search
-          }
-          onChange={(
-            e
-          ) =>
-            setSearch(
-              e.target
-                .value
-            )
-          }
-          placeholder="Search users..."
-          className="
-            h-12
-            w-full
-            rounded-2xl
-            border
-            px-5
-          "
-        />
-      </div>
+      <input
+        value={search}
+        onChange={(e) =>
+          setSearch(
+            e.target.value
+          )
+        }
+        placeholder="Search users..."
+        className="
+          h-12
+          w-full
+          rounded-2xl
+          border
+          border-slate-200
+          px-5
+        "
+      />
 
       {/* EMPTY */}
 
       {filtered.length ===
         0 && (
-        <div className="rounded-3xl bg-white/70 p-12 text-center">
-          No users found
+        <div
+          className="
+            rounded-3xl
+            bg-white/70
+            p-8
+            text-center
+            md:p-12
+          "
+        >
+          No users found.
         </div>
       )}
 
       {/* USERS */}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div
+        className="
+          grid
+          grid-cols-1
+          gap-6
+          md:grid-cols-2
+          xl:grid-cols-3
+        "
+      >
         {filtered.map(
-          (
-            user
-          ) => (
+          (user) => (
             <div
-              key={
-                user.id
-              }
+              key={user.id}
               className="
                 rounded-3xl
                 bg-white/70
-                p-8
+                p-5
                 shadow-sm
+                md:p-8
               "
             >
-              {/* Avatar */}
+              {/* AVATAR */}
 
               <div
                 className="
@@ -214,30 +274,51 @@ export default function AdminUsersPage() {
                 "
               >
                 {user.name
-                  ?.charAt(
-                    0
-                  )
+                  ?.charAt(0)
                   .toUpperCase()}
               </div>
 
-              <h2 className="mt-6 text-2xl font-black">
-                {
-                  user.name
-                }
+              {/* NAME */}
+
+              <h2
+                className="
+                  mt-6
+                  break-words
+                  text-xl
+                  font-black
+                  md:text-2xl
+                "
+              >
+                {user.name}
               </h2>
 
-              <p className="mt-2 text-slate-500">
-                {
-                  user.email
-                }
+              {/* EMAIL */}
+
+              <p
+                className="
+                  mt-2
+                  break-all
+                  text-slate-500
+                "
+              >
+                {user.email}
               </p>
 
-              <p className="mt-2">
+              {/* UNIVERSITY */}
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                "
+              >
                 {user.university ||
                   "No university"}
               </p>
 
-              <div className="mt-5 flex gap-2">
+              {/* ROLE */}
+
+              <div className="mt-5">
                 <span
                   className="
                     rounded-full
@@ -247,39 +328,91 @@ export default function AdminUsersPage() {
                     text-sm
                   "
                 >
-                  {
-                    user.role
-                  }
+                  {user.role}
                 </span>
               </div>
 
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-3xl font-black">
-                    {user
-                      ._count
-                      ?.listings ||
-                      0}
+              {/* STATS */}
+
+              <div
+                className="
+                  mt-8
+                  grid
+                  grid-cols-2
+                  gap-4
+                "
+              >
+                <div
+                  className="
+                    rounded-2xl
+                    bg-slate-50
+                    p-4
+                  "
+                >
+                  <div
+                    className="
+                      text-3xl
+                      font-black
+                    "
+                  >
+                    {user._count
+                      ?.listings ?? 0}
                   </div>
 
-                  <div className="text-sm text-slate-500">
+                  <div
+                    className="
+                      text-sm
+                      text-slate-500
+                    "
+                  >
                     Listings
                   </div>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-3xl font-black">
-                    {user
-                      ._count
-                      ?.dorms ||
-                      0}
+                <div
+                  className="
+                    rounded-2xl
+                    bg-slate-50
+                    p-4
+                  "
+                >
+                  <div
+                    className="
+                      text-3xl
+                      font-black
+                    "
+                  >
+                    {user._count
+                      ?.dorms ?? 0}
                   </div>
 
-                  <div className="text-sm text-slate-500">
+                  <div
+                    className="
+                      text-sm
+                      text-slate-500
+                    "
+                  >
                     Dorms
                   </div>
                 </div>
               </div>
+
+              {/* CREATED */}
+
+              <p
+                className="
+                  mt-6
+                  text-xs
+                  text-slate-400
+                "
+              >
+                Joined{" "}
+                {new Date(
+                  user.createdAt
+                ).toLocaleDateString()}
+              </p>
+
+              {/* ACTION */}
 
               <div className="mt-8">
                 <Link

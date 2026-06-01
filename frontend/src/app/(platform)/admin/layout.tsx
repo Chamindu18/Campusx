@@ -17,10 +17,36 @@ export default function AdminLayout({
 }) {
   return (
     <AdminGuard>
-      <div className="flex gap-8">
-        <AdminSidebar />
+      <div
+        className="
+          flex
+          flex-col
+          gap-6
 
-        <main className="flex-1">
+          lg:flex-row
+          lg:gap-8
+        "
+      >
+        {/* SIDEBAR */}
+
+        <aside
+          className="
+            lg:sticky
+            lg:top-6
+            lg:h-fit
+          "
+        >
+          <AdminSidebar />
+        </aside>
+
+        {/* CONTENT */}
+
+        <main
+          className="
+            min-w-0
+            flex-1
+          "
+        >
           {children}
         </main>
       </div>
