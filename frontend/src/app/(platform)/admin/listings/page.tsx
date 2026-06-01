@@ -36,56 +36,49 @@ export default function AdminListingsPage() {
   const [
     listings,
     setListings,
-  ] =
-    useState<
-      Listing[]
-    >([]);
+  ] = useState<Listing[]>([]);
 
   const [
     loading,
     setLoading,
-  ] =
-    useState(
-      true
-    );
+  ] = useState(true);
+
+  const [
+    error,
+    setError,
+  ] = useState(false);
 
   const [
     search,
     setSearch,
-  ] =
-    useState("");
+  ] = useState("");
 
   async function fetchListings() {
     try {
-      setLoading(
-        true
-      );
+      setLoading(true);
+      setError(false);
 
       const response =
         await fetch(
           "/api/admin/listings"
         );
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
         throw new Error();
       }
 
       const data =
         await response.json();
 
-      setListings(
-        data
-      );
+      setListings(data);
     } catch {
+      setError(true);
+
       toast.error(
         "Failed to load listings"
       );
     } finally {
-      setLoading(
-        false
-      );
+      setLoading(false);
     }
   }
 
@@ -110,17 +103,20 @@ export default function AdminListingsPage() {
           }
         );
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
         throw new Error();
       }
+
+      setListings((prev) =>
+        prev.filter(
+          (listing) =>
+            listing.id !== id
+        )
+      );
 
       toast.success(
         "Listing removed"
       );
-
-      fetchListings();
     } catch {
       toast.error(
         "Failed to remove listing"
@@ -136,54 +132,115 @@ export default function AdminListingsPage() {
     useMemo(
       () =>
         listings.filter(
-          (
-            listing
-          ) =>
+          (listing) =>
             listing.title
               .toLowerCase()
               .includes(
                 search.toLowerCase()
               )
         ),
-
       [
         listings,
         search,
       ]
     );
 
-  if (
-    loading
-  ) {
+  if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        Loading listings...
+      <div className="space-y-6">
+        {Array.from({
+          length: 4,
+        }).map((_, i) => (
+          <div
+            key={i}
+            className="
+              h-44
+              animate-pulse
+              rounded-3xl
+              bg-white/70
+            "
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="
+          rounded-3xl
+          bg-white/70
+          p-6
+        "
+      >
+        <h2
+          className="
+            text-xl
+            font-bold
+            text-red-600
+          "
+        >
+          Failed to load listings
+        </h2>
+
+        <button
+          onClick={
+            fetchListings
+          }
+          className="
+            mt-4
+            rounded-2xl
+            bg-blue-600
+            px-5
+            py-3
+            text-white
+          "
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div
+      className="
+        space-y-8
+        md:space-y-10
+      "
+    >
+      {/* HEADER */}
+
       <div>
-        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
+        <h1
+          className="
+            text-3xl
+            font-black
+            sm:text-4xl
+            md:text-5xl
+          "
+        >
           Listings
         </h1>
 
-        <p className="mt-3 text-slate-600">
+        <p
+          className="
+            mt-3
+            text-slate-600
+          "
+        >
           Moderate marketplace
         </p>
       </div>
 
+      {/* SEARCH */}
+
       <input
-        value={
-          search
-        }
-        onChange={(
-          e
-        ) =>
+        value={search}
+        onChange={(e) =>
           setSearch(
-            e.target
-              .value
+            e.target.value
           )
         }
         placeholder="Search listings..."
@@ -192,15 +249,32 @@ export default function AdminListingsPage() {
           w-full
           rounded-2xl
           border
+          border-slate-200
           px-5
         "
       />
 
+      {/* EMPTY */}
+
+      {filtered.length ===
+        0 && (
+        <div
+          className="
+            rounded-3xl
+            bg-white/70
+            p-8
+            text-center
+          "
+        >
+          No listings found.
+        </div>
+      )}
+
+      {/* LIST */}
+
       <div className="grid gap-6">
         {filtered.map(
-          (
-            listing
-          ) => (
+          (listing) => (
             <div
               key={
                 listing.id
@@ -208,31 +282,54 @@ export default function AdminListingsPage() {
               className="
                 rounded-3xl
                 bg-white/70
-                p-8
+                p-5
+                md:p-8
               "
             >
-              <h2 className="text-2xl font-black">
+              <h2
+                className="
+                  text-xl
+                  font-black
+                  md:text-2xl
+                "
+              >
                 {
                   listing.title
                 }
               </h2>
 
-              <p className="mt-2 text-slate-500">
-                Owner:
-                {" "}
+              <p
+                className="
+                  mt-2
+                  text-slate-500
+                "
+              >
+                Owner:{" "}
                 {
                   listing
-                    .user
-                    .name
+                    .user.name
                 }
               </p>
 
-              <div className="mt-5 flex gap-3">
+              <div
+                className="
+                  mt-5
+
+                  flex
+                  flex-col
+                  gap-2
+
+                  text-sm
+                  text-slate-600
+
+                  sm:flex-row
+                  sm:flex-wrap
+                  sm:gap-4
+                "
+              >
                 <span>
-                  Rs.
-                  {
-                    listing.price
-                  }
+                  Rs.{" "}
+                  {listing.price.toLocaleString()}
                 </span>
 
                 <span>
@@ -242,7 +339,17 @@ export default function AdminListingsPage() {
                 </span>
               </div>
 
-              <div className="mt-8 flex gap-4">
+              <div
+                className="
+                  mt-8
+
+                  flex
+                  flex-col
+                  gap-3
+
+                  sm:flex-row
+                "
+              >
                 <Link
                   href={`/marketplace/${listing.id}`}
                   className="
@@ -250,6 +357,7 @@ export default function AdminListingsPage() {
                     border
                     px-5
                     py-3
+                    text-center
                   "
                 >
                   View

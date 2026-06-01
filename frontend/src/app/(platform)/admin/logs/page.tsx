@@ -27,50 +27,44 @@ export default function AdminLogsPage() {
   const [
     logs,
     setLogs,
-  ] =
-    useState<
-      Log[]
-    >([]);
+  ] = useState<Log[]>([]);
 
   const [
     loading,
     setLoading,
-  ] =
-    useState(
-      true
-    );
+  ] = useState(true);
+
+  const [
+    error,
+    setError,
+  ] = useState(false);
 
   async function load() {
     try {
-      setLoading(
-        true
-      );
+      setLoading(true);
+      setError(false);
 
       const response =
         await fetch(
           "/api/admin/logs"
         );
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
         throw new Error();
       }
 
       const data =
         await response.json();
 
-      setLogs(
-        data
-      );
+      setLogs(data);
     } catch {
+      setError(true);
+
       toast.error(
         "Failed to load logs"
       );
     } finally {
-      setLoading(
-        false
-      );
+      setLoading(false);
     }
   }
 
@@ -78,68 +72,159 @@ export default function AdminLogsPage() {
     load();
   }, []);
 
-  if (
-    loading
-  ) {
+  if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        Loading logs...
+      <div className="space-y-5">
+        {Array.from({
+          length: 5,
+        }).map((_, i) => (
+          <div
+            key={i}
+            className="
+              h-32
+              animate-pulse
+              rounded-3xl
+              bg-white/70
+            "
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="
+          rounded-3xl
+          bg-white/70
+          p-6
+        "
+      >
+        <h2
+          className="
+            text-xl
+            font-bold
+            text-red-600
+          "
+        >
+          Failed to load logs
+        </h2>
+
+        <button
+          onClick={load}
+          className="
+            mt-4
+            rounded-2xl
+            bg-blue-600
+            px-5
+            py-3
+            text-white
+          "
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-8">
+      {/* HEADER */}
+
       <div>
-        <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
+        <h1
+          className="
+            text-3xl
+            font-black
+            sm:text-4xl
+            md:text-5xl
+          "
+        >
           Audit Logs
         </h1>
 
-        <p className="mt-3 text-slate-600">
+        <p
+          className="
+            mt-3
+            text-slate-600
+          "
+        >
           Track platform activity
         </p>
       </div>
 
+      {/* EMPTY */}
+
       {logs.length ===
         0 && (
-        <div className="rounded-3xl bg-white/70 p-12 text-center">
-          No logs
+        <div
+          className="
+            rounded-3xl
+            bg-white/70
+            p-8
+            text-center
+            md:p-12
+          "
+        >
+          No logs found.
         </div>
       )}
 
+      {/* LOGS */}
+
       <div className="space-y-5">
         {logs.map(
-          (
-            log
-          ) => (
+          (log) => (
             <div
-              key={
-                log.id
-              }
+              key={log.id}
               className="
                 rounded-3xl
                 bg-white/70
-                p-8
+                p-5
+                md:p-8
               "
             >
-              <h2 className="text-xl font-black">
-                {
-                  log.action
-                }
+              <h2
+                className="
+                  break-words
+                  text-lg
+                  font-black
+                  md:text-xl
+                "
+              >
+                {log.action}
               </h2>
 
-              <p className="mt-2 text-slate-500">
-                {
-                  log.user
-                    ?.name
-                }
-              </p>
+              <div
+                className="
+                  mt-4
 
-              <p className="mt-3 text-sm text-slate-400">
-                {new Date(
-                  log.createdAt
-                ).toLocaleString()}
-              </p>
+                  flex
+                  flex-col
+                  gap-2
+
+                  text-sm
+
+                  text-slate-500
+
+                  md:flex-row
+                  md:items-center
+                  md:justify-between
+                "
+              >
+                <span>
+                  {log.user
+                    ?.name ??
+                    "System"}
+                </span>
+
+                <span>
+                  {new Date(
+                    log.createdAt
+                  ).toLocaleString()}
+                </span>
+              </div>
             </div>
           )
         )}
