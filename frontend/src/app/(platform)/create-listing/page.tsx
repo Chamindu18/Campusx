@@ -26,15 +26,10 @@ import {
 } from "@/constants/listing-categories";
 
 import { Button } from "@/components/ui/Button";
-
 import { Card } from "@/components/ui/Card";
-
 import { FormError } from "@/components/ui/FormError";
-
 import { ImageUpload } from "@/components/ui/ImageUpload";
-
 import { Input } from "@/components/ui/Input";
-
 import { Label } from "@/components/ui/Label";
 
 export default function CreateListingPage() {
@@ -108,7 +103,6 @@ export default function CreateListingPage() {
               JSON.stringify(
                 {
                   ...data,
-
                   imageUrls,
                 }
               ),
@@ -168,8 +162,7 @@ export default function CreateListingPage() {
         y: 0,
       }}
       transition={{
-        duration:
-          0.5,
+        duration: 0.5,
       }}
       className="
         mx-auto
@@ -177,6 +170,7 @@ export default function CreateListingPage() {
       "
     >
       {/* HEADER */}
+
       <div>
         <h1
           className="
@@ -187,8 +181,7 @@ export default function CreateListingPage() {
             md:text-5xl
           "
         >
-          Create
-          Listing
+          Create Listing
         </h1>
 
         <p
@@ -198,25 +191,22 @@ export default function CreateListingPage() {
             text-slate-600
           "
         >
-          Publish an
-          item to the
-          campus
-          marketplace.
+          Publish an item to the
+          campus marketplace.
         </p>
       </div>
 
       {/* FORM */}
+
       <Card
         className="
-          mt-12
-
+          mt-10
           border-white/40
-
           bg-white/70
-
-          p-10
-
+          p-5
           backdrop-blur-xl
+          md:mt-12
+          md:p-10
         "
       >
         <form
@@ -226,12 +216,13 @@ export default function CreateListingPage() {
           className="
             space-y-8
           "
+          autoComplete="off"
         >
           {/* TITLE */}
+
           <div>
             <Label htmlFor="title">
-              Listing
-              Title
+              Listing Title
             </Label>
 
             <Input
@@ -245,14 +236,14 @@ export default function CreateListingPage() {
 
             <FormError
               message={
-                errors
-                  .title
+                errors.title
                   ?.message
               }
             />
           </div>
 
           {/* CATEGORY */}
+
           <div>
             <Label htmlFor="category">
               Category
@@ -260,6 +251,7 @@ export default function CreateListingPage() {
 
             <select
               id="category"
+              aria-label="Category"
               {...register(
                 "category"
               )}
@@ -272,18 +264,28 @@ export default function CreateListingPage() {
                 rounded-2xl
 
                 border
-                border-slate-200
+                border-white/15
 
                 bg-white/80
 
                 px-5
 
+                text-slate-900
+
                 outline-none
+
+                transition-all
+                duration-300
+
+                focus:border-blue-400
+                focus:bg-white
+
+                focus:ring-4
+                focus:ring-blue-400/20
               "
             >
               <option value="">
-                Select
-                category
+                Select category
               </option>
 
               {LISTING_CATEGORIES.map(
@@ -316,14 +318,16 @@ export default function CreateListingPage() {
           </div>
 
           {/* PRICE */}
+
           <div>
             <Label htmlFor="price">
-              Price
+              Price (LKR)
             </Label>
 
             <Input
               id="price"
               type="number"
+              min={0}
               step="0.01"
               placeholder="25000"
               className="mt-2"
@@ -334,14 +338,14 @@ export default function CreateListingPage() {
 
             <FormError
               message={
-                errors
-                  .price
+                errors.price
                   ?.message
               }
             />
           </div>
 
           {/* DESCRIPTION */}
+
           <div>
             <Label htmlFor="description">
               Description
@@ -350,10 +354,10 @@ export default function CreateListingPage() {
             <textarea
               id="description"
               rows={6}
+              placeholder="Describe your item..."
               {...register(
                 "description"
               )}
-              placeholder="Describe your item..."
               className="
                 mt-2
 
@@ -362,14 +366,25 @@ export default function CreateListingPage() {
                 rounded-2xl
 
                 border
-                border-slate-200
+                border-white/15
 
                 bg-white/80
 
                 px-5
                 py-4
 
+                text-slate-900
+
                 outline-none
+
+                transition-all
+                duration-300
+
+                focus:border-blue-400
+                focus:bg-white
+
+                focus:ring-4
+                focus:ring-blue-400/20
               "
             />
 
@@ -383,10 +398,22 @@ export default function CreateListingPage() {
           </div>
 
           {/* IMAGES */}
+
           <div>
             <Label>
               Images
             </Label>
+
+            <p
+              className="
+                mt-2
+                text-sm
+                text-slate-500
+              "
+            >
+              Upload clear images
+              of your item.
+            </p>
 
             <div className="mt-4">
               <ImageUpload
@@ -413,6 +440,8 @@ export default function CreateListingPage() {
             </div>
           </div>
 
+          {/* SUBMIT */}
+
           <Button
             type="submit"
             size="lg"
@@ -424,8 +453,9 @@ export default function CreateListingPage() {
               w-full
             "
           >
-            Publish
-            Listing
+            {isSubmitting
+              ? "Publishing..."
+              : "Publish Listing"}
           </Button>
         </form>
       </Card>
