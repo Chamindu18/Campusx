@@ -4,7 +4,10 @@
  * Marketplace page.
  */
 
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   ChevronLeft,
@@ -12,22 +15,25 @@ import {
   Search,
 } from "lucide-react";
 
-import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
+import Link from "next/link";
 
+import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
 import { MarketplaceCardSkeleton } from "@/components/ui/MarketplaceCardSkeleton";
 
 import { useListings } from "@/hooks/use-listings";
 
-import {
-  MARKETPLACE_CATEGORIES,
-} from "@/constants/listing-categories";
+import { MARKETPLACE_CATEGORIES } from "@/constants/listing-categories";
 
-import type {
-  Listing,
-} from "@/hooks/use-listings";
+import type { Listing } from "@/hooks/use-listings";
 
 export default function MarketplacePage() {
   const [search, setSearch] =
+    useState("");
+
+  const [
+    debouncedSearch,
+    setDebouncedSearch,
+  ] =
     useState("");
 
   const [
@@ -42,20 +48,39 @@ export default function MarketplacePage() {
   ] =
     useState(1);
 
+  useEffect(() => {
+    const timer =
+      setTimeout(() => {
+        setDebouncedSearch(
+          search
+        );
+      }, 400);
+
+    return () =>
+      clearTimeout(timer);
+  }, [search]);
+
   const {
     listings,
     pagination,
     isLoading,
   } =
     useListings({
-      search,
+      search:
+        debouncedSearch,
       category,
       page,
     });
 
+  const totalResults =
+    pagination
+      ?.totalListings ??
+    listings.length;
+
   return (
     <div>
       {/* HEADER */}
+
       <div>
         <h1
           className="
@@ -63,6 +88,7 @@ export default function MarketplacePage() {
             font-black
             tracking-tight
             text-slate-900
+
             sm:text-4xl
             md:text-5xl
           "
@@ -81,22 +107,39 @@ export default function MarketplacePage() {
           from your campus
           community.
         </p>
+
+        <p
+          className="
+            mt-3
+            text-sm
+            text-slate-500
+          "
+        >
+          {totalResults} listings
+          found
+        </p>
       </div>
 
       {/* SEARCH */}
+
       <div
         className="
           mt-10
+
           flex
           flex-col
+
           gap-5
         "
       >
         <div
           className="
             flex
+
             h-14
+
             items-center
+
             gap-3
 
             rounded-2xl
@@ -115,14 +158,12 @@ export default function MarketplacePage() {
             className="
               h-5
               w-5
-              text-slate-500
+              text-slate-400
             "
           />
 
           <input
-            value={
-              search
-            }
+            value={search}
             onChange={(
               e
             ) => {
@@ -138,13 +179,18 @@ export default function MarketplacePage() {
             placeholder="Search listings..."
             className="
               w-full
+
               bg-transparent
+
               outline-none
+
+              placeholder:text-slate-400
             "
           />
         </div>
 
         {/* CATEGORIES */}
+
         <div
           className="
             flex
@@ -160,6 +206,7 @@ export default function MarketplacePage() {
                 key={
                   item
                 }
+                type="button"
                 onClick={() => {
                   setCategory(
                     item
@@ -177,9 +224,9 @@ export default function MarketplacePage() {
                       bg-blue-600
                       px-3
                       py-2
+                      text-white
                       sm:px-5
                       sm:py-3
-                      text-white
                     `
                     : `
                       rounded-2xl
@@ -191,14 +238,17 @@ export default function MarketplacePage() {
 
                       px-3
                       py-2
+
+                      transition
+
+                      hover:bg-white
+
                       sm:px-5
                       sm:py-3
                     `
                 }
               >
-                {
-                  item
-                }
+                {item}
               </button>
             )
           )}
@@ -206,13 +256,18 @@ export default function MarketplacePage() {
       </div>
 
       {/* LOADING */}
+
       {isLoading && (
         <div
           className="
             mt-12
+
             grid
+
             grid-cols-1
+
             gap-8
+
             md:grid-cols-2
             xl:grid-cols-3
           "
@@ -235,6 +290,7 @@ export default function MarketplacePage() {
       )}
 
       {/* EMPTY */}
+
       {!isLoading &&
         listings.length ===
           0 && (
@@ -247,19 +303,23 @@ export default function MarketplacePage() {
               border
               border-dashed
 
-              p-16
+              bg-white/50
+
+              p-12
+              md:p-16
 
               text-center
             "
           >
             <h2
               className="
-                text-3xl
+                text-2xl
                 font-black
+
+                md:text-3xl
               "
             >
-              No listings
-              found
+              No listings found
             </h2>
 
             <p
@@ -268,13 +328,36 @@ export default function MarketplacePage() {
                 text-slate-500
               "
             >
-              Try changing
-              filters.
+              Try changing your
+              search or filters.
             </p>
+
+            <Link
+              href="/create-listing"
+              className="
+                mt-6
+
+                inline-flex
+
+                rounded-2xl
+
+                bg-blue-600
+
+                px-6
+                py-3
+
+                font-medium
+
+                text-white
+              "
+            >
+              Create Listing
+            </Link>
           </div>
         )}
 
       {/* GRID */}
+
       {!isLoading &&
         listings.length >
           0 && (
@@ -283,6 +366,7 @@ export default function MarketplacePage() {
               mt-12
 
               grid
+
               gap-8
 
               md:grid-cols-2
@@ -305,6 +389,7 @@ export default function MarketplacePage() {
         )}
 
       {/* PAGINATION */}
+
       {!isLoading &&
         pagination &&
         pagination
@@ -315,12 +400,15 @@ export default function MarketplacePage() {
               mt-16
 
               flex
+
+              items-center
               justify-center
 
               gap-4
             "
           >
             <button
+              type="button"
               disabled={
                 page ===
                 1
@@ -334,11 +422,25 @@ export default function MarketplacePage() {
                     1
                 )
               }
+              className="
+                rounded-xl
+
+                border
+
+                p-3
+
+                disabled:opacity-40
+              "
             >
-              <ChevronLeft />
+              <ChevronLeft className="h-5 w-5" />
             </button>
 
-            <span>
+            <span
+              className="
+                text-sm
+                font-medium
+              "
+            >
               {page}
               {" / "}
               {
@@ -347,6 +449,7 @@ export default function MarketplacePage() {
             </span>
 
             <button
+              type="button"
               disabled={
                 page ===
                 pagination.totalPages
@@ -360,8 +463,17 @@ export default function MarketplacePage() {
                     1
                 )
               }
+              className="
+                rounded-xl
+
+                border
+
+                p-3
+
+                disabled:opacity-40
+              "
             >
-              <ChevronRight />
+              <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         )}
