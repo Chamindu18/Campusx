@@ -663,7 +663,8 @@ export default function DashboardPage() {
                           if (
                             response.ok
                           ) {
-                            window.location.reload();
+                            // TODO: replace with SWR mutate()
+                            location.reload();
                           }
                         }}
                         className="
