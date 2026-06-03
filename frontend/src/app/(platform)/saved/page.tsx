@@ -4,9 +4,12 @@
  * Saved listings page.
  */
 
+import Link from "next/link";
+
 import toast from "react-hot-toast";
 
 import {
+  Heart,
   Trash2,
 } from "lucide-react";
 
@@ -17,10 +20,6 @@ import {
 import {
   MarketplaceCard,
 } from "@/components/ui/MarketplaceCard";
-
-/* ===================================================== */
-/* TYPES */
-/* ===================================================== */
 
 interface SavedListing {
   id: string;
@@ -42,24 +41,13 @@ interface SavedListing {
   };
 }
 
-/* ===================================================== */
-/* PAGE */
-/* ===================================================== */
-
 export default function SavedPage() {
-  /**
-   * Saved listings.
-   */
   const {
     savedListings,
     mutate,
     isLoading,
   } =
     useSavedListings();
-
-  /* ===================================================== */
-  /* REMOVE SAVED */
-  /* ===================================================== */
 
   async function handleRemove(
     id: string
@@ -81,7 +69,8 @@ export default function SavedPage() {
         !response.ok
       ) {
         toast.error(
-          result.error
+          result.error ??
+            "Failed to remove listing"
         );
 
         return;
@@ -91,30 +80,37 @@ export default function SavedPage() {
         "Removed from saved"
       );
 
-      mutate();
+      await mutate();
     } catch (
-      error: unknown
+      error
     ) {
       console.error(
         error
       );
 
       toast.error(
-        "Failed to remove"
+        "Failed to remove listing"
       );
     }
   }
-
-  /* ===================================================== */
-  /* LOADING */
-  /* ===================================================== */
 
   if (
     isLoading
   ) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <p className="text-slate-500">
+      <div
+        className="
+          flex
+          h-[60vh]
+          items-center
+          justify-center
+        "
+      >
+        <p
+          className="
+            text-slate-500
+          "
+        >
           Loading saved listings...
         </p>
       </div>
@@ -126,127 +122,235 @@ export default function SavedPage() {
       {/* HEADER */}
 
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+        <h1
+          className="
+            text-3xl
+            font-black
+            tracking-tight
+            text-slate-900
+
+            sm:text-4xl
+            md:text-5xl
+          "
+        >
           Saved Listings
         </h1>
 
-        <p className="mt-4 text-lg text-slate-600">
+        <p
+          className="
+            mt-4
+            text-lg
+            text-slate-600
+          "
+        >
           Your wishlist and bookmarked
           marketplace items.
         </p>
+
+        <p
+          className="
+            mt-3
+            text-sm
+            text-slate-500
+          "
+        >
+          {savedListings.length} saved
+          {savedListings.length ===
+          1
+            ? " listing"
+            : " listings"}
+        </p>
       </div>
 
-      {/* EMPTY */}
+      {/* EMPTY STATE */}
 
       {savedListings.length ===
         0 && (
         <div
           className="
             mt-16
+
             rounded-3xl
+
             border
             border-dashed
             border-slate-300
+
             bg-white/50
-            px-10
-            py-24
+
+            px-6
+            py-16
+
             text-center
+
             backdrop-blur-xl
+
+            md:px-10
+            md:py-24
           "
         >
-          <h3 className="text-3xl font-bold text-slate-900">
+          <Heart
+            className="
+              mx-auto
+              h-12
+              w-12
+              text-slate-400
+            "
+          />
+
+          <h3
+            className="
+              mt-6
+              text-2xl
+              font-bold
+              text-slate-900
+
+              md:text-3xl
+            "
+          >
             No saved listings
           </h3>
 
-          <p className="mt-4 text-slate-500">
-            Save listings from the marketplace.
+          <p
+            className="
+              mt-4
+              text-slate-500
+            "
+          >
+            Save listings from the
+            marketplace to access
+            them quickly later.
           </p>
+
+          <Link
+            href="/marketplace"
+            className="
+              mt-8
+
+              inline-flex
+
+              rounded-2xl
+
+              bg-blue-600
+
+              px-6
+              py-3
+
+              font-medium
+
+              text-white
+
+              transition
+
+              hover:bg-blue-700
+            "
+          >
+            Browse Marketplace
+          </Link>
         </div>
       )}
 
       {/* GRID */}
 
-      <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-        {savedListings.map(
-          (
-            saved:
-              SavedListing
-          ) => (
-            <div
-              key={
-                saved.id
-              }
-              className="relative"
-            >
-              {/* REMOVE */}
+      {savedListings.length >
+        0 && (
+        <div
+          className="
+            mt-12
 
-              <button
-                onClick={() =>
-                  handleRemove(
-                    saved.id
-                  )
-                }
+            grid
+
+            gap-8
+
+            md:grid-cols-2
+            xl:grid-cols-3
+          "
+        >
+          {savedListings.map(
+            (
+              saved: SavedListing
+            ) => (
+              <div
+                key={saved.id}
                 className="
-                  absolute
-                  right-4
-                  top-4
-                  z-30
-                  flex
-                  h-11
-                  w-11
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-red-100
-                  text-red-600
-                  transition
-                  hover:bg-red-200
+                  relative
                 "
               >
-                <Trash2 className="h-5 w-5" />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Remove saved listing"
+                  onClick={() =>
+                    handleRemove(
+                      saved.id
+                    )
+                  }
+                  className="
+                    absolute
+                    right-4
+                    top-4
+                    z-30
 
-              <MarketplaceCard
-                id={
-                  saved
-                    .listing
-                    .id
-                }
-                title={
-                  saved
-                    .listing
-                    .title
-                }
-                category={
-                  saved
-                    .listing
-                    .category
-                }
-                price={
-                  saved
-                    .listing
-                    .price
-                }
-                condition={
-                  saved
-                    .listing
-                    .condition
-                }
-                location={
-                  saved
-                    .listing
-                    .location
-                }
-                imageUrls={
-                  saved
-                    .listing
-                    .imageUrls
-                }
-              />
-            </div>
-          )
-        )}
-      </div>
+                    flex
+
+                    h-11
+                    w-11
+
+                    items-center
+                    justify-center
+
+                    rounded-2xl
+
+                    bg-red-100
+
+                    text-red-600
+
+                    transition
+
+                    hover:bg-red-200
+                  "
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+
+                <MarketplaceCard
+                  id={
+                    saved
+                      .listing.id
+                  }
+                  title={
+                    saved
+                      .listing.title
+                  }
+                  category={
+                    saved
+                      .listing
+                        .category
+                  }
+                  price={
+                    saved
+                      .listing.price
+                  }
+                  condition={
+                    saved
+                      .listing
+                        .condition
+                  }
+                  location={
+                    saved
+                      .listing
+                        .location
+                  }
+                  imageUrls={
+                    saved
+                      .listing
+                        .imageUrls
+                  }
+                />
+              </div>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }
