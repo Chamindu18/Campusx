@@ -41,18 +41,19 @@ interface UserProfile {
   name: string;
 
   university:
-    string | null;
+    | string
+    | null;
 
   bio:
-    string | null;
+    | string
+    | null;
 
   createdAt: string;
 
   listings:
     Listing[];
 
-  dorms:
-    Dorm[];
+  dorms: Dorm[];
 
   _count: {
     listings: number;
@@ -82,17 +83,35 @@ export default function UserProfilePage() {
   ] =
     useState(true);
 
-  /* ===================================================== */
-  /* FETCH USER */
-  /* ===================================================== */
+  const [
+    error,
+    setError,
+  ] =
+    useState(false);
 
   useEffect(() => {
     async function fetchUser() {
       try {
+        setLoading(
+          true
+        );
+
+        setError(
+          false
+        );
+
         const response =
           await fetch(
             `/api/users/${userId}`
           );
+
+        if (
+          !response.ok
+        ) {
+          throw new Error(
+            "Failed to load user"
+          );
+        }
 
         const data =
           await response.json();
@@ -105,6 +124,10 @@ export default function UserProfilePage() {
       ) {
         console.error(
           error
+        );
+
+        setError(
+          true
         );
       } finally {
         setLoading(
@@ -120,30 +143,85 @@ export default function UserProfilePage() {
     }
   }, [userId]);
 
-  /* ===================================================== */
-  /* LOADING */
-  /* ===================================================== */
-
   if (
     loading
   ) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <p className="text-slate-500">
+      <div
+        className="
+          flex
+          h-[60vh]
+          items-center
+          justify-center
+        "
+      >
+        <p
+          className="
+            text-slate-500
+          "
+        >
           Loading profile...
         </p>
       </div>
     );
   }
 
-  /* ===================================================== */
-  /* NOT FOUND */
-  /* ===================================================== */
+  if (error) {
+    return (
+      <div
+        className="
+          flex
+          h-[60vh]
+          items-center
+          justify-center
+        "
+      >
+        <div
+          className="
+            rounded-3xl
+            bg-white/70
+            p-8
+            text-center
+          "
+        >
+          <h2
+            className="
+              text-2xl
+              font-bold
+            "
+          >
+            Failed to load user
+          </h2>
+
+          <p
+            className="
+              mt-3
+              text-slate-500
+            "
+          >
+            Please try again
+            later.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <p className="text-slate-500">
+      <div
+        className="
+          flex
+          h-[60vh]
+          items-center
+          justify-center
+        "
+      >
+        <p
+          className="
+            text-slate-500
+          "
+        >
           User not found
         </p>
       </div>
@@ -153,8 +231,11 @@ export default function UserProfilePage() {
   const initials =
     user.name
       ?.split(" ")
-      .map((word) =>
-        word[0]?.toUpperCase()
+      .map(
+        (
+          word
+        ) =>
+          word[0]?.toUpperCase()
       )
       .slice(0, 2)
       .join("") || "U";
@@ -165,13 +246,21 @@ export default function UserProfilePage() {
     ).toLocaleDateString(
       "en-US",
       {
-        month: "long",
-        year: "numeric",
+        month:
+          "long",
+        year:
+          "numeric",
       }
     );
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div
+      className="
+        mx-auto
+        max-w-6xl
+        space-y-8
+      "
+    >
       {/* HERO */}
 
       <Card className="overflow-hidden">
@@ -181,44 +270,83 @@ export default function UserProfilePage() {
             from-blue-600
             via-indigo-600
             to-purple-600
-            px-8
-            py-14
+
+            px-5
+            py-10
+
             text-white
+
+            md:px-8
+            md:py-14
           "
         >
-          <div className="flex flex-col items-center text-center">
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              text-center
+            "
+          >
             <div
               className="
                 flex
-                h-32
-                w-32
+
+                h-24
+                w-24
+
                 items-center
                 justify-center
+
                 rounded-full
+
                 border-4
                 border-white/30
+
                 bg-white/20
-                text-4xl
+
+                text-3xl
                 font-black
+
                 backdrop-blur
+
+                md:h-32
+                md:w-32
+                md:text-4xl
               "
             >
               {initials}
             </div>
 
-            <h1 className="mt-6 text-5xl font-black">
+            <h1
+              className="
+                mt-6
+
+                break-words
+
+                text-3xl
+                font-black
+
+                md:text-5xl
+              "
+            >
               {user.name}
             </h1>
 
             <div
               className="
                 mt-4
+
                 rounded-full
+
                 bg-white/20
+
                 px-4
                 py-2
+
                 text-sm
                 font-semibold
+
                 backdrop-blur
               "
             >
@@ -226,9 +354,16 @@ export default function UserProfilePage() {
                 "University not specified"}
             </div>
 
-            <p className="mt-4 text-white/80">
+            <p
+              className="
+                mt-4
+                text-white/80
+              "
+            >
               Member since{" "}
-              {joinedDate}
+              {
+                joinedDate
+              }
             </p>
           </div>
         </div>
@@ -236,13 +371,37 @@ export default function UserProfilePage() {
 
       {/* STATS */}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div
+        className="
+          grid
+          gap-6
+
+          md:grid-cols-3
+        "
+      >
         <Card className="p-6 text-center">
-          <h3 className="text-sm font-semibold text-slate-500">
+          <h3
+            className="
+              text-sm
+              font-semibold
+              text-slate-500
+            "
+          >
             Marketplace Listings
           </h3>
 
-          <p className="mt-3 text-3xl font-black text-blue-600 sm:text-4xl">
+          <p
+            className="
+              mt-3
+
+              text-3xl
+              font-black
+
+              text-blue-600
+
+              sm:text-4xl
+            "
+          >
             {
               user._count
                 .listings
@@ -251,11 +410,28 @@ export default function UserProfilePage() {
         </Card>
 
         <Card className="p-6 text-center">
-          <h3 className="text-sm font-semibold text-slate-500">
+          <h3
+            className="
+              text-sm
+              font-semibold
+              text-slate-500
+            "
+          >
             Dorm Listings
           </h3>
 
-          <p className="mt-3 text-3xl font-black text-indigo-600 sm:text-4xl">
+          <p
+            className="
+              mt-3
+
+              text-3xl
+              font-black
+
+              text-indigo-600
+
+              sm:text-4xl
+            "
+          >
             {
               user._count
                 .dorms
@@ -264,11 +440,26 @@ export default function UserProfilePage() {
         </Card>
 
         <Card className="p-6 text-center">
-          <h3 className="text-sm font-semibold text-slate-500">
+          <h3
+            className="
+              text-sm
+              font-semibold
+              text-slate-500
+            "
+          >
             Status
           </h3>
 
-          <p className="mt-3 text-lg font-bold text-green-600">
+          <p
+            className="
+              mt-3
+
+              text-lg
+              font-bold
+
+              text-green-600
+            "
+          >
             Active Member
           </p>
         </Card>
@@ -276,12 +467,33 @@ export default function UserProfilePage() {
 
       {/* ABOUT */}
 
-      <Card className="p-8">
-        <h2 className="text-2xl font-black text-slate-900">
+      <Card
+        className="
+          p-5
+          md:p-8
+        "
+      >
+        <h2
+          className="
+            text-2xl
+            font-black
+            text-slate-900
+          "
+        >
           About
         </h2>
 
-        <p className="mt-6 leading-relaxed text-slate-600">
+        <p
+          className="
+            mt-6
+
+            break-words
+
+            leading-relaxed
+
+            text-slate-600
+          "
+        >
           {user.bio?.trim()
             ? user.bio
             : "This user has not added a bio yet."}
@@ -291,19 +503,45 @@ export default function UserProfilePage() {
       {/* LISTINGS */}
 
       <div>
-        <h2 className="text-3xl font-black text-slate-900">
+        <h2
+          className="
+            text-3xl
+            font-black
+            text-slate-900
+          "
+        >
           Recent Listings
         </h2>
 
         {user.listings.length ===
         0 ? (
-          <Card className="mt-6 p-8 text-center">
-            <p className="text-slate-500">
+          <Card
+            className="
+              mt-6
+              p-8
+              text-center
+            "
+          >
+            <p
+              className="
+                text-slate-500
+              "
+            >
               No listings yet.
             </p>
           </Card>
         ) : (
-          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div
+            className="
+              mt-6
+
+              grid
+              gap-6
+
+              md:grid-cols-2
+              xl:grid-cols-3
+            "
+          >
             {user.listings.map(
               (
                 listing
@@ -314,14 +552,35 @@ export default function UserProfilePage() {
                   }
                   href={`/marketplace/${listing.id}`}
                 >
-                  <Card className="p-6 transition hover:-translate-y-1 hover:shadow-lg">
-                    <h3 className="text-xl font-bold text-slate-900">
+                  <Card
+                    className="
+                      p-6
+                      transition
+                      hover:-translate-y-1
+                      hover:shadow-lg
+                    "
+                  >
+                    <h3
+                      className="
+                        line-clamp-2
+
+                        text-xl
+                        font-bold
+
+                        text-slate-900
+                      "
+                    >
                       {
                         listing.title
                       }
                     </h3>
 
-                    <p className="mt-3 text-slate-500">
+                    <p
+                      className="
+                        mt-3
+                        text-slate-500
+                      "
+                    >
                       LKR{" "}
                       {listing.price.toLocaleString()}
                     </p>
@@ -336,19 +595,46 @@ export default function UserProfilePage() {
       {/* DORMS */}
 
       <div>
-        <h2 className="text-3xl font-black text-slate-900">
+        <h2
+          className="
+            text-3xl
+            font-black
+            text-slate-900
+          "
+        >
           Recent Dorms
         </h2>
 
         {user.dorms.length ===
         0 ? (
-          <Card className="mt-6 p-8 text-center">
-            <p className="text-slate-500">
-              No dorm listings yet.
+          <Card
+            className="
+              mt-6
+              p-8
+              text-center
+            "
+          >
+            <p
+              className="
+                text-slate-500
+              "
+            >
+              No dorm listings
+              yet.
             </p>
           </Card>
         ) : (
-          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div
+            className="
+              mt-6
+
+              grid
+              gap-6
+
+              md:grid-cols-2
+              xl:grid-cols-3
+            "
+          >
             {user.dorms.map(
               (
                 dorm
@@ -359,8 +645,24 @@ export default function UserProfilePage() {
                   }
                   href={`/dorms/${dorm.id}`}
                 >
-                  <Card className="p-6 transition hover:-translate-y-1 hover:shadow-lg">
-                    <h3 className="text-xl font-bold text-slate-900">
+                  <Card
+                    className="
+                      p-6
+                      transition
+                      hover:-translate-y-1
+                      hover:shadow-lg
+                    "
+                  >
+                    <h3
+                      className="
+                        line-clamp-2
+
+                        text-xl
+                        font-bold
+
+                        text-slate-900
+                      "
+                    >
                       {
                         dorm.title
                       }
