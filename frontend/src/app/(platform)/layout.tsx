@@ -35,23 +35,14 @@ interface PlatformLayoutProps {
 export default function PlatformLayout({
   children,
 }: PlatformLayoutProps) {
-  /**
-   * Current route.
-   */
   const pathname =
     usePathname();
 
-  /**
-   * Admin route.
-   */
   const isAdmin =
     pathname.startsWith(
       "/admin"
     );
 
-  /**
-   * Mobile sidebar.
-   */
   const [
     sidebarOpen,
     setSidebarOpen,
@@ -61,15 +52,31 @@ export default function PlatformLayout({
     );
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-50">
+    <main
+      className="
+        relative
+        min-h-screen
+        overflow-hidden
+        bg-slate-50
+      "
+    >
       {/* BACKGROUND */}
 
       <AnimatedBackground />
 
-      {/* ADMIN LAYOUT */}
+      {/* ADMIN */}
 
       {isAdmin ? (
-        <div className="relative z-10 p-4 md:p-6 lg:p-10">
+        <div
+          className="
+            relative
+            z-10
+
+            p-4
+            md:p-6
+            lg:p-10
+          "
+        >
           {children}
         </div>
       ) : (
@@ -77,7 +84,9 @@ export default function PlatformLayout({
           {/* MOBILE OVERLAY */}
 
           {sidebarOpen && (
-            <div
+            <button
+              type="button"
+              aria-label="Close sidebar"
               onClick={() =>
                 setSidebarOpen(
                   false
@@ -87,14 +96,17 @@ export default function PlatformLayout({
                 fixed
                 inset-0
                 z-40
+
                 bg-black/40
+
                 backdrop-blur-sm
+
                 lg:hidden
               "
             />
           )}
 
-          {/* USER SIDEBAR */}
+          {/* SIDEBAR */}
 
           <div
             className={`
@@ -102,23 +114,33 @@ export default function PlatformLayout({
               left-0
               top-0
               z-50
-              h-full
+
+              h-screen
+
               transition-transform
               duration-300
+
               ${
                 sidebarOpen
                   ? "translate-x-0"
                   : "-translate-x-full"
               }
+
               lg:translate-x-0
             `}
           >
             <Sidebar />
           </div>
 
-          {/* CONTENT */}
+          {/* MAIN CONTENT */}
 
-          <div className="lg:ml-[280px]">
+          <div
+            className="
+              min-h-screen
+
+              lg:ml-[280px]
+            "
+          >
             <Topbar
               onMenuClick={() =>
                 setSidebarOpen(
@@ -127,7 +149,16 @@ export default function PlatformLayout({
               }
             />
 
-            <div className="relative z-10 p-4 md:p-6 lg:p-10">
+            <div
+              className="
+                relative
+                z-10
+
+                p-4
+                md:p-6
+                lg:p-10
+              "
+            >
               {children}
             </div>
           </div>
