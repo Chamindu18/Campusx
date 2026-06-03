@@ -6,6 +6,7 @@
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -36,7 +37,6 @@ import {
 
 interface User {
   id: string;
-
   name: string;
 }
 
@@ -46,17 +46,13 @@ interface Participant {
 
 interface ChatMessage {
   id: string;
-
   content: string;
-
   user: User;
 }
 
 interface Conversation {
   id: string;
-
   participants: Participant[];
-
   messages: ChatMessage[];
 }
 
@@ -73,9 +69,7 @@ const conversationsFetcher =
     const response =
       await fetch(url);
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
       throw new Error(
         "Failed to fetch conversations"
       );
@@ -93,9 +87,7 @@ const messagesFetcher =
     const response =
       await fetch(url);
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
       throw new Error(
         "Failed to fetch messages"
       );
@@ -109,15 +101,9 @@ const messagesFetcher =
 /* ===================================================== */
 
 export default function MessagesPage() {
-  /**
-   * Current user.
-   */
   const { user } =
     useCurrentUser();
 
-  /**
-   * Search params.
-   */
   const searchParams =
     useSearchParams();
 
@@ -126,20 +112,12 @@ export default function MessagesPage() {
       "conversationId"
     );
 
-  /**
-   * Mobile chat mode.
-   */
   const [
     mobileChatOpen,
     setMobileChatOpen,
   ] =
-    useState(
-      false
-    );
+    useState(false);
 
-  /**
-   * Active conversation.
-   */
   const [
     activeConversation,
     setActiveConversation,
@@ -148,14 +126,16 @@ export default function MessagesPage() {
       null
     );
 
-  /**
-   * Input state.
-   */
   const [
     content,
     setContent,
   ] =
     useState("");
+
+  const messagesEndRef =
+    useRef<HTMLDivElement>(
+      null
+    );
 
   /* ===================================================== */
   /* CONVERSATIONS */
@@ -166,6 +146,8 @@ export default function MessagesPage() {
       conversations = [],
     mutate:
       mutateConversations,
+    error:
+      conversationsError,
   } = useSWR<
     Conversation[]
   >(
@@ -218,8 +200,10 @@ export default function MessagesPage() {
 
   const {
     data:
-      messages,
+      messages = [],
     mutate,
+    error:
+      messagesError,
     isLoading:
       messagesLoading,
   } = useSWR<
@@ -234,6 +218,19 @@ export default function MessagesPage() {
         2000,
     }
   );
+
+  /* ===================================================== */
+  /* AUTO SCROLL */
+  /* ===================================================== */
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView(
+      {
+        behavior:
+          "smooth",
+      }
+    );
+  }, [messages]);
 
   /* ===================================================== */
   /* SEND MESSAGE */
@@ -263,8 +260,8 @@ export default function MessagesPage() {
             body:
               JSON.stringify(
                 {
-                  content,
-
+                  content:
+                    content.trim(),
                   conversationId:
                     activeConversation,
                 }
@@ -288,11 +285,11 @@ export default function MessagesPage() {
 
       setContent("");
 
-      mutate();
+      await mutate();
 
-      mutateConversations();
+      await mutateConversations();
     } catch (
-      error: unknown
+      error
     ) {
       console.error(
         error
@@ -312,7 +309,7 @@ export default function MessagesPage() {
     conversation: Conversation
   ) {
     const otherParticipant =
-      conversation?.participants?.find(
+      conversation.participants.find(
         (
           participant
         ) =>
@@ -341,16 +338,58 @@ export default function MessagesPage() {
         activeConversation
     );
 
+  /* ===================================================== */
+  /* ERROR STATE */
+  /* ===================================================== */
+
+  if (
+    conversationsError
+  ) {
+    return (
+      <div
+        className="
+          flex
+          min-h-[60vh]
+          items-center
+          justify-center
+        "
+      >
+        <div
+          className="
+            rounded-3xl
+            bg-white
+            p-8
+            text-center
+          "
+        >
+          <h2
+            className="
+              text-2xl
+              font-bold
+            "
+          >
+            Failed to load conversations
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="
         flex
         min-h-[calc(100vh-140px)]
+
         overflow-hidden
+
         rounded-[32px]
+
         border
         border-white/40
+
         bg-white/70
+
         backdrop-blur-xl
       "
     >
@@ -366,32 +405,67 @@ export default function MessagesPage() {
 
           w-full
           flex-col
+
           border-r
           border-slate-200
+
           bg-white/50
 
           lg:w-[340px]
         `}
       >
-        {/* HEADER */}
-
-        <div className="border-b border-slate-200 px-6 py-6">
-          <h1 className="text-3xl font-black text-slate-900">
+        <div
+          className="
+            border-b
+            border-slate-200
+            px-6
+            py-6
+          "
+        >
+          <h1
+            className="
+              text-3xl
+              font-black
+              text-slate-900
+            "
+          >
             Messages
           </h1>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p
+            className="
+              mt-2
+              text-sm
+              text-slate-500
+            "
+          >
             Private conversations
           </p>
         </div>
 
-        {/* CONVERSATIONS */}
-
-        <div className="flex-1 space-y-2 overflow-y-auto p-4">
+        <div
+          className="
+            flex-1
+            space-y-2
+            overflow-y-auto
+            p-4
+          "
+        >
           {conversations.length ===
             0 && (
-            <div className="px-4 py-16 text-center">
-              <p className="text-sm text-slate-500">
+            <div
+              className="
+                px-4
+                py-16
+                text-center
+              "
+            >
+              <p
+                className="
+                  text-sm
+                  text-slate-500
+                "
+              >
                 No conversations yet
               </p>
             </div>
@@ -405,6 +479,7 @@ export default function MessagesPage() {
                 key={
                   conversation.id
                 }
+                type="button"
                 onClick={() => {
                   setActiveConversation(
                     conversation.id
@@ -416,10 +491,14 @@ export default function MessagesPage() {
                 }}
                 className={`
                   w-full
+
                   rounded-2xl
+
                   px-5
                   py-4
+
                   text-left
+
                   transition
 
                   ${
@@ -430,30 +509,34 @@ export default function MessagesPage() {
                   }
                 `}
               >
-                <h3 className="font-semibold">
+                <h3
+                  className="
+                    truncate
+                    font-semibold
+                  "
+                >
                   {getConversationName(
                     conversation
                   )}
                 </h3>
 
                 <p
-                  className={`
-                    mt-1
-                    line-clamp-1
+                  className="
+                    mt-2
+                    truncate
                     text-sm
-
-                    ${
-                      activeConversation ===
-                      conversation.id
-                        ? "text-blue-100"
-                        : "text-slate-500"
-                    }
-                  `}
+                    opacity-80
+                  "
                 >
-                  {conversation
-                    ?.messages?.[0]
-                    ?.content ||
-                    "Start chatting"}
+                  {
+                    conversation
+                      .messages?.[
+                      conversation
+                        .messages
+                        .length -
+                        1
+                    ]?.content
+                  }
                 </p>
               </button>
             )
@@ -461,7 +544,7 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      {/* CHAT AREA */}
+      {/* CHAT */}
 
       <div
         className={`
@@ -482,17 +565,16 @@ export default function MessagesPage() {
             flex
             items-center
             gap-4
+
             border-b
             border-slate-200
+
             px-5
             py-5
-            lg:px-8
-            lg:py-6
           "
         >
-          {/* MOBILE BACK */}
-
           <button
+            type="button"
             onClick={() =>
               setMobileChatOpen(
                 false
@@ -506,20 +588,27 @@ export default function MessagesPage() {
               justify-center
               rounded-xl
               bg-slate-100
-              text-slate-700
+
               lg:hidden
             "
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
 
-          <h2 className="text-xl font-black text-slate-900 lg:text-2xl">
-            {currentConversation
-              ? getConversationName(
-                  currentConversation
-                )
-              : "Messages"}
-          </h2>
+          <div>
+            <h2
+              className="
+                font-bold
+                text-slate-900
+              "
+            >
+              {currentConversation
+                ? getConversationName(
+                    currentConversation
+                  )
+                : "Conversation"}
+            </h2>
+          </div>
         </div>
 
         {/* MESSAGES */}
@@ -527,156 +616,160 @@ export default function MessagesPage() {
         <div
           className="
             flex-1
-            space-y-6
             overflow-y-auto
-            px-4
-            py-6
-            lg:px-8
-            lg:py-8
+            p-5
           "
         >
-          {!activeConversation && (
-            <div className="flex h-full items-center justify-center">
-              <p className="text-slate-500">
-                Select a conversation
-              </p>
-            </div>
-          )}
-
           {messagesLoading ? (
             <MessageSkeleton />
-          ) : messages?.length ===
-            0 ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-slate-900">
-                  No messages yet
-                </h3>
-
-                <p className="mt-3 text-slate-500">
-                  Start the conversation by sending a message.
-                </p>
-              </div>
+          ) : messagesError ? (
+            <div
+              className="
+                text-center
+                text-red-500
+              "
+            >
+              Failed to load messages
             </div>
           ) : (
-            messages?.map(
-              (
-                message
-              ) => {
-                const isCurrentUser =
-                  user?.id ===
-                  message.user.id;
+            <div className="space-y-4">
+              {messages.map(
+                (
+                  message
+                ) => {
+                  const isOwn =
+                    message.user
+                      .id ===
+                    user?.id;
 
-                return (
-                  <div
-                    key={
-                      message.id
-                    }
-                    className={`flex ${
-                      isCurrentUser
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
+                  return (
                     <div
-                      className={`
-                        max-w-[90%]
-                        rounded-3xl
-                        px-5
-                        py-4
-                        lg:max-w-[75%]
-
-                        ${
-                          isCurrentUser
-                            ? "bg-blue-600 text-white"
-                            : "bg-slate-100 text-slate-900"
-                        }
-                      `}
+                      key={
+                        message.id
+                      }
+                      className={`flex ${
+                        isOwn
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
                     >
-                      <p className="text-xs font-bold opacity-70">
-                        {
-                          message.user
-                            .name
-                        }
-                      </p>
+                      <div
+                        className={`
+                          max-w-[85%]
+                          rounded-3xl
+                          px-5
+                          py-4
 
-                      <p className="mt-2 break-words leading-7">
-                        {
-                          message.content
-                        }
-                      </p>
+                          ${
+                            isOwn
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-100 text-slate-900"
+                          }
+                        `}
+                      >
+                        <p
+                          className="
+                            break-words
+                          "
+                        >
+                          {
+                            message.content
+                          }
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              }
-            )
+                  );
+                }
+              )}
+
+              <div
+                ref={
+                  messagesEndRef
+                }
+              />
+            </div>
           )}
         </div>
 
         {/* INPUT */}
 
-        {activeConversation && (
-          <div className="border-t border-slate-200 p-4 lg:p-6">
-            <div className="flex items-center gap-3 lg:gap-4">
-              <input
-                value={
-                  content
-                }
-                onChange={(
-                  e
-                ) =>
-                  setContent(
-                    e.target
-                      .value
-                  )
-                }
-                onKeyDown={(
-                  e
-                ) => {
-                  if (
-                    e.key ===
-                    "Enter"
-                  ) {
-                    handleSend();
-                  }
-                }}
-                placeholder="Type a message..."
-                className="
-                  h-14
-                  flex-1
-                  rounded-2xl
-                  border
-                  border-slate-200
-                  bg-white
-                  px-5
-                  text-sm
-                  outline-none
-                "
-              />
+        <div
+          className="
+            border-t
+            border-slate-200
 
-              <button
-                onClick={
-                  handleSend
+            p-4
+          "
+        >
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+            "
+          >
+            <input
+              value={
+                content
+              }
+              onChange={(
+                e
+              ) =>
+                setContent(
+                  e.target
+                    .value
+                )
+              }
+              onKeyDown={(
+                e
+              ) => {
+                if (
+                  e.key ===
+                  "Enter"
+                ) {
+                  handleSend();
                 }
-                className="
-                  flex
-                  h-14
-                  w-14
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-blue-600
-                  text-white
-                  transition
-                  hover:bg-blue-700
-                "
-              >
-                <Send className="h-5 w-5" />
-              </button>
-            </div>
+              }}
+              placeholder="Type a message..."
+              className="
+                h-14
+                flex-1
+
+                rounded-2xl
+
+                border
+                border-slate-200
+
+                px-5
+
+                outline-none
+              "
+            />
+
+            <button
+              type="button"
+              onClick={
+                handleSend
+              }
+              className="
+                flex
+                h-14
+                w-14
+
+                items-center
+                justify-center
+
+                rounded-2xl
+
+                bg-blue-600
+
+                text-white
+              "
+            >
+              <Send className="h-5 w-5" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
