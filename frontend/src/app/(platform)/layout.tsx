@@ -62,7 +62,7 @@ export default function PlatformLayout({
     >
       {/* BACKGROUND */}
 
-      <AnimatedBackground />
+      {/*<AnimatedBackground />*/}
 
       {/* ADMIN */}
 
