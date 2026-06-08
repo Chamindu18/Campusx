@@ -51,7 +51,7 @@ const protectedRoutes = [
 const authRoutes = [
   "/login",
 
-  "/register",
+  "/signup",
 ];
 
 /* ===================================================== */
@@ -229,7 +229,7 @@ export const config = {
   matcher: [
     "/login",
 
-    "/register",
+    "/signup",
 
     "/dashboard/:path*",
 
