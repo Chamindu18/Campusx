@@ -23,16 +23,14 @@ export async function PATCH(
   }
 ) {
   try {
-    /**
-     * Current user.
-     */
     const currentUser =
       await getCurrentUser();
 
     if (!currentUser) {
       return NextResponse.json(
         {
-          error: "Unauthorized",
+          error:
+            "Unauthorized",
         },
         {
           status: 401,
@@ -40,15 +38,47 @@ export async function PATCH(
       );
     }
 
-    /**
-     * Params.
-     */
     const resolvedParams =
       await params;
 
-    /**
-     * Update notification.
-     */
+    const existingNotification =
+      await prisma.notification.findUnique(
+        {
+          where: {
+            id: resolvedParams.id,
+          },
+        }
+      );
+
+    if (
+      !existingNotification
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Notification not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    if (
+      existingNotification.userId !==
+      currentUser.id
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Forbidden",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
     const notification =
       await prisma.notification.update(
         {
@@ -65,8 +95,12 @@ export async function PATCH(
     return NextResponse.json(
       notification
     );
-  } catch (error) {
-    console.error(error);
+  } catch (
+    error
+  ) {
+    console.error(
+      error
+    );
 
     return NextResponse.json(
       {
