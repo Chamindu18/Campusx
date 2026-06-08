@@ -388,7 +388,7 @@ export function NotificationBell() {
                     hover:bg-slate-50
 
                     ${
-                      !notification.isRead
+                      !notification.read
                         ? "bg-blue-50/60"
                         : ""
                     }
@@ -409,7 +409,7 @@ export function NotificationBell() {
                       </p>
                     </div>
 
-                    {!notification.isRead && (
+                    {!notification.read && (
                       <div
                         className="
                           mt-2
@@ -452,7 +452,7 @@ export function NotificationBell() {
                     hover:bg-slate-50
 
                     ${
-                      !notification.isRead
+                      !notification.read
                         ? "bg-blue-50/60"
                         : ""
                     }
@@ -473,7 +473,7 @@ export function NotificationBell() {
                       </p>
                     </div>
 
-                    {!notification.isRead && (
+                    {!notification.read && (
                       <div
                         className="
                           mt-2

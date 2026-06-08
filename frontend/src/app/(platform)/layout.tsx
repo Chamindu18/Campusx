@@ -17,10 +17,6 @@ import {
 } from "next/navigation";
 
 import {
-  AnimatedBackground,
-} from "@/components/ui/AnimatedBackground";
-
-import {
   Sidebar,
 } from "@/components/layout/Sidebar";
 
