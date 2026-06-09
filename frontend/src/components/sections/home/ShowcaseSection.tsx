@@ -27,7 +27,7 @@ const items = [
       "/dorms",
 
     image:
-      "/images/showcase/student-dorms.jpg",
+      "/images/showcase/student-dorm.jpg",
   },
 
   {
