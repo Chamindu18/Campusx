@@ -416,12 +416,16 @@ export default function DormsPage() {
             All Genders
           </option>
 
-          <option value="Male">
-            Male
+          <option value="Boys">
+            Boys
           </option>
 
-          <option value="Female">
-            Female
+          <option value="Girls">
+            Girls
+          </option>
+
+          <option value="Mixed">
+            Mixed
           </option>
         </select>
 
