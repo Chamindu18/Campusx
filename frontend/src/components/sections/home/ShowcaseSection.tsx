@@ -27,7 +27,7 @@ const items = [
       "/dorms",
 
     image:
-      "/images/hero/campus-life.jpg",
+      "/images/showcase/student-dorms.jpg",
   },
 
   {
@@ -44,7 +44,7 @@ const items = [
       "/marketplace",
 
     image:
-      "/images/hero/campus-life.jpg",
+      "/images/showcase/marketplace.jpg",
   },
 ];
 
