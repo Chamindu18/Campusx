@@ -10,6 +10,8 @@
 
 A modern full-stack student marketplace and dorm discovery platform designed for university students. Connect with peers, discover accommodation options, buy and sell items, and explore campus community essentials—all in one place.
 
+🌍 **Live Demo**: [campusx-cth6ek3ao-chamindu553-3258s-projects.vercel.app](https://campusx-cth6ek3ao-chamindu553-3258s-projects.vercel.app)
+
 ## Table of Contents
 
 - [Features](#features)
