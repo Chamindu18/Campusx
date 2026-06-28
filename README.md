@@ -146,62 +146,6 @@ A modern full-stack student marketplace and dorm discovery platform designed for
 
 ```
 
-## Project Structure
-
-```
-campusx-frontend/
-├── src/
-│   ├── app/
-│   │   ├── (auth)/                 # Authentication routes (login, signup)
-│   │   ├── (platform)/             # Protected platform routes
-│   │   │   ├── admin/              # Admin dashboard
-│   │   │   ├── create-listing/     # Create marketplace item
-│   │   │   ├── create-dorm/        # Create dorm listing
-│   │   │   ├── dashboard/          # User dashboard
-│   │   │   ├── dorms/              # Dorm discovery page
-│   │   │   ├── marketplace/        # Marketplace listings
-│   │   │   ├── messages/           # Messaging/conversations
-│   │   │   ├── notifications/      # Notifications page
-│   │   │   ├── profile/            # User profile
-│   │   │   ├── saved/              # Saved listings
-│   │   │   ├── settings/           # User settings
-│   │   │   └── users/              # User discovery/management
-│   │   ├── api/
-│   │   │   ├── auth/               # Authentication endpoints
-│   │   │   ├── listings/           # Marketplace API
-│   │   │   ├── dorms/              # Dorm API
-│   │   │   ├── messages/           # Messaging API
-│   │   │   ├── conversations/      # Conversations API
-│   │   │   ├── saved-listings/     # Saved listings API
-│   │   │   ├── notifications/      # Notifications API
-│   │   │   ├── profile/            # Profile API
-│   │   │   ├── reports/            # Reporting API
-│   │   │   ├── uploadthing/        # File upload API
-│   │   │   └── users/              # User management API
-│   │   └── globals.css             # Global styles
-│   ├── components/
-│   │   ├── layout/                 # Layout components
-│   │   ├── sections/               # Page sections (Hero, Features, etc.)
-│   │   └── ui/                     # Reusable UI components
-│   ├── hooks/                      # Custom React hooks
-│   ├── lib/                        # Utility functions and helpers
-│   │   ├── auth.ts                 # Authentication utilities
-│   │   ├── prisma.ts               # Prisma client
-│   │   ├── validations/            # Zod schemas
-│   │   └── utils.ts                # Common utilities
-│   ├── constants/                  # Application constants
-│   └── middleware.ts               # Next.js middleware
-├── prisma/
-│   ├── schema.prisma               # Database schema
-│   └── migrations/                 # Database migrations
-├── public/                         # Static assets
-├── package.json                    # Dependencies
-├── next.config.js                  # Next.js configuration
-├── tailwind.config.js              # Tailwind CSS configuration
-├── tsconfig.json                   # TypeScript configuration
-└── README.md                       # This file
-```
-
 ## Installation
 
 ### Prerequisites
