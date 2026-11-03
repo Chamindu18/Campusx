@@ -1,7 +1,8 @@
 # CampusX
 
 **A full-stack marketplace and dorm discovery platform for university students.**
-Buy and sell items, find dorms, and message other students in one place.
+
+CampusX lets students buy and sell items, discover nearby dorms, communicate through private messaging, save marketplace listings, and report inappropriate listings in one platform.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-campusx--three.vercel.app-000000?style=flat-square&logo=vercel)](https://campusx-three.vercel.app)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
@@ -17,28 +18,48 @@ Buy and sell items, find dorms, and message other students in one place.
 
 ## Features
 
-**Marketplace**
-- Post, edit and delete listings with image uploads
-- Search and filter by category, price and condition
-- Seller profiles and detail pages
+### Marketplace
 
-**Dorm discovery**
-- Browse dorms and filter by university, city, gender type and room type
-- Facilities (WiFi, laundry, kitchen, etc.) and distance from the university
+- Create, edit, and delete marketplace listings
+- Upload up to five images per listing
+- Search listings by title or description
+- Filter listings by category
+- Paginated marketplace results
+- View seller information and listing details
+- Save marketplace listings for later
 
-**Community**
-- Save listings and dorms to a personal saved list
-- Private messaging with conversation history
-- In-app notifications with read/unread status
-- Report inappropriate listings or users, reviewed by admins
+### Dorm discovery
 
-**Accounts and security**
-- Registration and login with JWT authentication
-- Passwords hashed with bcrypt
-- Role-based access (User / Admin)
-- Protected routes and API endpoints
-- Ownership checks so users can only edit their own content
+- Create, edit, and delete dorm listings
+- Browse student accommodation listings
+- Search dorms by title or description
+- Filter by university, city, gender type, room type, and maximum price
+- Sort dorms by newest, lowest price, or highest price
+- View facilities and distance from the selected university
+
+### Messaging and community
+
+- Private conversations between users
+- Conversation history
+- In-app notifications with read/unread state
+- Report inappropriate marketplace listings
+- Admin review and moderation workflows
+
+### Accounts and security
+
+- User registration and login
+- Password hashing with bcrypt
+- JWT-based authentication
+- JWT stored in an HttpOnly authentication cookie
+- Secure cookie enabled automatically in production
+- `SameSite=Lax` cookie policy
+- User and Admin roles
+- Protected application routes and API endpoints
+- Server-side ownership checks for listings and dorms
+- Server-side role checks for administrative operations
 - Request validation with Zod
+- Generic login errors to reduce user-enumeration risk
+- Authenticated UploadThing image uploads
 
 ---
 
@@ -46,78 +67,258 @@ Buy and sell items, find dorms, and message other students in one place.
 
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, Framer Motion |
-| Backend | Next.js API routes (Node.js) |
-| Database | PostgreSQL with Prisma ORM and Prisma Migrations |
-| Auth | JWT (`jsonwebtoken`), `bcryptjs` |
-| Forms and data | React Hook Form, Zod, SWR, Axios |
-| Uploads | UploadThing |
+| Frontend | Next.js 15 App Router, React 19, TypeScript, Tailwind CSS, Framer Motion |
+| Backend | Next.js Route Handlers / API routes running on Node.js |
+| Database | PostgreSQL |
+| ORM | Prisma 6 with Prisma Migrations |
+| Authentication | JWT (`jsonwebtoken`), HttpOnly cookies, `bcryptjs` |
+| Validation | Zod |
+| Forms and data | React Hook Form, SWR, Axios |
+| File uploads | UploadThing |
 | Tooling | ESLint, Prettier |
+| Deployment | Vercel |
+
+---
+
+## Architecture
+
+CampusX uses a single Next.js application for both the frontend and backend API.
+
+```text
+Browser
+   │
+   ▼
+Next.js App Router
+   │
+   ├── UI / React pages
+   │
+   └── API Route Handlers
+           │
+           ├── Authentication / Authorization
+           ├── Zod Validation
+           └── Prisma ORM
+                   │
+                   ▼
+              PostgreSQL
+```
+
+This keeps the frontend and backend in one deployable application while still separating UI, API, validation, authentication, and persistence responsibilities.
 
 ---
 
 ## Key design decisions
 
-- **One Next.js codebase for UI and API.** Pages and API routes live in the same app, so there is one deployment on Vercel and no separate backend to host.
-- **Relational data model with Prisma.** Users, listings, dorms, conversations, messages, saved listings, notifications and reports are separate models linked by relations, so the database enforces integrity (for example, a message always belongs to a conversation).
-- **Zod for validation.** The same approach validates forms on the client and input on the API, so bad data is rejected at the boundary.
-- **Authorization checked on the server.** Role and ownership checks run in the API routes, not just in the UI, so hiding a button is never the only protection.
-- **UploadThing for images.** Image files go to a CDN and only their URLs are stored in the database.
+### Single Next.js codebase
 
-<!-- VERIFY BEFORE PUBLISHING (delete this comment after checking):
-1. Where is the JWT stored: HttpOnly cookie or localStorage? If HttpOnly cookie, add "stored in an HttpOnly cookie" to the Accounts and security list above.
-2. Do list endpoints (listings, dorms) use pagination? If yes, add "Paginated listing endpoints" under Marketplace.
-3. Does schema.prisma contain @@index or @unique constraints? If yes, add "Indexed queries on frequently filtered fields" to the data-model decision.
-4. Do authorization/ownership checks really run in the API routes? Confirm in app/api/listings/[id]/route.ts (or similar).
--->
+The user interface and API routes live in the same Next.js application, allowing CampusX to be deployed as one application on Vercel without a separately hosted backend.
+
+### Server-side authorization
+
+Authorization is not based only on hidden UI controls.
+
+Protected API routes resolve the authenticated user on the server and verify permissions before performing protected operations.
+
+For example:
+
+- A listing can be edited or deleted by its owner or an Admin.
+- A dorm can be edited or deleted by its owner or an Admin.
+- Administrative API routes enforce administrator access separately from the frontend.
+
+This protects against IDOR-style authorization failures where a user attempts to modify another user's resource directly through the API.
+
+### HttpOnly JWT authentication
+
+After successful login, the backend signs a JWT and stores it in an authentication cookie configured with:
+
+- `HttpOnly`
+- `SameSite=Lax`
+- `Secure` in production
+- An explicit maximum age
+
+The token is therefore not stored in browser `localStorage` and is not directly accessible to client-side JavaScript.
+
+### Input validation
+
+Zod schemas validate incoming data before it is used by protected application logic or persisted to the database.
+
+### Relational database design
+
+PostgreSQL and Prisma model the relationships between:
+
+- Users
+- Marketplace listings
+- Dorm listings
+- Conversations
+- Conversation participants
+- Messages
+- Saved listings
+- Notifications
+- Reports
+
+Foreign-key relationships and cascading deletes are used where appropriate.
+
+### Database constraints and indexes
+
+The Prisma schema includes unique constraints and indexes for frequently used relationships and query fields.
+
+Examples include:
+
+- Unique user email addresses
+- Unique user/conversation membership
+- Unique saved listing per user
+- Listing indexes on `userId`, `category`, and `createdAt`
+- Dorm indexes on `userId`, `university`, `city`, `gender`, and `createdAt`
+- Message indexes on conversation and creation time
+- Notification and report indexes
+
+### Image uploads
+
+UploadThing handles image storage.
+
+The upload route requires an authenticated user before accepting marketplace images. The application stores uploaded image URLs rather than binary image data in PostgreSQL.
 
 ---
 
-## Getting started
+## Project structure
 
-### Prerequisites
-- Node.js 18+ and npm
-- A PostgreSQL database
-- An [UploadThing](https://uploadthing.com) account for image uploads
-
-### Setup
-
-```bash
-git clone https://github.com/Chamindu18/Campusx.git
-cd Campusx/frontend
-npm install
-cp .env.example .env.local     # then fill in the values below
-npx prisma migrate deploy
-npm run dev
+```text
+Campusx/
+├── README.md
+└── frontend/
+    ├── prisma/
+    │   ├── migrations/
+    │   └── schema.prisma
+    │
+    ├── public/
+    ├── scripts/
+    ├── src/
+    │   ├── app/
+    │   │   ├── (auth)/
+    │   │   ├── (platform)/
+    │   │   └── api/
+    │   └── lib/
+    │
+    ├── package.json
+    ├── next.config.js
+    ├── tailwind.config.js
+    └── tsconfig.json
 ```
 
-The app runs at `http://localhost:3000`.
+---
 
-<!-- VERIFY: .env.example exists in frontend/. If not, create it with the variable names below (no real values) or remove the cp line. Also check whether "npm run seed" exists in package.json before documenting it. -->
+## Authentication flow
 
-### Environment variables
+```text
+Registration
+     │
+     ▼
+Password hashed with bcrypt
+     │
+     ▼
+User stored in PostgreSQL
+     │
+     ▼
+Login credentials validated
+     │
+     ▼
+JWT signed by server
+     │
+     ▼
+JWT stored in HttpOnly cookie
+     │
+     ▼
+Cookie sent with authenticated requests
+     │
+     ▼
+Server verifies current user
+     │
+     ▼
+Role / ownership authorization
+     │
+     ▼
+Protected operation
+```
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | Secret used to sign tokens (generate with `openssl rand -hex 32`) |
-| `NEXT_PUBLIC_UPLOADTHING_APP_ID` | UploadThing app ID |
-| `UPLOADTHING_SECRET` | UploadThing secret key |
-| `NEXT_PUBLIC_APP_URL` | Base URL of the app, e.g. `http://localhost:3000` |
+---
 
-Never commit `.env.local`.
+## Marketplace authorization flow
 
-### Scripts
+For protected update and delete operations:
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start the development server |
-| `npm run build` / `npm start` | Production build and server |
-| `npm run lint` | Run ESLint |
-| `npx prisma migrate dev` | Create and apply a migration |
-| `npx prisma studio` | Browse the database in a GUI |
+```text
+Request
+   │
+   ▼
+Resolve authenticated user
+   │
+   ├── No user ─────────────► 401 Unauthorized
+   │
+   ▼
+Load requested resource
+   │
+   ├── Missing resource ────► 404 Not Found
+   │
+   ▼
+Check ownership or Admin role
+   │
+   ├── Not permitted ───────► 403 Forbidden
+   │
+   ▼
+Validate request data
+   │
+   ▼
+Perform database operation
+```
 
-<!-- VERIFY: these scripts match "scripts" in frontend/package.json. The old README listed lint:fix and "npx prisma seed" (not a valid command; the real one is "npx prisma db seed"). -->
+---
+
+## Database model highlights
+
+### User
+
+Stores account details and role information and owns related marketplace listings, dorms, messages, saved listings, notifications, reports, and conversation memberships.
+
+### Listing
+
+Represents marketplace items.
+
+Important indexed fields include:
+
+- `userId`
+- `category`
+- `createdAt`
+
+### Dorm
+
+Represents student accommodation listings.
+
+Important indexed fields include:
+
+- `userId`
+- `university`
+- `city`
+- `gender`
+- `createdAt`
+
+### Conversation and Message
+
+Private conversations use a participant table that prevents the same user from being added to the same conversation more than once.
+
+Messages are associated with both a user and a conversation.
+
+### SavedListing
+
+Uses a compound unique constraint on:
+
+```text
+userId + listingId
+```
+
+This prevents the same user from saving the same marketplace listing multiple times.
+
+### Report
+
+Represents reports against marketplace listings and tracks their moderation status.
 
 ---
 
@@ -125,34 +326,184 @@ Never commit `.env.local`.
 
 | Area | Endpoints |
 |---|---|
-| Auth | `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/current-user` |
-| Listings | `GET, POST /api/listings` · `GET, PATCH, DELETE /api/listings/[id]` · `GET /api/my-listings` |
-| Dorms | `GET, POST /api/dorms` · `GET, PATCH, DELETE /api/dorms/[id]` · `GET /api/my-dorms` |
-| Messaging | `GET, POST /api/conversations` · `GET, POST /api/messages` |
-| Saved | `GET, POST /api/saved-listings` · `DELETE /api/saved-listings/[id]` |
-| Users | `GET, PATCH /api/profile` · `GET /api/users` · `GET /api/users/[id]` |
-| Notifications | `GET /api/notifications` · `PATCH /api/notifications/[id]` |
-| Reports | `POST, GET /api/reports` · `PATCH /api/reports/[id]` (admin) |
-| Uploads | `POST /api/uploadthing` |
+| Authentication | `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout` |
+| Current user | `GET /api/current-user` |
+| Listings | `GET, POST /api/listings` · `GET, PATCH, DELETE /api/listings/[id]` |
+| User listings | `GET /api/my-listings` |
+| Dorms | `GET, POST /api/dorms` · `GET, PATCH, DELETE /api/dorms/[id]` |
+| User dorms | `GET /api/my-dorms` |
+| Messaging | Conversation and message API routes |
+| Saved listings | Saved-listing API routes |
+| Profile / users | Profile and user API routes |
+| Notifications | Notification API routes |
+| Reports | Reporting and moderation API routes |
+| Uploads | UploadThing API route |
+| Administration | Admin-specific users, listings, dorms, logs, statistics, and system routes |
 
 ---
 
-## Roadmap
+## Getting started
 
-Things I know are missing and plan to add:
+### Prerequisites
 
-- WebSocket-based live messaging (messages are currently fetched, not pushed)
-- Email verification and password reset
-- Rate limiting on sensitive endpoints and CSRF protection
+- Node.js 18+
+- npm
+- PostgreSQL database
+- UploadThing account / credentials
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Chamindu18/Campusx.git
+cd Campusx/frontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create a local environment file:
+
+```text
+.env.local
+```
+
+At minimum, the application requires configuration for:
+
+```env
+DATABASE_URL="your-postgresql-connection-string"
+JWT_SECRET="your-strong-random-secret"
+```
+
+UploadThing also requires the credentials expected by the installed UploadThing SDK.
+
+Do not commit real credentials or secrets.
+
+The repository's `.gitignore` excludes `.env*` files.
+
+### 4. Prepare the database
+
+For local development:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+For an already prepared production database, Prisma migrations can be applied with:
+
+```bash
+npx prisma migrate deploy
+```
+
+### 5. Run the application
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Available scripts
+
+The current `package.json` defines:
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start the Next.js development server |
+| `npm run build` | Create a production build |
+| `npm start` | Start the production server |
+| `npm run lint` | Run the configured lint command |
+
+Useful Prisma commands include:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+npx prisma migrate deploy
+npx prisma studio
+```
+
+---
+
+## Security considerations
+
+The current implementation includes several important protections:
+
+- Password hashing using bcrypt
+- JWT verification on the server
+- HttpOnly authentication cookies
+- `Secure` cookies in production
+- `SameSite=Lax`
+- Backend ownership checks
+- Backend Admin-role checks
+- Zod request validation
+- Generic invalid-credential responses
+- Authenticated image-upload middleware
+- Database uniqueness constraints
+
+### Planned security improvements
+
+The following are not currently presented as completed features:
+
+- Rate limiting for sensitive endpoints
+- Dedicated CSRF-token protection for state-changing requests
+- Email verification
+- Password-reset workflow
 - Two-factor authentication
-- Ratings and reviews, user blocking, message attachments
-- Caching and further query optimisation
+- Additional abuse-prevention and monitoring controls
+
+---
+
+## Current limitations and future improvements
+
+Potential future improvements include:
+
+- Real-time WebSocket-based messaging
+- Email verification and password reset
+- Rate limiting and stronger CSRF defenses
+- Two-factor authentication
+- Ratings and reviews
+- User blocking
+- Message attachments
+- Additional caching
+- Further database/query optimization
+- Pagination for dorm discovery as the dataset grows
+
+---
+
+## Solo project ownership
+
+CampusX is a **solo project**, so the architecture, database design, authentication flow, API implementation, frontend integration, security controls, deployment, and project documentation were developed as part of the same individual project.
+
+The project demonstrates work across:
+
+- Full-stack application development
+- Authentication and authorization
+- Relational database design
+- API design
+- Input validation
+- Security-focused backend checks
+- Responsive frontend development
+- Cloud deployment
 
 ---
 
 ## Author
 
-**Chamindu Hansana** · CS undergraduate, NSBM Green University
-[LinkedIn](https://www.linkedin.com/in/chamindu-hansana-a0b39a362/) · [Portfolio](https://chamindu18.github.io/Chamindu-Portfolio/) · chamindu553@gmail.com
+**Chamindu Hansana**  
+Computer Science Undergraduate · NSBM Green University
 
-Released under the [MIT License](LICENSE).
+- GitHub: [@Chamindu18](https://github.com/Chamindu18)
+- LinkedIn: [Chamindu Hansana](https://www.linkedin.com/in/chamindu-hansana-a0b39a362/)
+- Portfolio: [chamindu18.github.io/Chamindu-Portfolio](https://chamindu18.github.io/Chamindu-Portfolio/)
